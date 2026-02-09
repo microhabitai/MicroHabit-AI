@@ -514,6 +514,16 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// Enable offline persistence
+db.enablePersistence()
+  .catch((err) => {
+    if (err.code == 'failed-precondition') {
+      console.log("Multiple tabs open - persistence only works in one tab");
+    } else if (err.code == 'unimplemented') {
+      console.log("Browser doesn't support offline persistence");
+    }
+  });
+
         // IMPORTANT: Initialize these as null/empty until user logs in
         let habits = [];
         let isPremium = false;
