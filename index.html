@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/MicroHabit-AI/manifest.json">
-    
-    <!-- Google tag (gtag.js) -->
+<link rel="manifest" href="manifest.json">
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-MC8R5PYYFB"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -17,6 +11,9 @@
 
   gtag('config', 'G-MC8R5PYYFB');
 </script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div style="text-align:center; margin-bottom:20px;">
     <img src="logo.png" alt="MicroHabit AI Logo" style="width:50px; height:50px; display:block; margin:0 auto 10px auto;">
 </div>
@@ -24,6 +21,14 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     <meta name="theme-color" content="#4a90e2">
+    <link rel="manifest" href="data:application/manifest+json,{
+        \"name\": \"MicroHabit AI\",
+        \"short_name\": \"MicroHabit\",
+        \"display\": \"standalone\",
+        \"background_color\": \"#ffffff\",
+        \"theme_color\": \"#4a90e2\",
+        \"icons\": [{ \"src\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==\", \"sizes\": \"192x192\", \"type\": \"image/png\" }]
+    }">
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
@@ -2192,22 +2197,16 @@ let deferredPrompt = null;
 
 // Capture the install prompt
 window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('🎯 beforeinstallprompt event fired!');
     e.preventDefault();
     deferredPrompt = e;
-    console.log('✅ deferredPrompt saved for later use');
     
-    // Update button states to show they're ready
-    updateInstallButtonState();
-    
-    // Only show banner if user hasn't dismissed before
+    // Only show if user hasn't dismissed before
     if (!localStorage.getItem('installBannerDismissed')) {
         // Wait 30 seconds before showing
         setTimeout(() => {
             // Only show if user is logged in
             if (currentUser) {
                 document.getElementById('installBanner').style.display = 'block';
-                console.log('📱 Install banner displayed');
             }
         }, 30000); // 30 seconds
     }
@@ -2248,53 +2247,24 @@ window.addEventListener('appinstalled', () => {
 
 // Trigger install from Settings/Premium tabs
 function triggerInstall() {
-    console.log('🔔 Install button clicked!');
-    console.log('📱 deferredPrompt available:', deferredPrompt !== null);
-    console.log('🖥️ Display mode:', window.matchMedia('(display-mode: standalone)').matches);
-    
-    // Check if already installed
-    const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    if (isInstalled) {
-        alert('✅ MicroHabit AI is already installed on your device!');
-        updateInstallButtonState();
-        return;
-    }
-    
-    // Try to use the deferred prompt
     if (deferredPrompt) {
-        console.log('✅ Using deferredPrompt to show install dialog');
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((result) => {
-            console.log('👤 User choice:', result.outcome);
             if (result.outcome === 'accepted') {
                 console.log('✅ App installed from button!');
-                alert('🎉 Successfully installed! You can now access MicroHabit AI from your home screen!');
                 updateInstallButtonState();
-            } else {
-                console.log('❌ User dismissed the install prompt');
             }
             deferredPrompt = null;
         });
     } else {
-        // No prompt available - check why
-        console.log('⚠️ deferredPrompt not available');
-        
-        // Check if on Android
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        const isChrome = /Chrome/i.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-        
-        console.log('📱 Is Android:', isAndroid);
-        console.log('🌐 Is Chrome:', isChrome);
-        
-        if (isAndroid && isChrome) {
-            // Android Chrome but no prompt - give specific instructions
-            alert('📱 To install MicroHabit AI:\n\n1. Tap the menu button (⋮) in the top right\n2. Tap "Install app" or "Add to Home screen"\n3. Tap "Install"\n\nNote: If you don\'t see this option, the app might already be installable from your browser menu!');
-        } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            // iOS - manual instructions only
-            alert('📱 To install on iPhone/iPad:\n\n1. Tap the Share button (⬆️) at the bottom\n2. Scroll and tap "Add to Home Screen"\n3. Tap "Add"\n\nThen access MicroHabit AI from your home screen!');
+        // Fallback for iOS or if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            // Already installed
+            alert('✅ MicroHabit AI is already installed on your device!');
+            updateInstallButtonState();
         } else {
-            // Other browsers
-            alert('📱 To install MicroHabit AI:\n\n• Chrome/Edge: Look for install icon (⊕) in address bar\n• Or tap browser menu → "Install" or "Add to Home screen"\n\nOnce installed, access from your home screen or app drawer!');
+            // Show manual instructions
+            alert('📱 To add to home screen:\n\niOS Safari: Tap Share (⬆️) → "Add to Home Screen"\n\nAndroid Chrome: Tap menu (⋮) → "Add to Home Screen"\n\nAndroid Firefox: Tap menu (⋮) → "Install"');
         }
     }
 }
@@ -2501,43 +2471,5 @@ function convertGuestToUser() {
         <button class="btn-dismiss" onclick="dismissInstallBanner()">✕ Not now</button>
     </div>
 </div>
-
-<!-- Service Worker Registration -->
-<script>
-// Register Service Worker for PWA functionality
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/MicroHabit-AI/sw.js', {
-      scope: '/MicroHabit-AI/'
-    })
-      .then((registration) => {
-        console.log('✅ Service Worker registered successfully:', registration.scope);
-        console.log('📱 Registration scope:', registration.scope);
-        
-        // Check for updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          console.log('🔄 Service Worker update found');
-          
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('📥 New version available! Refresh to update.');
-              // Could show update notification to user here
-            }
-          });
-        });
-      })
-      .catch((error) => {
-        console.error('❌ Service Worker registration failed:', error);
-        console.error('📋 Error name:', error.name);
-        console.error('📋 Error message:', error.message);
-        console.error('📋 Full error:', JSON.stringify(error, null, 2));
-      });
-  });
-} else {
-  console.log('⚠️ Service Workers not supported in this browser');
-}
-</script>
-
 </body>
 </html>
