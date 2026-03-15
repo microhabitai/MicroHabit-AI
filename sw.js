@@ -3,10 +3,10 @@
 
 const CACHE_NAME = 'microhabit-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/logo.png',
-  '/saashub-badge.png'
+  '/MicroHabit-AI/',
+  '/MicroHabit-AI/index.html',
+  '/MicroHabit-AI/logo.png',
+  '/MicroHabit-AI/saashub-badge.png'
 ];
 
 // Install event - cache resources
