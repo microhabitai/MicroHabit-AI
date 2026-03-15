@@ -396,6 +396,19 @@
   <!-- Premium Tab -->
   <div id="premiumTab" class="tab-content">
     <div id="premiumSection">
+        
+        <!-- Install App Quick Action -->
+        <div id="installPremiumContainer" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; border-radius: 12px; margin-bottom: 25px; color: white; text-align: center;">
+            <h3 style="margin: 0 0 10px 0; color: white;">📱 Quick Action: Install App</h3>
+            <p style="margin: 0 0 15px 0; font-size: 14px; opacity: 0.9;">Add MicroHabit AI to your home screen for instant access!</p>
+            <button id="installAppBtnPremium" onclick="triggerInstall()" style="background: white; color: #667eea; width: 100%; padding: 12px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                📱 Install Now
+            </button>
+            <div id="alreadyInstalledMsgPremium" style="display: none; background: rgba(255,255,255,0.2); padding: 12px; border-radius: 8px; margin-top: 10px; font-weight: bold;">
+                ✅ App already installed!
+            </div>
+        </div>
+        
         <h2>✨ Choose Your Plan</h2>
         
         <!-- Free Plan -->
@@ -594,6 +607,20 @@
   <!-- Settings Tab -->
   <div id="settingsTab" class="tab-content">
     <h2 style="text-align:center;">⚙️ Settings</h2>
+    
+    <!-- Install App Section -->
+    <div id="installSection" style="margin-bottom: 30px;">
+        <h3>📱 Install App</h3>
+        <div id="installAppContainer">
+            <p style="color: #666; font-size: 14px; margin-bottom: 10px;">Add MicroHabit AI to your home screen for quick access like a native app!</p>
+            <button id="installAppBtn" onclick="triggerInstall()" style="background: linear-gradient(135deg, #4a90e2, #2ecc71); color: white; width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                📱 Install MicroHabit AI
+            </button>
+            <div id="alreadyInstalledMsg" style="display: none; background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold;">
+                ✅ Already installed on your device!
+            </div>
+        </div>
+    </div>
     
     <div id="themeSection">
         <h3>🎨 Appearance</h3>
@@ -2215,7 +2242,63 @@ window.addEventListener('appinstalled', () => {
     console.log('✅ MicroHabit AI installed as PWA!');
     dismissInstallBanner();
     localStorage.setItem('installBannerDismissed', 'true');
+    updateInstallButtonState();
 });
+
+// Trigger install from Settings/Premium tabs
+function triggerInstall() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((result) => {
+            if (result.outcome === 'accepted') {
+                console.log('✅ App installed from button!');
+                updateInstallButtonState();
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        // Fallback for iOS or if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            // Already installed
+            alert('✅ MicroHabit AI is already installed on your device!');
+            updateInstallButtonState();
+        } else {
+            // Show manual instructions
+            alert('📱 To add to home screen:\n\niOS Safari: Tap Share (⬆️) → "Add to Home Screen"\n\nAndroid Chrome: Tap menu (⋮) → "Add to Home Screen"\n\nAndroid Firefox: Tap menu (⋮) → "Install"');
+        }
+    }
+}
+
+// Update install button state based on installation status
+function updateInstallButtonState() {
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    
+    // Settings tab
+    const installBtn = document.getElementById('installAppBtn');
+    const installedMsg = document.getElementById('alreadyInstalledMsg');
+    
+    // Premium tab
+    const installBtnPremium = document.getElementById('installAppBtnPremium');
+    const installedMsgPremium = document.getElementById('alreadyInstalledMsgPremium');
+    
+    if (isInstalled) {
+        // Hide buttons, show "already installed" message
+        if (installBtn) installBtn.style.display = 'none';
+        if (installedMsg) installedMsg.style.display = 'block';
+        if (installBtnPremium) installBtnPremium.style.display = 'none';
+        if (installedMsgPremium) installedMsgPremium.style.display = 'block';
+    } else {
+        // Show buttons, hide message
+        if (installBtn) installBtn.style.display = 'block';
+        if (installedMsg) installedMsg.style.display = 'none';
+        if (installBtnPremium) installBtnPremium.style.display = 'block';
+        if (installedMsgPremium) installedMsgPremium.style.display = 'none';
+    }
+}
+
+// Check installation state on page load
+setTimeout(updateInstallButtonState, 1000);
+
 // ========== GUEST MODE FUNCTIONS ==========
 
 // Start guest mode
