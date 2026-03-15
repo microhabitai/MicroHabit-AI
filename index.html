@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/MicroHabit-AI/manifest.json">
     
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-MC8R5PYYFB"></script>
@@ -2507,9 +2507,12 @@ function convertGuestToUser() {
 // Register Service Worker for PWA functionality
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('/MicroHabit-AI/sw.js', {
+      scope: '/MicroHabit-AI/'
+    })
       .then((registration) => {
         console.log('✅ Service Worker registered successfully:', registration.scope);
+        console.log('📱 Registration scope:', registration.scope);
         
         // Check for updates
         registration.addEventListener('updatefound', () => {
@@ -2526,6 +2529,9 @@ if ('serviceWorker' in navigator) {
       })
       .catch((error) => {
         console.error('❌ Service Worker registration failed:', error);
+        console.error('📋 Error name:', error.name);
+        console.error('📋 Error message:', error.message);
+        console.error('📋 Full error:', JSON.stringify(error, null, 2));
       });
   });
 } else {
