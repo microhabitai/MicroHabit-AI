@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="manifest" href="manifest.json">
-<!-- Google tag (gtag.js) -->
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-MC8R5PYYFB"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -11,9 +17,6 @@
 
   gtag('config', 'G-MC8R5PYYFB');
 </script>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div style="text-align:center; margin-bottom:20px;">
     <img src="logo.png" alt="MicroHabit AI Logo" style="width:50px; height:50px; display:block; margin:0 auto 10px auto;">
 </div>
@@ -21,14 +24,6 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     <meta name="theme-color" content="#4a90e2">
-    <link rel="manifest" href="data:application/manifest+json,{
-        \"name\": \"MicroHabit AI\",
-        \"short_name\": \"MicroHabit\",
-        \"display\": \"standalone\",
-        \"background_color\": \"#ffffff\",
-        \"theme_color\": \"#4a90e2\",
-        \"icons\": [{ \"src\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==\", \"sizes\": \"192x192\", \"type\": \"image/png\" }]
-    }">
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
@@ -2506,5 +2501,37 @@ function convertGuestToUser() {
         <button class="btn-dismiss" onclick="dismissInstallBanner()">✕ Not now</button>
     </div>
 </div>
+
+<!-- Service Worker Registration -->
+<script>
+// Register Service Worker for PWA functionality
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('✅ Service Worker registered successfully:', registration.scope);
+        
+        // Check for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('🔄 Service Worker update found');
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('📥 New version available! Refresh to update.');
+              // Could show update notification to user here
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.error('❌ Service Worker registration failed:', error);
+      });
+  });
+} else {
+  console.log('⚠️ Service Workers not supported in this browser');
+}
+</script>
+
 </body>
 </html>
