@@ -381,6 +381,16 @@
             <p style="margin: 10px 0;">No setup required - AI coaching works instantly! ✨</p>
             <p style="font-size: 14px; opacity: 0.9;">Free: 10 predictions/day | Premium: Unlimited</p>
         </div>
+        
+        <!-- Weekly Roast Feature -->
+        <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+            <h3 style="margin-top: 0;">💀 WEEKLY ROAST 💀</h3>
+            <p style="margin: 10px 0;">Get hilariously honest feedback on your worst habit!</p>
+            <p style="font-size: 14px; opacity: 0.9;">Savage but supportive. Screenshots encouraged! 😂</p>
+            <button onclick="showWeeklyRoast()" style="width: 100%; background: white; color: #ff6b6b; font-weight: bold; font-size: 16px; padding: 12px; margin-top: 10px; border: none; border-radius: 8px; cursor: pointer;">
+                💀 GET ROASTED NOW 💀
+            </button>
+        </div>
     </div>
 
     <button onclick="getAINudge(true)" style="width:100%; margin-top:20px; padding:15px; font-size:18px;">🔮 Get AI Predictive Nudge Now</button>
@@ -1369,6 +1379,256 @@ function renewSubscription() {
             }
             return false;
         }
+
+        // ========== AI ROAST SYSTEM ==========
+        
+        // Roast templates with encouragement
+        const roastTemplates = {
+            serialStarter: [
+                {
+                    roast: "You've 'started fresh' {count} times this month. At this point, you're a professional beginner.",
+                    encouragement: "But you know what? This time could be THE time. Let's make this one stick. 💪"
+                },
+                {
+                    roast: "Starting over AGAIN? Your commitment has commitment issues.",
+                    encouragement: "Here's the truth: you haven't failed until you stop trying. So... don't stop. 💯"
+                },
+                {
+                    roast: "If restarting burned calories, you'd be an Olympic athlete by now.",
+                    encouragement: "Channel that restart energy into actual reps. You're closer than you think! 🏆"
+                }
+            ],
+            
+            ghost: [
+                {
+                    roast: "{rate}% success rate. Even my WiFi connection is more reliable than you.",
+                    encouragement: "But {rate}% is better than 0%! Let's get to {target}% this week. Small wins matter. 📈"
+                },
+                {
+                    roast: "This habit checks the app every day hoping you'll show up. It's getting therapy now.",
+                    encouragement: "Be the hero of your own comeback story. Show up today. That's all it takes. ✨"
+                },
+                {
+                    roast: "I've seen more commitment in free trial subscriptions.",
+                    encouragement: "But unlike trials, this habit has no expiration date. Start fresh, right now. 🚀"
+                }
+            ],
+            
+            optimist: [
+                {
+                    roast: "You have {total} habits. Completed: {done}. Confidence: Still 100%. I respect the delusion.",
+                    encouragement: "Here's the plan: Pick ONE. Just one. Master it. Then add more. You've got this! 🎯"
+                },
+                {
+                    roast: "Your to-do list has a to-do list. Neither are getting done.",
+                    encouragement: "Simplify! One habit, one week, 7 check-offs. That's the whole mission. Go! 💪"
+                },
+                {
+                    roast: "Plot twist: The real habit is adding more habits you won't do.",
+                    encouragement: "New plot: Actually DO one. Just one. Watch your life change. 🌟"
+                }
+            ],
+            
+            appTourist: [
+                {
+                    roast: "You've opened this app {visits} times without checking anything off. That's called window shopping for discipline.",
+                    encouragement: "Next time you open this app, check off SOMETHING. Anything. Build the muscle! 💪"
+                },
+                {
+                    roast: "App visits: {visits}. Habits completed: {done}. You're really just here for the vibes, huh?",
+                    encouragement: "Love the vibes! Now add some ACTION to those vibes. You're so close! 🔥"
+                },
+                {
+                    roast: "Opening the app counts as progress in your mind, doesn't it? It doesn't.",
+                    encouragement: "But checking off DOES count! And you can do that right now. Go on! ✅"
+                }
+            ],
+            
+            excuseFactory: [
+                {
+                    roast: "Last completed: {days} days ago. NASA has sent robots to Mars faster than your next attempt.",
+                    encouragement: "But guess what? Mars is still there. So is your habit. Start again TODAY. 🚀"
+                },
+                {
+                    roast: "It's been so long since you did this, the habit filed a missing person report.",
+                    encouragement: "Time to come home! Your habit misses you. One check-off = you're back! 💚"
+                },
+                {
+                    roast: "Your streak died, decomposed, and became fossil fuel. Still waiting on that comeback.",
+                    encouragement: "Phoenix time! Rise from the ashes. New streak starts NOW. You've got this! 🔥"
+                }
+            ],
+            
+            zeroEffort: {
+                roast: "0%. A literal rock has done more this week. The rock at least stayed in one place consistently.",
+                encouragement: "Rocks can't improve. You can! One check-off today = infinite % improvement! 📈"
+            },
+            
+            perfectWeek: {
+                roast: "100% this week? Who are you and what did you do with the old you? Actually don't answer, I like this version.",
+                encouragement: "THIS is who you really are! Keep this energy going. You're unstoppable! 👑"
+            }
+        };
+        
+        // Calculate habit statistics for roasting
+        function getHabitStats(habit, habitIndex) {
+            const today = getToday();
+            const weekStart = getWeekStart();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const thirtyDaysStr = thirtyDaysAgo.toISOString().slice(0, 10);
+            
+            // Filter dates for last 30 days
+            const recentDates = habit.dates.filter(d => d >= thirtyDaysStr);
+            
+            // Calculate success rate
+            const totalDays = 30;
+            const completedDays = recentDates.length;
+            const successRate = Math.round((completedDays / totalDays) * 100);
+            
+            // Calculate weekly completion
+            const weeklyDone = getWeeklyCompletions(habit.dates);
+            const weeklyRate = Math.round((weeklyDone / 7) * 100);
+            
+            // Days since last completion
+            const sortedDates = [...habit.dates].sort().reverse();
+            const lastDate = sortedDates[0] || null;
+            let daysSinceComplete = 999;
+            if (lastDate) {
+                const last = new Date(lastDate);
+                const now = new Date();
+                daysSinceComplete = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+            }
+            
+            // Count "restarts" (gaps of 3+ days)
+            let restartCount = 0;
+            for (let i = 0; i < sortedDates.length - 1; i++) {
+                const date1 = new Date(sortedDates[i]);
+                const date2 = new Date(sortedDates[i + 1]);
+                const dayGap = Math.floor((date1 - date2) / (1000 * 60 * 60 * 24));
+                if (dayGap > 3) restartCount++;
+            }
+            
+            // Get app visit count (we'll track this separately)
+            const appVisits = parseInt(localStorage.getItem('appVisitCount') || '0');
+            
+            return {
+                successRate,
+                weeklyRate,
+                weeklyDone,
+                daysSinceComplete,
+                restartCount,
+                completedDays,
+                totalDays,
+                appVisits
+            };
+        }
+        
+        // Generate personalized roast
+        function generateWeeklyRoast() {
+            if (habits.length === 0) {
+                return null;
+            }
+            
+            // Find worst performing habit
+            let worstHabit = null;
+            let worstIndex = -1;
+            let lowestRate = 100;
+            
+            habits.forEach((habit, index) => {
+                const stats = getHabitStats(habit, index);
+                if (stats.weeklyRate < lowestRate) {
+                    lowestRate = stats.weeklyRate;
+                    worstHabit = habit;
+                    worstIndex = index;
+                }
+            });
+            
+            if (!worstHabit) return null;
+            
+            const stats = getHabitStats(worstHabit, worstIndex);
+            let roastData;
+            
+            // Determine roast category and select random roast
+            if (stats.weeklyRate === 100) {
+                // Perfect week!
+                roastData = roastTemplates.perfectWeek;
+            } else if (stats.weeklyRate === 0) {
+                // Zero effort
+                roastData = roastTemplates.zeroEffort;
+            } else if (stats.restartCount >= 3) {
+                // Serial starter
+                const roasts = roastTemplates.serialStarter;
+                roastData = roasts[Math.floor(Math.random() * roasts.length)];
+            } else if (stats.successRate < 20) {
+                // Ghost
+                const roasts = roastTemplates.ghost;
+                roastData = roasts[Math.floor(Math.random() * roasts.length)];
+            } else if (habits.length >= 5 && stats.weeklyRate < 50) {
+                // Optimist (too many habits)
+                const roasts = roastTemplates.optimist;
+                roastData = roasts[Math.floor(Math.random() * roasts.length)];
+            } else if (stats.daysSinceComplete >= 7) {
+                // Excuse factory
+                const roasts = roastTemplates.excuseFactory;
+                roastData = roasts[Math.floor(Math.random() * roasts.length)];
+            } else if (stats.appVisits > stats.completedDays * 3) {
+                // App tourist
+                const roasts = roastTemplates.appTourist;
+                roastData = roasts[Math.floor(Math.random() * roasts.length)];
+            } else {
+                // Default to ghost roasts
+                const roasts = roastTemplates.ghost;
+                roastData = roasts[Math.floor(Math.random() * roasts.length)];
+            }
+            
+            // Replace placeholders in roast
+            let roastText = roastData.roast
+                .replace('{rate}', stats.weeklyRate)
+                .replace('{target}', Math.min(stats.weeklyRate + 30, 100))
+                .replace('{count}', stats.restartCount)
+                .replace('{total}', habits.length)
+                .replace('{done}', stats.weeklyDone)
+                .replace('{visits}', stats.appVisits)
+                .replace('{days}', stats.daysSinceComplete);
+            
+            return {
+                habitName: worstHabit.name,
+                habitEmoji: worstHabit.emoji || '⭐',
+                roast: roastText,
+                encouragement: roastData.encouragement,
+                successRate: stats.weeklyRate,
+                weeklyDone: stats.weeklyDone
+            };
+        }
+        
+        // Track app visits
+        function incrementAppVisits() {
+            const count = parseInt(localStorage.getItem('appVisitCount') || '0');
+            localStorage.setItem('appVisitCount', count + 1);
+        }
+        
+        // Show roast modal
+        function showWeeklyRoast() {
+            const roastData = generateWeeklyRoast();
+            if (!roastData) {
+                alert('Add some habits first to get roasted! 😄');
+                return;
+            }
+            
+            const shareText = `My habit tracker just roasted me 💀\n\n"${roastData.roast}"\n\nI'm crying 😭😂\n\nTry MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
+            
+            alert(`💀 WEEKLY ROAST 💀\n\nHabit: ${roastData.habitEmoji} ${roastData.habitName}\nSuccess Rate: ${roastData.successRate}%\n\n${roastData.roast}\n\n━━━━━━━━━━━━━━━━\n\n${roastData.encouragement}\n\n[Copy this to share on social media! 📱]`);
+            
+            // Save last roast
+            localStorage.setItem('lastRoast', JSON.stringify(roastData));
+            localStorage.setItem('lastRoastDate', getToday());
+        }
+        
+        // Increment app visits on page load
+        incrementAppVisits();
+        
+        // ========== END ROAST SYSTEM ==========
 
         function renderHabits() {
             const list = document.getElementById('habitsList');
