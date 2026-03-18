@@ -1616,13 +1616,74 @@ function renewSubscription() {
                 return;
             }
             
-            const shareText = `My habit tracker just roasted me 💀\n\n"${roastData.roast}"\n\nI'm crying 😭😂\n\nTry MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
+            // Display roast first
+            alert(`💀 WEEKLY ROAST 💀\n\nHabit: ${roastData.habitEmoji} ${roastData.habitName}\nSuccess Rate: ${roastData.successRate}%\n\n${roastData.roast}\n\n━━━━━━━━━━━━━━━━\n\n${roastData.encouragement}`);
             
-            alert(`💀 WEEKLY ROAST 💀\n\nHabit: ${roastData.habitEmoji} ${roastData.habitName}\nSuccess Rate: ${roastData.successRate}%\n\n${roastData.roast}\n\n━━━━━━━━━━━━━━━━\n\n${roastData.encouragement}\n\n[Copy this to share on social media! 📱]`);
+            // Ask if user wants to share
+            const wantsToShare = confirm('📱 Share this roast on social media?');
+            
+            if (wantsToShare) {
+                shareRoast(roastData);
+            }
             
             // Save last roast
             localStorage.setItem('lastRoast', JSON.stringify(roastData));
             localStorage.setItem('lastRoastDate', getToday());
+        }
+        
+        // Share roast function with Web Share API
+        function shareRoast(roastData) {
+            const shareText = `💀 MicroHabit AI Roast 💀
+
+Habit: ${roastData.habitEmoji} ${roastData.habitName}
+Success Rate: ${roastData.successRate}%
+
+"${roastData.roast}"
+
+${roastData.encouragement}
+
+Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
+
+            // Check if Web Share API is available (mobile)
+            if (navigator.share) {
+                navigator.share({
+                    title: '💀 My MicroHabit AI Roast',
+                    text: shareText,
+                    url: 'https://microhabitai.github.io/MicroHabit-AI/'
+                })
+                .then(() => {
+                    console.log('✅ Roast shared successfully!');
+                })
+                .catch((error) => {
+                    console.log('Share cancelled or failed:', error);
+                    // Fallback to copy
+                    copyRoastToClipboard(shareText);
+                });
+            } else {
+                // Fallback for desktop - copy to clipboard
+                copyRoastToClipboard(shareText);
+            }
+        }
+        
+        // Copy roast to clipboard (fallback for desktop)
+        function copyRoastToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        alert('✅ Roast copied to clipboard! Paste it anywhere to share! 📋');
+                    })
+                    .catch(() => {
+                        // Final fallback - show text to copy manually
+                        fallbackCopy(text);
+                    });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+        
+        // Final fallback - prompt user to copy manually
+        function fallbackCopy(text) {
+            prompt('Copy this text to share:', text);
         }
         
         // Increment app visits on page load
