@@ -239,9 +239,303 @@
         #onboarding ol { text-align: left; font-size: 14px; margin: 15px auto; padding-left: 20px; max-width: 400px; }
         #onboarding ol li { margin: 8px 0; }
         #onboarding button { font-size: 18px; padding: 12px 30px; margin-top: 15px; }
+        /* Banner Notification Styles */
+        #notificationBanner {
+            position: fixed;
+            top: -200px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            z-index: 10000;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        #notificationBanner.show {
+            top: 0px;
+        }
+
+        .banner-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .banner-text {
+            flex: 1;
+        }
+
+        .banner-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .banner-message {
+            font-size: 14px;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        .banner-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
+
+        .banner-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+
+        /* Personality Picker Modal */
+        #personalityModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 20000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #personalityModal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .modal-subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .personality-options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .personality-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .personality-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .personality-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .personality-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .personality-icon {
+            font-size: 32px;
+        }
+
+        .personality-info {
+            flex: 1;
+        }
+
+        .personality-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .personality-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .personality-example {
+            font-size: 13px;
+            color: #444;
+            font-style: italic;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .modal-footer {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            #notificationBanner {
+                padding: 15px;
+            }
+
+            .banner-title {
+                font-size: 16px;
+            }
+
+            .banner-message {
+                font-size: 13px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
+<!-- Banner Notification -->
+<div id="notificationBanner">
+    <div class="banner-content">
+        <div class="banner-text">
+            <div class="banner-title" id="bannerTitle">☀️ Good Morning!</div>
+            <div class="banner-message" id="bannerMessage">Ready to crush those habits today?</div>
+        </div>
+        <button class="banner-close" onclick="dismissBanner()">×</button>
+    </div>
+</div>
+
+<!-- Personality Picker Modal -->
+<div id="personalityModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Choose Your Motivation Style</div>
+            <div class="modal-subtitle">How do you like to be reminded about your habits?</div>
+        </div>
+        
+        <div class="personality-options">
+            <div class="personality-option" onclick="selectPersonality('motivator')" data-style="motivator">
+                <div class="personality-header">
+                    <div class="personality-icon">💪</div>
+                    <div class="personality-info">
+                        <div class="personality-name">The Motivator</div>
+                        <div class="personality-desc">Encouraging and supportive</div>
+                    </div>
+                </div>
+                <div class="personality-example">"You've got this! Keep crushing it! 🔥"</div>
+            </div>
+
+            <div class="personality-option" onclick="selectPersonality('realist')" data-style="realist">
+                <div class="personality-header">
+                    <div class="personality-icon">📊</div>
+                    <div class="personality-info">
+                        <div class="personality-name">The Realist</div>
+                        <div class="personality-desc">Data-driven and analytical</div>
+                    </div>
+                </div>
+                <div class="personality-example">"Your success rate is 70%. Let's hit 80%."</div>
+            </div>
+
+            <div class="personality-option" onclick="selectPersonality('savage')" data-style="savage">
+                <div class="personality-header">
+                    <div class="personality-icon">💀</div>
+                    <div class="personality-info">
+                        <div class="personality-name">The Savage</div>
+                        <div class="personality-desc">Brutally honest (but caring)</div>
+                    </div>
+                </div>
+                <div class="personality-example">"Your habits miss you. Not sure why, but they do."</div>
+            </div>
+
+            <div class="personality-option" onclick="selectPersonality('challenger')" data-style="challenger">
+                <div class="personality-header">
+                    <div class="personality-icon">🎯</div>
+                    <div class="personality-info">
+                        <div class="personality-name">The Challenger</div>
+                        <div class="personality-desc">Competitive and bold</div>
+                    </div>
+                </div>
+                <div class="personality-example">"I predict you'll skip today. Prove me wrong!"</div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-confirm" id="confirmBtn" onclick="confirmPersonality()" disabled>
+                Continue
+            </button>
+        </div>
+    </div>
+</div>
 <div id="authSection">
   <div style="text-align:center; padding: 20px 10px; background: linear-gradient(135deg, #4a90e2, #2ecc71); border-radius: 12px; margin-bottom: 20px; color: white;">
     <h2 style="margin:0 0 10px 0; font-size: 22px;">🤖 AI That Predicts When You'll Skip</h2>
@@ -649,6 +943,15 @@
             <button style="background:#e67e22" onclick="setColor('#e67e22')"></button>
             <button style="background:#e91e63" onclick="setColor('#e91e63')"></button>
         </div>
+    </div>
+    
+    <div id="notificationStyleSection" style="margin-top: 30px;">
+        <h3>🔔 Notification Style</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">Choose how you want to be reminded about your habits throughout the day.</p>
+        <p id="currentNotificationStyle" style="font-weight: bold; color: var(--primary); margin-bottom: 10px;">Current: Loading...</p>
+        <button onclick="changeNotificationStyle()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+            ⚙️ Change Notification Style
+        </button>
     </div>
   </div>
 
@@ -2793,5 +3096,282 @@ function convertGuestToUser() {
         <button class="btn-dismiss" onclick="dismissInstallBanner()">✕ Not now</button>
     </div>
 </div>
+<script>
+        // ============================================
+        // BANNER NOTIFICATION SYSTEM
+        // ============================================
+
+        // All notification messages by personality and time of day
+        const bannerMessages = {
+            motivator: {
+                morning: {
+                    title: "☀️ Good Morning!",
+                    message: "Ready to crush those habits today? You've got this! 💪"
+                },
+                afternoon: {
+                    title: "🌤️ Afternoon Check-In!",
+                    message: "How are your habits going? Keep that momentum! 🔥"
+                },
+                evening: {
+                    title: "🌙 Evening Reminder!",
+                    message: "Don't forget to check off your habits before bed! 🌟"
+                }
+            },
+            
+            realist: {
+                morning: {
+                    title: "📊 Morning Stats",
+                    message: "Time to check in. Consistency builds results."
+                },
+                afternoon: {
+                    title: "⏰ Midday Update",
+                    message: "You usually complete habits by 2 PM. Right on schedule?"
+                },
+                evening: {
+                    title: "📈 Evening Check",
+                    message: "2 habits left. 5 seconds to save your streak."
+                }
+            },
+            
+            savage: {
+                morning: {
+                    title: "💀 Morning Reality Check",
+                    message: "3 habits waiting. Don't make me roast you twice this week."
+                },
+                afternoon: {
+                    title: "😏 Still Waiting...",
+                    message: "Your habits miss you. Not sure why, but they do."
+                },
+                evening: {
+                    title: "🔥 Last Chance",
+                    message: "Your streak ends in 3 hours. Don't be that person."
+                }
+            },
+            
+            challenger: {
+                morning: {
+                    title: "🎯 Challenge Accepted?",
+                    message: "I predict you'll complete 2/3 habits today. Prove me wrong!"
+                },
+                afternoon: {
+                    title: "⚡ Speed Challenge",
+                    message: "30-second challenge: Check off ONE habit right now. Go!"
+                },
+                evening: {
+                    title: "🏆 Final Boss",
+                    message: "Beat your record. You're at 6 days. Shoot for 7!"
+                }
+            }
+        };
+
+        // Track selected personality
+        let selectedStyle = null;
+
+        // ============================================
+        // PERSONALITY PICKER FUNCTIONS
+        // ============================================
+
+        function showPersonalityPicker() {
+            document.getElementById('personalityModal').classList.add('show');
+        }
+
+        function selectPersonality(style) {
+            // Remove previous selection
+            document.querySelectorAll('.personality-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selection to clicked option
+            document.querySelector(`[data-style="${style}"]`).classList.add('selected');
+            
+            // Store selection
+            selectedStyle = style;
+            
+            // Enable confirm button
+            document.getElementById('confirmBtn').disabled = false;
+        }
+
+        function confirmPersonality() {
+            if (!selectedStyle) return;
+            
+            // Save to localStorage
+            localStorage.setItem('notificationStyle', selectedStyle);
+            
+            // Hide modal
+            document.getElementById('personalityModal').classList.remove('show');
+            
+            // Show first banner immediately
+            setTimeout(() => {
+                checkAndShowBanner();
+            }, 2000);
+        }
+
+        // ============================================
+        // BANNER DISPLAY FUNCTIONS
+        // ============================================
+
+        function checkAndShowBanner() {
+            const now = new Date();
+            const hour = now.getHours();
+            const today = now.toISOString().slice(0, 10);
+            
+            // Get user's personality style (default: motivator)
+            const style = localStorage.getItem('notificationStyle') || 'motivator';
+            
+            // Check which banners shown today
+            const bannersShown = JSON.parse(localStorage.getItem('bannersShown_' + today) || '{}');
+            
+            let timeOfDay;
+            
+            // Determine time of day
+            if (hour >= 6 && hour < 12 && !bannersShown.morning) {
+                timeOfDay = 'morning';
+            } else if (hour >= 12 && hour < 18 && !bannersShown.afternoon) {
+                timeOfDay = 'afternoon';
+            } else if (hour >= 18 && hour < 23 && !bannersShown.evening) {
+                timeOfDay = 'evening';
+            }
+            
+            // Show banner if applicable
+            if (timeOfDay) {
+                showBanner(
+                    bannerMessages[style][timeOfDay].title,
+                    bannerMessages[style][timeOfDay].message,
+                    timeOfDay,
+                    today
+                );
+            }
+        }
+
+        function showBanner(title, message, timeOfDay, today) {
+            const banner = document.getElementById('notificationBanner');
+            const titleEl = document.getElementById('bannerTitle');
+            const messageEl = document.getElementById('bannerMessage');
+            
+            // Set content
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            // Show banner
+            setTimeout(() => {
+                banner.classList.add('show');
+            }, 100);
+            
+            // Auto-dismiss after 10 seconds
+            setTimeout(() => {
+                dismissBanner(timeOfDay, today);
+            }, 10000);
+        }
+
+        function dismissBanner(timeOfDay, today) {
+            const banner = document.getElementById('notificationBanner');
+            
+            // Hide banner
+            banner.classList.remove('show');
+            
+            // If timeOfDay and today are provided, mark as shown
+            if (timeOfDay && today) {
+                const bannersShown = JSON.parse(localStorage.getItem('bannersShown_' + today) || '{}');
+                bannersShown[timeOfDay] = true;
+                localStorage.setItem('bannersShown_' + today, JSON.stringify(bannersShown));
+            } else {
+                // If called manually (user clicked X), mark current time period as shown
+                const now = new Date();
+                const hour = now.getHours();
+                const currentDay = now.toISOString().slice(0, 10);
+                
+                let currentTimeOfDay;
+                if (hour >= 6 && hour < 12) currentTimeOfDay = 'morning';
+                else if (hour >= 12 && hour < 18) currentTimeOfDay = 'afternoon';
+                else if (hour >= 18 && hour < 23) currentTimeOfDay = 'evening';
+                
+                if (currentTimeOfDay) {
+                    const bannersShown = JSON.parse(localStorage.getItem('bannersShown_' + currentDay) || '{}');
+                    bannersShown[currentTimeOfDay] = true;
+                    localStorage.setItem('bannersShown_' + currentDay, JSON.stringify(bannersShown));
+                }
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+
+        window.addEventListener('load', () => {
+            // Check if user has chosen personality
+            const hasPersonality = localStorage.getItem('notificationStyle');
+            
+            if (!hasPersonality) {
+                // First time user - show personality picker after 3 seconds
+                setTimeout(() => {
+                    showPersonalityPicker();
+                }, 3000);
+            } else {
+                // Existing user - check and show banner after 2 seconds
+                setTimeout(() => {
+                    checkAndShowBanner();
+                }, 2000);
+            }
+            
+            // Also check when tab becomes visible (if user switches back)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && localStorage.getItem('notificationStyle')) {
+                    checkAndShowBanner();
+                }
+            });
+        });
+
+        // ============================================
+        // SETTINGS FUNCTION (Add to your settings page)
+        // ============================================
+
+        function changeNotificationStyle() {
+            showPersonalityPicker();
+        }
+        
+        // Update current notification style display
+        function updateCurrentNotificationStyle() {
+            const style = localStorage.getItem('notificationStyle') || 'motivator';
+            const styleNames = {
+                'motivator': '💪 The Motivator',
+                'realist': '📊 The Realist',
+                'savage': '💀 The Savage',
+                'challenger': '🎯 The Challenger'
+            };
+            
+            const element = document.getElementById('currentNotificationStyle');
+            if (element) {
+                element.textContent = 'Current: ' + styleNames[style];
+            }
+        }
+        
+        // Call this when showing settings tab
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all nav buttons
+            document.querySelectorAll('#navMenu button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Activate corresponding nav button
+            event.target.classList.add('active');
+            
+            // Update current notification style when showing settings
+            if (tabName === 'settings') {
+                updateCurrentNotificationStyle();
+            }
+        }
+
+        // Call this from your settings button:
+        // <button onclick="changeNotificationStyle()">Change Notification Style</button>
+
+    </script>
 </body>
 </html>
