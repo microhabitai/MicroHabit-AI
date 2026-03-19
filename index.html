@@ -590,35 +590,6 @@
                 <li>✅ <strong>One-Tap Logging</strong> - Just tap the checkbox to log each habit</li>
             </ol>
             <p style="font-size: 12px; color: #666;">Free: 3 habits, 10 AI predictions/day | Premium: Unlimited everything</p>
-            
-            <!-- Personality Selection in Onboarding -->
-            <div style="margin-top: 25px; padding-top: 20px; border-top: 2px solid #ddd;">
-                <h3 style="font-size: 18px; margin-bottom: 15px;">🎯 Choose Your Motivation Style</h3>
-                <p style="font-size: 14px; color: #666; margin-bottom: 15px;">How do you like to be reminded?</p>
-                
-                <div style="display: grid; gap: 10px; margin-bottom: 20px;">
-                    <label style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.3s; background: white;" onclick="selectOnboardingPersonality('motivator')">
-                        <input type="radio" name="onboardingPersonality" value="motivator" style="margin-right: 10px;">
-                        <strong>💪 The Motivator</strong> - "You've got this! 🔥"
-                    </label>
-                    
-                    <label style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.3s; background: white;" onclick="selectOnboardingPersonality('realist')">
-                        <input type="radio" name="onboardingPersonality" value="realist" style="margin-right: 10px;">
-                        <strong>📊 The Realist</strong> - "Data-driven facts"
-                    </label>
-                    
-                    <label style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.3s; background: white;" onclick="selectOnboardingPersonality('savage')">
-                        <input type="radio" name="onboardingPersonality" value="savage" style="margin-right: 10px;">
-                        <strong>💀 The Savage</strong> - "Brutally honest"
-                    </label>
-                    
-                    <label style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.3s; background: white;" onclick="selectOnboardingPersonality('challenger')">
-                        <input type="radio" name="onboardingPersonality" value="challenger" style="margin-right: 10px;">
-                        <strong>🎯 The Challenger</strong> - "Prove me wrong!"
-                    </label>
-                </div>
-            </div>
-            
             <button onclick="closeOnboarding()">🔮 Start Tracking Free</button>
         </div>
     </div>
@@ -1268,24 +1239,23 @@ function sendVIPEmail(userEmail, userName) {
 
         // Onboarding
         function checkOnboarding() {
-            // Don't show onboarding if user is already logged in or in guest mode
+            const onboardingShown = localStorage.getItem('onboardingShown') === 'true';
             const isGuest = localStorage.getItem('isGuest') === 'true';
-            const hasUser = auth.currentUser !== null || isGuest;
+            const isLoggedIn = auth.currentUser !== null;
             
-            // Only show for truly new visitors (not logged in AND never seen onboarding)
-            if (!hasUser && localStorage.getItem('onboardingShown') !== 'true') {
+            // Show onboarding ONLY for new visitors (not logged in, not guest, never seen before)
+            if (!onboardingShown && !isLoggedIn && !isGuest) {
                 document.getElementById('onboarding').style.display = 'flex';
             } else {
-                // Hide onboarding for logged-in users
                 document.getElementById('onboarding').style.display = 'none';
             }
         }
 
         function closeOnboarding() {
-            // Save selected personality (default to motivator if none selected)
-            const selectedRadio = document.querySelector('input[name="onboardingPersonality"]:checked');
-            const personality = selectedRadio ? selectedRadio.value : 'motivator';
-            localStorage.setItem('notificationStyle', personality);
+            // Auto-set default notification style to Motivator (if not already set)
+            if (!localStorage.getItem('notificationStyle')) {
+                localStorage.setItem('notificationStyle', 'motivator');
+            }
             
             // Mark onboarding as shown
             localStorage.setItem('onboardingShown', 'true');
@@ -1295,16 +1265,6 @@ function sendVIPEmail(userEmail, userName) {
             setTimeout(() => {
                 checkAndShowBanner();
             }, 2000);
-        }
-        
-        function selectOnboardingPersonality(style) {
-            // Highlight selected option
-            document.querySelectorAll('label').forEach(label => {
-                label.style.borderColor = '#e0e0e0';
-                label.style.background = 'white';
-            });
-            event.currentTarget.style.borderColor = '#667eea';
-            event.currentTarget.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)';
         }
 
         function checkPremium() {
@@ -3364,13 +3324,17 @@ function convertGuestToUser() {
         // INITIALIZATION
         // ============================================
 
-        // Banner system initialization - only for logged-in users with personality set
+        // Banner system initialization - auto-set default style if missing
         window.addEventListener('load', () => {
-            // Check if user has logged in and chosen personality
-            const hasPersonality = localStorage.getItem('notificationStyle');
-            const hasOnboarded = localStorage.getItem('onboardingShown');
+            // Auto-set default notification style to Motivator if not set
+            if (!localStorage.getItem('notificationStyle')) {
+                localStorage.setItem('notificationStyle', 'motivator');
+            }
             
-            if (hasPersonality && hasOnboarded) {
+            // Check if user has onboarded
+            const hasOnboarded = localStorage.getItem('onboardingShown') === 'true';
+            
+            if (hasOnboarded) {
                 // Existing user - check and show banner after 2 seconds
                 setTimeout(() => {
                     checkAndShowBanner();
