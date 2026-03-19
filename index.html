@@ -1268,8 +1268,16 @@ function sendVIPEmail(userEmail, userName) {
 
         // Onboarding
         function checkOnboarding() {
-            if (localStorage.getItem('onboardingShown') !== 'true') {
+            // Don't show onboarding if user is already logged in or in guest mode
+            const isGuest = localStorage.getItem('isGuest') === 'true';
+            const hasUser = auth.currentUser !== null || isGuest;
+            
+            // Only show for truly new visitors (not logged in AND never seen onboarding)
+            if (!hasUser && localStorage.getItem('onboardingShown') !== 'true') {
                 document.getElementById('onboarding').style.display = 'flex';
+            } else {
+                // Hide onboarding for logged-in users
+                document.getElementById('onboarding').style.display = 'none';
             }
         }
 
@@ -2745,12 +2753,14 @@ if (user.email === 'fancytreaz@gmail.com') {
     checkPremium();
     loadApiKey();
     checkNotificationStatus();
+    
+    // Check onboarding AFTER we know auth state
+    checkOnboarding();
 });
 
 
         // Initialize on page load
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
-        checkOnboarding();
 
         // Tab navigation function
         function showTab(tabName) {
