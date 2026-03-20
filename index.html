@@ -1803,10 +1803,18 @@ function getPredictionsRemaining() {
 }
 
 function showPremium() {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelector('.tab:nth-child(4)').classList.add('active');
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    
+    // Remove active from all nav buttons
+    document.querySelectorAll('#navMenu button').forEach(btn => btn.classList.remove('active'));
+    
+    // Show premium tab
     document.getElementById('premiumTab').classList.add('active');
+    
+    // Activate premium button (3rd button: Habits, AI Coach, Premium)
+    const navButtons = document.querySelectorAll('#navMenu button');
+    if (navButtons[2]) navButtons[2].classList.add('active');
 }
 
 // Upgrade Modal Functions
