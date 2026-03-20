@@ -554,7 +554,7 @@
         }
         
         .upgrade-modal {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
             color: white !important;
             padding: 35px 30px;
             border-radius: 20px;
@@ -604,7 +604,7 @@
         }
         
         .premium-benefits {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.15) !important;
             backdrop-filter: blur(10px);
             padding: 20px;
             border-radius: 12px;
@@ -721,19 +721,19 @@
 <!-- Upgrade Modal -->
 <div id="upgradeModal" class="modal" style="display:none;" onclick="if(event.target === this) closeUpgradeModal()">
     <div class="modal-content upgrade-modal">
-        <span class="close" onclick="closeUpgradeModal()">&times;</span>
+        <span class="close" onclick="closeUpgradeModal()" style="color: white !important;">&times;</span>
         
-        <h2 style="margin: 0 0 10px 0; font-size: 28px;">🔒 <span id="lockedFeatureName">Premium Feature</span></h2>
+        <h2 style="margin: 0 0 10px 0; font-size: 28px; color: white !important;">🔒 <span id="lockedFeatureName" style="color: white !important;">Premium Feature</span></h2>
         
-        <p id="featureDescription" style="font-size: 16px; opacity: 0.9; margin-bottom: 25px;">Unlock this powerful feature with Premium!</p>
+        <p id="featureDescription" style="font-size: 16px; opacity: 0.9; margin-bottom: 25px; color: white !important;">Unlock this powerful feature with Premium!</p>
         
         <div class="premium-benefits">
-            <h3 style="margin: 0 0 15px 0; font-size: 18px;">✨ Premium Includes:</h3>
-            <ul style="list-style: none; padding: 0; text-align: left; margin: 0;">
-                <li style="padding: 8px 0; font-size: 15px;">✅ Full calendar history view</li>
-                <li style="padding: 8px 0; font-size: 15px;">✅ Advanced stats (4 metrics vs 2)</li>
-                <li style="padding: 8px 0; font-size: 15px;">✅ Export all your data</li>
-                <li style="padding: 8px 0; font-size: 15px;">✅ Unlimited habits & AI predictions</li>
+            <h3 style="margin: 0 0 15px 0; font-size: 18px; color: white !important;">✨ Premium Includes:</h3>
+            <ul style="list-style: none; padding: 0; text-align: left; margin: 0; color: white !important;">
+                <li style="padding: 8px 0; font-size: 15px; color: white !important;">✅ Full calendar history view</li>
+                <li style="padding: 8px 0; font-size: 15px; color: white !important;">✅ Advanced stats (4 metrics vs 2)</li>
+                <li style="padding: 8px 0; font-size: 15px; color: white !important;">✅ Export all your data</li>
+                <li style="padding: 8px 0; font-size: 15px; color: white !important;">✅ Unlimited habits & AI predictions</li>
             </ul>
         </div>
         
@@ -741,7 +741,7 @@
             💎 Upgrade Now - $9/month
         </button>
         
-        <a href="#" onclick="learnMorePremium(); return false;" style="display: block; margin-top: 15px; color: white; opacity: 0.8; text-decoration: none; font-size: 14px;">Learn more about Premium →</a>
+        <a href="#" onclick="learnMorePremium(); return false;" style="display: block; margin-top: 15px; color: white !important; opacity: 0.8; text-decoration: none; font-size: 14px;">Learn more about Premium →</a>
     </div>
 </div>
 
@@ -1001,13 +1001,14 @@
             <p style="font-size: 28px; font-weight: bold; color: #808080;">$9/month</p>
             <ul style="text-align:left; font-size: 14px; color: #808080;">
                 <li>✅ <strong>Unlimited habits</strong></li>
-                <li>✅ Priority AI predictions</li>
-                <li>✅ No API limits</li>
+                <li>✅ <strong>Unlimited AI predictions</strong></li>
+                <li>✅ <strong>📅 Full calendar history view</strong></li>
+                <li>✅ <strong>📊 Advanced stats (4 metrics vs 2)</strong></li>
+                <li>✅ <strong>📥 Export all your data</strong></li>
                 <li>✅ Exclusive gold theme</li>
                 <li>✅ Custom colors & themes</li>
                 <li>✅ Priority support (6 hour response)</li>
                 <li>✅ Referral rewards</li>
-                <li>✅ Unlimited AI predictions</li>
             </ul>
             <button onclick="subscribePremium()" style="width: 100%; background: #fff; color: #ff8c00; font-weight: bold; font-size: 18px; padding: 15px; margin-top: 10px;">
                 Upgrade to Premium - $9/month
@@ -1159,7 +1160,7 @@
         </details>
     </div>
 
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 8px; color: white; text-align: center;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; padding: 20px; border-radius: 8px; color: white !important; text-align: center;">
         <h3 style="color: white !important;">💎 Premium Support Benefits</h3>
         <ul style="text-align: left; display: inline-block; color: white !important;">
             <li style="color: white !important;">⚡ Priority response (within 6 hours)</li>
