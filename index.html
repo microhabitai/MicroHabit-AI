@@ -107,6 +107,24 @@
             --text: #eee;
             --nudge-bg: #00363a;
         }
+        
+        /* Keep modal light in dark mode (like habit suggestions) */
+        body.dark .upgrade-modal {
+            background: white !important;
+            color: #333 !important;
+        }
+        
+        body.dark .upgrade-modal h2,
+        body.dark .upgrade-modal h3,
+        body.dark .upgrade-modal .close {
+            color: #667eea !important;
+        }
+        
+        body.dark .upgrade-modal p,
+        body.dark .upgrade-modal li,
+        body.dark .upgrade-modal a {
+            color: #666 !important;
+        }
         body.premium {
             --primary: #ffd700; /* Gold */
         }
@@ -554,8 +572,8 @@
         }
         
         .upgrade-modal {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-            color: white !important;
+            background: white !important;
+            color: #333 !important;
             padding: 35px 30px;
             border-radius: 20px;
             max-width: 500px;
@@ -564,16 +582,22 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             position: relative;
             animation: modalSlideIn 0.3s ease-out;
+            border: 3px solid #667eea;
         }
         
-        /* Force all modal text to be white */
+        /* Dark text for visibility in both modes */
         .upgrade-modal h2,
         .upgrade-modal h3,
         .upgrade-modal p,
         .upgrade-modal ul,
         .upgrade-modal li,
         .upgrade-modal a {
-            color: white !important;
+            color: #666 !important;
+        }
+        
+        .upgrade-modal h2,
+        .upgrade-modal h3 {
+            color: #667eea !important;
         }
         
         @keyframes modalSlideIn {
@@ -593,7 +617,7 @@
             right: 20px;
             font-size: 28px;
             font-weight: bold;
-            color: white !important;
+            color: #333 !important;
             cursor: pointer;
             opacity: 0.7;
             transition: opacity 0.2s;
@@ -604,18 +628,22 @@
         }
         
         .premium-benefits {
-            background: rgba(255, 255, 255, 0.15) !important;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important;
             backdrop-filter: blur(10px);
             padding: 20px;
             border-radius: 12px;
             margin: 20px 0;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid #667eea !important;
         }
         
         .premium-benefits h3,
         .premium-benefits ul,
         .premium-benefits li {
-            color: white !important;
+            color: #666 !important;
+        }
+        
+        .premium-benefits h3 {
+            color: #667eea !important;
         }
         
         .upgrade-btn {
@@ -720,20 +748,20 @@
 
 <!-- Upgrade Modal -->
 <div id="upgradeModal" class="modal" style="display:none;" onclick="if(event.target === this) closeUpgradeModal()">
-    <div class="modal-content upgrade-modal">
-        <span class="close" onclick="closeUpgradeModal()" style="color: white !important;">&times;</span>
+    <div class="modal-content upgrade-modal" style="background: white !important; color: #333 !important;">
+        <span class="close" onclick="closeUpgradeModal()" style="color: #333 !important;">&times;</span>
         
-        <h2 style="margin: 0 0 10px 0; font-size: 28px; color: white !important;">🔒 <span id="lockedFeatureName" style="color: white !important;">Premium Feature</span></h2>
+        <h2 style="margin: 0 0 10px 0; font-size: 28px; color: #667eea !important;">🔒 <span id="lockedFeatureName" style="color: #667eea !important;">Premium Feature</span></h2>
         
-        <p id="featureDescription" style="font-size: 16px; opacity: 0.9; margin-bottom: 25px; color: white !important;">Unlock this powerful feature with Premium!</p>
+        <p id="featureDescription" style="font-size: 16px; margin-bottom: 25px; color: #666 !important;">Unlock this powerful feature with Premium!</p>
         
-        <div class="premium-benefits">
-            <h3 style="margin: 0 0 15px 0; font-size: 18px; color: white !important;">✨ Premium Includes:</h3>
-            <ul style="list-style: none; padding: 0; text-align: left; margin: 0; color: white !important;">
-                <li style="padding: 8px 0; font-size: 15px; color: white !important;">✅ Full calendar history view</li>
-                <li style="padding: 8px 0; font-size: 15px; color: white !important;">✅ Advanced stats (4 metrics vs 2)</li>
-                <li style="padding: 8px 0; font-size: 15px; color: white !important;">✅ Export all your data</li>
-                <li style="padding: 8px 0; font-size: 15px; color: white !important;">✅ Unlimited habits & AI predictions</li>
+        <div class="premium-benefits" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important; border: 2px solid #667eea !important; padding: 20px; border-radius: 12px; margin: 20px 0;">
+            <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #667eea !important;">✨ Premium Includes:</h3>
+            <ul style="list-style: none; padding: 0; text-align: left; margin: 0; color: #666 !important;">
+                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Full calendar history view</li>
+                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Advanced stats (4 metrics vs 2)</li>
+                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Export all your data</li>
+                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Unlimited habits & AI predictions</li>
             </ul>
         </div>
         
@@ -741,7 +769,7 @@
             💎 Upgrade Now - $9/month
         </button>
         
-        <a href="#" onclick="learnMorePremium(); return false;" style="display: block; margin-top: 15px; color: white !important; opacity: 0.8; text-decoration: none; font-size: 14px;">Learn more about Premium →</a>
+        <a href="#" onclick="learnMorePremium(); return false;" style="display: block; margin-top: 15px; color: #667eea !important; text-decoration: none; font-size: 14px;">Learn more about Premium →</a>
     </div>
 </div>
 
@@ -1160,16 +1188,16 @@
         </details>
     </div>
 
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; padding: 20px; border-radius: 8px; color: white !important; text-align: center;">
-        <h3 style="color: white !important;">💎 Premium Support Benefits</h3>
-        <ul style="text-align: left; display: inline-block; color: white !important;">
-            <li style="color: white !important;">⚡ Priority response (within 6 hours)</li>
-            <li style="color: white !important;">📞 Phone support available</li>
-            <li style="color: white !important;">🎯 Dedicated support agent</li>
-            <li style="color: white !important;">🚀 Early access to new features</li>
-            <li style="color: white !important;">💬 24/7 live chat access</li>
+    <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important; padding: 20px; border-radius: 8px; border: 2px solid #667eea; text-align: center;">
+        <h3 style="color: #667eea !important; margin: 0 0 15px 0;">💎 Premium Support Benefits</h3>
+        <ul style="text-align: left; display: inline-block; color: #666 !important; list-style: none; padding: 0;">
+            <li style="color: #666 !important; padding: 5px 0;">⚡ Priority response (within 6 hours)</li>
+            <li style="color: #666 !important; padding: 5px 0;">📞 Phone support available</li>
+            <li style="color: #666 !important; padding: 5px 0;">🎯 Dedicated support agent</li>
+            <li style="color: #666 !important; padding: 5px 0;">🚀 Early access to new features</li>
+            <li style="color: #666 !important; padding: 5px 0;">💬 24/7 live chat access</li>
         </ul>
-        <button onclick="showTab('premium')" style="background: white; color: #764ba2; width: 100%; padding: 15px; font-size: 16px; margin-top: 10px;">
+        <button onclick="showTab('premium')" style="background: #667eea; color: white; width: 100%; padding: 15px; font-size: 16px; margin-top: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
             Upgrade to Premium
         </button>
     </div>
