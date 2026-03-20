@@ -114,6 +114,27 @@
         h1 { text-align: center; color: var(--primary); }
         input[type="text"], input[type="password"], input[type="number"], select, input[type="file"] { width: 70%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; }
         button { padding: 10px 15px; font-size: 16px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; margin: 5px 0; }
+        .suggestion-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-weight: 500;
+        }
+        .suggestion-btn:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+        .suggestion-btn:active {
+            transform: translateY(0);
+        }
         ul { list-style: none; padding: 0; }
         li { background: var(--card); margin: 10px 0; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .habit-header { display: flex; align-items: center; }
@@ -137,6 +158,10 @@
         @keyframes streak-celebration {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2) rotate(5deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
         }
         .celebrating { animation: streak-celebration 0.5s ease-in-out 3; }
         .progress-container { margin: 10px 0; }
@@ -641,6 +666,27 @@
         <input type="number" id="goalInput" min="1" max="7" placeholder="Goal: days/week (1-7, default 7)">
         <button onclick="addHabit()">Add Habit</button>
     </div>
+    
+    <!-- Habit Suggestions Section -->
+    <div id="habitSuggestions" style="margin: 20px 0; padding: 15px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-radius: 12px; border: 2px dashed #667eea;">
+        <h3 style="margin: 0 0 15px 0; font-size: 16px; color: #667eea; text-align: center;">💡 Popular Habit Ideas</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+            <button onclick="useSuggestion('💧', 'Drink water', 7)" class="suggestion-btn">💧 Drink water</button>
+            <button onclick="useSuggestion('📚', 'Read 10 pages', 7)" class="suggestion-btn">📚 Read 10 pages</button>
+            <button onclick="useSuggestion('🏃', 'Exercise 20 min', 5)" class="suggestion-btn">🏃 Exercise 20 min</button>
+            <button onclick="useSuggestion('🧘', 'Meditate 5 min', 7)" class="suggestion-btn">🧘 Meditate 5 min</button>
+            <button onclick="useSuggestion('😴', 'Sleep by 11 PM', 7)" class="suggestion-btn">😴 Sleep by 11 PM</button>
+            <button onclick="useSuggestion('🎨', 'Creative work', 5)" class="suggestion-btn">🎨 Creative work</button>
+            <button onclick="useSuggestion('💪', 'Gym workout', 5)" class="suggestion-btn">💪 Gym workout</button>
+            <button onclick="useSuggestion('🍎', 'Eat healthy', 7)" class="suggestion-btn">🍎 Eat healthy</button>
+            <button onclick="useSuggestion('📱', 'No phone 1 hr', 7)" class="suggestion-btn">📱 No phone 1 hr</button>
+            <button onclick="useSuggestion('✍️', 'Journal entry', 7)" class="suggestion-btn">✍️ Journal entry</button>
+            <button onclick="useSuggestion('🌅', 'Wake up early', 7)" class="suggestion-btn">🌅 Wake up early</button>
+            <button onclick="useSuggestion('🧠', 'Learn something', 7)" class="suggestion-btn">🧠 Learn something</button>
+        </div>
+        <p style="text-align: center; font-size: 12px; color: #666; margin: 10px 0 0 0;">Click any suggestion to auto-fill, then click "Add Habit" 👆</p>
+    </div>
+    
     <div id="renewalSection" style="display: none; background: linear-gradient(135deg, #ff6b6b, #ff8c00); padding: 20px; border-radius: 12px; margin: 20px 0; text-align: center; color: white;">
     <h3 style="margin-top: 0;">⏰ Subscription Expired</h3>
     <p>Your subscription has ended. Renew now to continue enjoying premium features!</p>
@@ -2016,6 +2062,14 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
         function renderHabits() {
             const list = document.getElementById('habitsList');
             list.innerHTML = '';
+            
+            // Show/hide habit suggestions based on habit count
+            const suggestionsSection = document.getElementById('habitSuggestions');
+            if (suggestionsSection) {
+                // Show suggestions if user has 0-2 habits, hide if 3+
+                suggestionsSection.style.display = habits.length < 3 ? 'block' : 'none';
+            }
+            
             const today = getToday();
             if (habits.length === 0) {
                 list.innerHTML = '<li style="text-align:center; color:#999;">No habits yet—add one above!</li>';
@@ -2094,6 +2148,22 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
             populateHabitSelect();
         }
 
+        // Use a suggested habit
+        function useSuggestion(emoji, habitName, goal) {
+            document.getElementById('emojiInput').value = emoji;
+            document.getElementById('newHabit').value = habitName;
+            document.getElementById('goalInput').value = goal;
+            
+            // Scroll to the add habit button and highlight it
+            const addButton = document.querySelector('button[onclick="addHabit()"]');
+            addButton.style.animation = 'pulse 0.5s ease-in-out 2';
+            addButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Focus on the habit name input so user can edit if needed
+            document.getElementById('newHabit').focus();
+            document.getElementById('newHabit').select();
+        }
+        
         function addHabit() {
          // Check if guest and limit to 3 habits
     const isGuest = localStorage.getItem('isGuest') === 'true';
