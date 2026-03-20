@@ -726,16 +726,23 @@
             <div class="stat-value" id="bestStreakStats">No streaks yet</div>
         </div>
         
-        <div class="stat-card">
+        <div class="stat-card premium-stat" id="weekStatCard" style="display:none;">
             <div class="stat-icon">📈</div>
             <div class="stat-label">This Week</div>
             <div class="stat-value" id="weekStats">0/0 (0%)</div>
         </div>
         
-        <div class="stat-card">
+        <div class="stat-card premium-stat" id="consistentStatCard" style="display:none;">
             <div class="stat-icon">💪</div>
             <div class="stat-label">Most Consistent</div>
             <div class="stat-value" id="consistentStats">Add habits!</div>
+        </div>
+        
+        <!-- Upgrade Prompt for Free Users -->
+        <div class="stat-card stat-upgrade" id="statsUpgradePrompt" style="display:none; background: rgba(255, 215, 0, 0.2); border: 2px solid rgba(255, 215, 0, 0.5); cursor: pointer;" onclick="showPremium()">
+            <div class="stat-icon">✨</div>
+            <div class="stat-label">Unlock More</div>
+            <div class="stat-value" style="font-size: 12px; line-height: 1.3;">Premium:<br>+2 Stats</div>
         </div>
     </div>
     
@@ -775,7 +782,7 @@
 </div>
     <ul id="habitsList"></ul>
     
-    <button onclick="toggleCalendar()" style="width:100%; margin-top:20px; padding:15px; font-size:18px; background:#333;">📅 View Calendar History</button>
+    <button id="calendarButton" onclick="toggleCalendar()" style="width:100%; margin-top:20px; padding:15px; font-size:18px; background:#333;">📅 View Calendar History</button>
     
     <div id="calendarSection" style="display:none; margin-top:20px;">
         <h2>Habit History Calendar</h2>
@@ -1405,6 +1412,16 @@ function sendVIPEmail(userEmail, userName) {
                 document.body.classList.remove('premium');
                 document.body.classList.remove('vip');
                 premiumStatus.innerHTML = '<small>Free mode: Limited to 3 habits – Upgrade for unlimited!</small>';
+            }
+            
+            // Update calendar button text based on tier
+            const calBtn = document.getElementById('calendarButton');
+            if (calBtn) {
+                if (isPremium || isVIP) {
+                    calBtn.innerHTML = '📅 View Calendar History';
+                } else {
+                    calBtn.innerHTML = '📅 Calendar History 🔒 <span style="color:gold;">(Premium)</span>';
+                }
             }
         }
 
@@ -2142,11 +2159,26 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
         function updateQuickStats() {
             const today = getToday();
             
+            // Show/hide stats based on tier
+            if (!isPremium && !isVIP) {
+                // FREE: Only 2 stats + upgrade prompt
+                document.getElementById('weekStatCard').style.display = 'none';
+                document.getElementById('consistentStatCard').style.display = 'none';
+                document.getElementById('statsUpgradePrompt').style.display = 'block';
+            } else {
+                // PREMIUM/VIP: All 4 stats
+                document.getElementById('weekStatCard').style.display = 'block';
+                document.getElementById('consistentStatCard').style.display = 'block';
+                document.getElementById('statsUpgradePrompt').style.display = 'none';
+            }
+            
             if (habits.length === 0) {
                 document.getElementById('todayStats').textContent = '0/0 (0%)';
                 document.getElementById('bestStreakStats').textContent = 'Add habits!';
-                document.getElementById('weekStats').textContent = '0/0 (0%)';
-                document.getElementById('consistentStats').textContent = 'Add habits!';
+                if (isPremium || isVIP) {
+                    document.getElementById('weekStats').textContent = '0/0 (0%)';
+                    document.getElementById('consistentStats').textContent = 'Add habits!';
+                }
                 return;
             }
             
@@ -2497,6 +2529,13 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
  }
 
         function toggleCalendar() {
+            // Premium Feature Check
+            if (!isPremium && !isVIP) {
+                alert('📅 Calendar History is a Premium feature!\n\n✨ Upgrade to Premium for:\n• Full calendar history view\n• Advanced stats\n• Unlimited habits & AI predictions\n\nTap the Premium button to upgrade!');
+                showPremium();
+                return;
+            }
+            
             const calSection = document.getElementById('calendarSection');
             calSection.style.display = calSection.style.display === 'none' ? 'block' : 'none';
             if (calSection.style.display === 'block') renderCalendar();
@@ -2579,6 +2618,13 @@ function nextMonth() {
 }
 
         function exportData() {
+            // Premium Feature Check
+            if (!isPremium && !isVIP) {
+                alert('📥 Export Data is a Premium feature!\n\n✨ Upgrade to Premium for:\n• Export your data (JSON/CSV)\n• Full backup & restore\n• Data portability\n\nTap the Premium button to upgrade!');
+                showPremium();
+                return;
+            }
+            
             const dataStr = JSON.stringify(habits, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
