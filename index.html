@@ -670,6 +670,17 @@
         .upgrade-btn:active {
             transform: translateY(0);
         }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -857,6 +868,19 @@
     <div style="text-align:center; margin-bottom:20px;">
     <span id="userEmail"></span>
     <button onclick="logout()" style="background:#666;">Logout</button>
+  </div>
+  
+  <!-- Guest Conversion Status Banner (shows time remaining for guest users) -->
+  <div id="guestStatusBanner" style="display: none; background: linear-gradient(135deg, #FF9933, #FF6B6B); color: white; padding: 12px 20px; margin: 0 0 20px 0; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">
+      ⏰ <span id="guestTimeRemaining">Guest Mode</span>
+    </div>
+    <div style="font-size: 12px; opacity: 0.95;" id="guestStatusMessage">
+      Sign up free to keep your habits forever!
+    </div>
+    <button onclick="convertGuestToUser()" style="background: white; color: #FF6B6B; border: none; padding: 8px 16px; border-radius: 5px; margin-top: 8px; font-weight: bold; cursor: pointer; font-size: 13px;">
+      💾 Save My Data - Sign Up Free
+    </button>
   </div>
 
   <!-- Navigation Menu -->
@@ -2516,6 +2540,11 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
             
             // Update stats dashboard
             updateQuickStats();
+            
+            // Update guest status if in guest mode
+            if (localStorage.getItem('isGuest') === 'true') {
+                trackGuestUsage();
+            }
         }
 
         // Use a suggested habit
@@ -3428,7 +3457,18 @@ function startGuestMode() {
     loadGuestHabits();
     renderHabits();
     applyTheme();
-    console.log('✅ Guest mode started');
+    
+    // Show persistent guest status banner
+    trackGuestUsage();
+    
+    // Update guest status every minute
+    setInterval(() => {
+        if (localStorage.getItem('isGuest') === 'true') {
+            trackGuestUsage();
+        }
+    }, 60000); // Check every 60 seconds
+    
+    console.log('✅ Guest mode started with conversion tracking');
 }
 
 // Load guest habits from localStorage
@@ -3467,57 +3507,143 @@ function updateGuestHabits() {
 
 // Track guest usage and show conversion prompts
 function trackGuestUsage() {
+    const isGuest = localStorage.getItem('isGuest') === 'true';
+    if (!isGuest) return;
+    
     const guestStartTime = parseInt(localStorage.getItem('guestStartTime') || Date.now());
     const now = Date.now();
     const hoursUsed = (now - guestStartTime) / (1000 * 60 * 60);
+    const daysUsed = hoursUsed / 24;
+    
+    // Guest data expires after 5 days (120 hours)
+    const EXPIRY_HOURS = 120;
+    const hoursRemaining = EXPIRY_HOURS - hoursUsed;
+    const daysRemaining = Math.ceil(hoursRemaining / 24);
+    
+    // Update persistent guest status banner
+    updateGuestStatusBanner(hoursRemaining, daysRemaining);
     
     const totalCheckins = habits.reduce((total, habit) => {
-        return total + (habit.checkIns ? habit.checkIns.length : 0);
+        return total + (habit.dates ? habit.dates.length : 0);
     }, 0);
     
-    // Show prompts based on usage
+    // Progressive conversion triggers
+    
+    // Trigger 1: After 3 habits created (immediate value demonstration)
+    if (habits.length === 3 && !localStorage.getItem('promptShownMaxHabits')) {
+        showConversionPrompt('🎉 You created 3 habits! Sign up FREE for unlimited habits and never lose your progress.');
+        localStorage.setItem('promptShownMaxHabits', 'true');
+    }
+    
+    // Trigger 2: After 5 check-ins (engagement signal)
     if (totalCheckins >= 5 && !localStorage.getItem('promptShown5Checkins')) {
-        showConversionPrompt('🔥 You have 5 check-ins! Sign up to save your progress forever.');
+        showConversionPrompt('🔥 Wow! 5 check-ins already! Sign up FREE to save your progress forever.');
         localStorage.setItem('promptShown5Checkins', 'true');
     }
     
-    if (hoursUsed >= 24 && !localStorage.getItem('promptShown24Hours')) {
-        showConversionPrompt('⏰ You have been using MicroHabit AI for a day! Sign up to keep your data.');
+    // Trigger 3: After 24 hours (day 1 completion)
+    if (hoursUsed >= 24 && hoursUsed < 48 && !localStorage.getItem('promptShown24Hours')) {
+        showConversionPrompt('⚡ You\'ve been tracking for a day! Sign up FREE to keep your data (takes 30 seconds).');
         localStorage.setItem('promptShown24Hours', 'true');
     }
     
-    if (habits.length === 3 && !localStorage.getItem('promptShownMaxHabits')) {
-        showConversionPrompt('🚀 You have hit the 3-habit limit! Sign up for unlimited habits.');
-        localStorage.setItem('promptShownMaxHabits', 'true');
+    // Trigger 4: After 48 hours (create urgency)
+    if (hoursUsed >= 48 && hoursUsed < 72 && !localStorage.getItem('promptShown48Hours')) {
+        showConversionPrompt(`⚠️ You've been using guest mode for ${Math.floor(daysUsed)} days! Sign up FREE to keep your ${habits.length} habits forever.`);
+        localStorage.setItem('promptShown48Hours', 'true');
+    }
+    
+    // Trigger 5: After 72 hours (final warning)
+    if (hoursUsed >= 72 && hoursUsed < 96 && !localStorage.getItem('promptShown72Hours')) {
+        showConversionPrompt(`🚨 URGENT: Only ${daysRemaining} days left! Your data expires soon. Sign up FREE NOW to save your progress!`);
+        localStorage.setItem('promptShown72Hours', 'true');
+    }
+    
+    // Trigger 6: Data expiry imminent (last 24 hours)
+    if (hoursRemaining <= 24 && hoursRemaining > 0 && !localStorage.getItem('promptShownFinalWarning')) {
+        showConversionPrompt(`❌ FINAL WARNING: Your data expires in ${Math.ceil(hoursRemaining)} hours! Sign up NOW or lose everything!`);
+        localStorage.setItem('promptShownFinalWarning', 'true');
+    }
+    
+    // Trigger 7: Data expired - offer to restore if they sign up
+    if (hoursRemaining <= 0 && !localStorage.getItem('guestDataExpired')) {
+        localStorage.setItem('guestDataExpired', 'true');
+        alert('⏰ Your guest session has expired.\n\nYour habits are still here! Sign up FREE right now to restore them.');
+        convertGuestToUser();
+    }
+}
+
+// Update the persistent guest status banner
+function updateGuestStatusBanner(hoursRemaining, daysRemaining) {
+    const banner = document.getElementById('guestStatusBanner');
+    const timeDisplay = document.getElementById('guestTimeRemaining');
+    const messageDisplay = document.getElementById('guestStatusMessage');
+    
+    if (!banner) return;
+    
+    banner.style.display = 'block';
+    
+    if (hoursRemaining <= 0) {
+        timeDisplay.textContent = 'Session Expired!';
+        messageDisplay.textContent = 'Sign up now to restore your habits!';
+        banner.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+    } else if (hoursRemaining <= 24) {
+        const hours = Math.ceil(hoursRemaining);
+        timeDisplay.textContent = `⚠️ ${hours} hour${hours !== 1 ? 's' : ''} until data expires!`;
+        messageDisplay.textContent = `URGENT: Sign up now or lose ${habits.length} habit${habits.length !== 1 ? 's' : ''}!`;
+        banner.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
+    } else if (daysRemaining <= 2) {
+        timeDisplay.textContent = `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} remaining in guest mode`;
+        messageDisplay.textContent = 'Your data will be deleted soon. Sign up to keep it!';
+        banner.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+    } else {
+        timeDisplay.textContent = `${daysRemaining} days remaining in guest mode`;
+        messageDisplay.textContent = 'Sign up free to keep your habits forever!';
+        banner.style.background = 'linear-gradient(135deg, #FF9933, #FF6B6B)';
     }
 }
 
 // Show conversion prompt
-function showConversionPrompt(message) {
+function showConversionPrompt(message, urgency = 'normal') {
+    // Determine colors based on urgency
+    let bgGradient, buttonColor;
+    if (urgency === 'critical' || message.includes('URGENT') || message.includes('FINAL') || message.includes('expires')) {
+        bgGradient = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
+        buttonColor = '#dc2626';
+    } else if (urgency === 'high' || message.includes('⚠️')) {
+        bgGradient = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+        buttonColor = '#f59e0b';
+    } else {
+        bgGradient = 'linear-gradient(135deg, #FF9933 0%, #FF6B6B 100%)';
+        buttonColor = '#FF6B6B';
+    }
+    
     const promptHTML = `
         <div id="guestPrompt" style="
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, #FF9933 0%, #FF6B6B 100%);
+            background: ${bgGradient};
             color: white;
             padding: 15px;
             text-align: center;
             z-index: 9999;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            animation: slideDown 0.3s ease-out;
         ">
             <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 15px;">${message}</p>
             <button onclick="convertGuestToUser()" style="
                 background: white;
-                color: #FF6B6B;
+                color: ${buttonColor};
                 border: none;
                 padding: 10px 20px;
                 border-radius: 5px;
                 font-weight: bold;
                 cursor: pointer;
                 margin-right: 10px;
-            ">Sign Up Now</button>
+                font-size: 14px;
+            ">💾 Sign Up FREE (30 sec)</button>
             <button onclick="closeGuestPrompt()" style="
                 background: transparent;
                 color: white;
@@ -3525,12 +3651,19 @@ function showConversionPrompt(message) {
                 padding: 10px 20px;
                 border-radius: 5px;
                 cursor: pointer;
+                font-size: 14px;
             ">Maybe Later</button>
         </div>
     `;
     
     if (!document.getElementById('guestPrompt')) {
         document.body.insertAdjacentHTML('afterbegin', promptHTML);
+        
+        // Auto-close after 15 seconds for normal urgency, 30 for critical
+        const autoCloseTime = urgency === 'critical' ? 30000 : 15000;
+        setTimeout(() => {
+            closeGuestPrompt();
+        }, autoCloseTime);
     }
 }
 
