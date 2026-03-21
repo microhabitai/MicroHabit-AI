@@ -4091,7 +4091,12 @@ if (!navigator.onLine) {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         debugLog('📡 Attempting to register Service Worker...');
-        navigator.serviceWorker.register('/service-worker.js')
+        // Use relative path that works with GitHub Pages repo name
+        const swPath = window.location.pathname.includes('MicroHabit-AI') 
+            ? '/MicroHabit-AI/service-worker.js' 
+            : '/service-worker.js';
+        
+        navigator.serviceWorker.register(swPath)
             .then(registration => {
                 console.log('✅ Service Worker registered successfully:', registration.scope);
                 debugLog('✅ Service Worker registered successfully!');
@@ -4101,6 +4106,7 @@ if ('serviceWorker' in navigator) {
                 console.error('❌ Service Worker registration failed:', error);
                 debugLog(`❌ Service Worker registration FAILED`);
                 debugLog(`   Error: ${error.message}`);
+                debugLog(`   Tried path: ${swPath}`);
                 debugLog(`   Make sure service-worker.js is in root directory!`);
             });
     });
@@ -4570,21 +4576,5 @@ function initializeReminders() {
 window.addEventListener('load', initializeReminders);
 
     </script>
-    <script>
-    // Register Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('✅ Service Worker registered successfully!', registration);
-      })
-      .catch(error => {
-        console.error('❌ Service Worker registration failed:', error);
-      });
-  });
-} else {
-  console.log('⚠️ Service Workers not supported in this browser');
-}
-</script>
 </body>
 </html>
