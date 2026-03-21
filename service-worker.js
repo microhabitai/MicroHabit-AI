@@ -1,7 +1,7 @@
 // MicroHabit AI Service Worker
 // Handles: Background notifications, offline caching, PWA functionality
 
-const CACHE_NAME = 'microhabit-v1';
+const CACHE_NAME = 'microhabit-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -14,7 +14,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('📦 Caching app shell');
+        console.log('📦 Caching app shell and assets');
         return cache.addAll(urlsToCache);
       })
       .catch(err => {
@@ -24,7 +24,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Activate Service Worker
+// Activate Service Worker and clean old caches
 self.addEventListener('activate', event => {
   console.log('✅ Service Worker activated');
   event.waitUntil(
@@ -42,17 +42,39 @@ self.addEventListener('activate', event => {
   return self.clients.claim();
 });
 
-// Fetch - Serve from cache when offline
+// Fetch - Network first, then cache, then offline fallback
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
+        // Clone the response
+        const responseClone = response.clone();
+        
+        // Cache the new response for offline use
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseClone);
+        });
+        
+        return response;
       })
       .catch(() => {
-        // If both cache and network fail, show offline page
-        console.log('⚠️ Offline - serving from cache failed');
+        // Network failed, try cache
+        return caches.match(event.request)
+          .then(cachedResponse => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            
+            // If external resource (like SaaShub badge), return empty response
+            if (event.request.url.includes('saashub') || 
+                event.request.url.includes('badge') ||
+                event.request.url.includes('external')) {
+              return new Response('', { status: 200 });
+            }
+            
+            // For other requests, return offline page or empty
+            return new Response('Offline', { status: 503 });
+          });
       })
   );
 });
@@ -80,16 +102,13 @@ self.addEventListener('notificationclick', event => {
   );
 });
 
-// Listen for messages from main app (for scheduling notifications)
+// Listen for messages from main app
 self.addEventListener('message', event => {
   console.log('📨 Service Worker received message:', event.data);
   
   if (event.data.type === 'SCHEDULE_NOTIFICATION') {
     const { habitName, time, habitId } = event.data;
     console.log(`⏰ Scheduling notification for "${habitName}" at ${time}`);
-    
-    // In a real implementation, you'd use Background Sync API or Push API
-    // For now, we'll handle this from the main thread with setInterval
     event.ports[0].postMessage({ success: true });
   }
 });
