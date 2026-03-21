@@ -4090,14 +4090,22 @@ if (!navigator.onLine) {
 // Register Service Worker for background notifications and PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
+        debugLog('📡 Attempting to register Service Worker...');
         navigator.serviceWorker.register('/service-worker.js')
             .then(registration => {
                 console.log('✅ Service Worker registered successfully:', registration.scope);
+                debugLog('✅ Service Worker registered successfully!');
+                debugLog(`   Scope: ${registration.scope}`);
             })
             .catch(error => {
                 console.error('❌ Service Worker registration failed:', error);
+                debugLog(`❌ Service Worker registration FAILED`);
+                debugLog(`   Error: ${error.message}`);
+                debugLog(`   Make sure service-worker.js is in root directory!`);
             });
     });
+} else {
+    debugLog('❌ Service Worker NOT supported in this browser');
 }
 
 // Request notification permission
@@ -4225,7 +4233,38 @@ async function showHabitNotification(habitIndex) {
     debugLog(`🔔 SHOWING notification for "${habit.name}"`);
     
     try {
-        // Create notification
+        // Check if we have a service worker registration (PWA mode)
+        if ('serviceWorker' in navigator) {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                
+                // Use Service Worker notification (for PWA)
+                debugLog(`   Using Service Worker notification API`);
+                await registration.showNotification('🔔 MicroHabit Reminder', {
+                    body: `Time to complete: ${habit.emoji} ${habit.name}`,
+                    icon: '/logo.png',
+                    badge: '/logo.png',
+                    tag: `habit-${habitIndex}`,
+                    requireInteraction: false,
+                    silent: false,
+                    data: {
+                        habitIndex: habitIndex,
+                        url: window.location.origin
+                    }
+                });
+                
+                console.log(`✅ Notification shown via Service Worker for "${habit.name}"`);
+                debugLog(`✅ Notification displayed via Service Worker!`);
+                return;
+            } catch (swError) {
+                console.log('⚠️ Service Worker notification failed, trying fallback:', swError.message);
+                debugLog(`⚠️ SW notification failed: ${swError.message}`);
+                debugLog(`   Trying fallback method...`);
+            }
+        }
+        
+        // Fallback to regular notification (for browsers without SW)
+        debugLog(`   Using direct Notification constructor`);
         const notification = new Notification(`🔔 MicroHabit Reminder`, {
             body: `Time to complete: ${habit.emoji} ${habit.name}`,
             icon: '/logo.png',
@@ -4238,15 +4277,16 @@ async function showHabitNotification(habitIndex) {
         notification.onclick = () => {
             window.focus();
             notification.close();
-            // Navigate to habits tab
             showTab('habits');
         };
         
-        console.log(`✅ Notification shown for "${habit.name}"`);
-        debugLog(`✅ Notification displayed successfully!`);
+        console.log(`✅ Notification shown via constructor for "${habit.name}"`);
+        debugLog(`✅ Notification displayed via constructor!`);
     } catch (error) {
         console.error('❌ Notification error:', error);
         debugLog(`❌ Notification ERROR: ${error.message}`);
+        debugLog(`   Error name: ${error.name}`);
+        debugLog(`   This might be a PWA/browser restriction`);
     }
 }
 
@@ -4297,9 +4337,24 @@ function refreshDebugInfo() {
         navigator.serviceWorker.getRegistration().then(registration => {
             if (registration) {
                 debugLog('✅ Service Worker: REGISTERED');
+                debugLog(`   State: ${registration.active ? registration.active.state : 'installing'}`);
             } else {
                 debugLog('❌ Service Worker: NOT REGISTERED');
+                debugLog('   File might be missing or in wrong location');
+                debugLog('   Expected: /service-worker.js in root directory');
+                // Try to register it now
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => {
+                        debugLog('   ✅ Just registered successfully!');
+                        debugLog('   Refresh this page to use it');
+                    })
+                    .catch(err => {
+                        debugLog(`   ❌ Registration failed: ${err.message}`);
+                        debugLog('   Check if service-worker.js file exists');
+                    });
             }
+        }).catch(err => {
+            debugLog(`❌ Service Worker error: ${err.message}`);
         });
     } else {
         debugLog('❌ Service Worker: NOT SUPPORTED');
