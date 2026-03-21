@@ -1292,6 +1292,16 @@
             💡 Tip: If you don't see a notification, check your browser's notification permissions in the address bar.
         </p>
     </div>
+    
+    <div id="debugSection" style="margin-top: 30px; background: var(--card); padding: 15px; border-radius: 10px; border: 2px solid #667eea;">
+        <h3>🔍 Reminder Debug Info</h3>
+        <div id="debugOutput" style="font-family: monospace; font-size: 12px; background: #000; color: #0f0; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+            <div>Waiting for debug info...</div>
+        </div>
+        <button onclick="refreshDebugInfo()" style="background: #667eea; color: white; width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; cursor: pointer;">
+            🔄 Refresh Debug Info
+        </button>
+    </div>
   </div>
 
   <!-- Data Tab -->
@@ -4149,6 +4159,7 @@ function scheduleHabitNotification(habitIndex, time) {
     const habit = habits[habitIndex];
     if (!habit) {
         console.error(`❌ Habit ${habitIndex} not found!`);
+        debugLog(`❌ ERROR: Habit ${habitIndex} not found!`);
         return;
     }
     
@@ -4170,6 +4181,7 @@ function scheduleHabitNotification(habitIndex, time) {
     // Store the timeout ID so we can cancel it later
     const timeoutId = setTimeout(() => {
         console.log(`⏰ Time to show notification for "${habit.name}"!`);
+        debugLog(`⏰ SHOWING notification for "${habit.name}"!`);
         showHabitNotification(habitIndex);
         // Reschedule for next day
         scheduleHabitNotification(habitIndex, time);
@@ -4187,6 +4199,9 @@ function scheduleHabitNotification(habitIndex, time) {
     
     console.log(`⏰ Scheduled notification for "${habit.name}" at ${time}`);
     console.log(`   Next notification in: ${hoursUntil}h ${minsRemaining}m`);
+    
+    debugLog(`⏰ SCHEDULED: "${habit.name}" at ${time}`);
+    debugLog(`   Next in: ${hoursUntil}h ${minsRemaining}m`);
 }
 
 // Show notification for a habit
@@ -4194,35 +4209,45 @@ async function showHabitNotification(habitIndex) {
     const habit = habits[habitIndex];
     if (!habit || !habit.reminder) {
         console.error(`❌ Cannot show notification - habit ${habitIndex} not found or no reminder set`);
+        debugLog(`❌ Cannot show notification - habit ${habitIndex} invalid`);
         return;
     }
     
     // Check if permission granted
     if (Notification.permission !== 'granted') {
         console.log('❌ Cannot show notification - permission not granted');
+        debugLog('❌ Permission NOT granted - cannot show notification');
+        debugLog('   Go to browser settings to allow notifications');
         return;
     }
     
     console.log(`🔔 Showing notification for "${habit.name}"`);
+    debugLog(`🔔 SHOWING notification for "${habit.name}"`);
     
-    // Create notification
-    const notification = new Notification(`🔔 MicroHabit Reminder`, {
-        body: `Time to complete: ${habit.emoji} ${habit.name}`,
-        icon: '/logo.png',
-        badge: '/logo.png',
-        tag: `habit-${habitIndex}`,
-        requireInteraction: false,
-        silent: false
-    });
-    
-    notification.onclick = () => {
-        window.focus();
-        notification.close();
-        // Navigate to habits tab
-        showTab('habits');
-    };
-    
-    console.log(`✅ Notification shown for "${habit.name}"`);
+    try {
+        // Create notification
+        const notification = new Notification(`🔔 MicroHabit Reminder`, {
+            body: `Time to complete: ${habit.emoji} ${habit.name}`,
+            icon: '/logo.png',
+            badge: '/logo.png',
+            tag: `habit-${habitIndex}`,
+            requireInteraction: false,
+            silent: false
+        });
+        
+        notification.onclick = () => {
+            window.focus();
+            notification.close();
+            // Navigate to habits tab
+            showTab('habits');
+        };
+        
+        console.log(`✅ Notification shown for "${habit.name}"`);
+        debugLog(`✅ Notification displayed successfully!`);
+    } catch (error) {
+        console.error('❌ Notification error:', error);
+        debugLog(`❌ Notification ERROR: ${error.message}`);
+    }
 }
 
 // Cancel all notifications for a habit
@@ -4237,6 +4262,115 @@ function cancelHabitNotifications(habitIndex) {
     
     habit.notificationTimeouts = [];
     console.log(`🗑️ Cancelled all notifications for "${habit.name}"`);
+    debugLog(`🗑️ Cancelled all notifications for "${habit.name}"`);
+}
+
+// ============================================================================
+// ON-SCREEN DEBUG FUNCTIONS (FOR PHONE DEBUGGING)
+// ============================================================================
+
+function debugLog(message) {
+    const debugOutput = document.getElementById('debugOutput');
+    if (!debugOutput) return;
+    
+    const timestamp = new Date().toLocaleTimeString();
+    const logLine = document.createElement('div');
+    logLine.textContent = `[${timestamp}] ${message}`;
+    logLine.style.marginBottom = '5px';
+    debugOutput.appendChild(logLine);
+    
+    // Auto-scroll to bottom
+    debugOutput.scrollTop = debugOutput.scrollHeight;
+    
+    // Also log to console
+    console.log(message);
+}
+
+function refreshDebugInfo() {
+    const debugOutput = document.getElementById('debugOutput');
+    if (!debugOutput) return;
+    
+    debugOutput.innerHTML = '<div style="color: #ff0;">🔍 SYSTEM CHECK:</div>';
+    
+    // Check 1: Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then(registration => {
+            if (registration) {
+                debugLog('✅ Service Worker: REGISTERED');
+            } else {
+                debugLog('❌ Service Worker: NOT REGISTERED');
+            }
+        });
+    } else {
+        debugLog('❌ Service Worker: NOT SUPPORTED');
+    }
+    
+    // Check 2: Notification Support
+    if ('Notification' in window) {
+        debugLog('✅ Notifications: SUPPORTED');
+        debugLog(`   Permission: ${Notification.permission}`);
+        
+        if (Notification.permission === 'granted') {
+            debugLog('   ✅ GRANTED - Notifications will work!');
+        } else if (Notification.permission === 'denied') {
+            debugLog('   ❌ DENIED - Enable in browser settings!');
+        } else {
+            debugLog('   ⚠️ DEFAULT - Click "Set Reminder" to grant');
+        }
+    } else {
+        debugLog('❌ Notifications: NOT SUPPORTED');
+    }
+    
+    // Check 3: Online Status
+    if (navigator.onLine) {
+        debugLog('✅ Internet: CONNECTED');
+    } else {
+        debugLog('⚠️ Internet: OFFLINE');
+    }
+    
+    // Check 4: Habits Loaded
+    if (habits && habits.length > 0) {
+        debugLog(`✅ Habits: ${habits.length} loaded`);
+        
+        // Check for reminders
+        let reminderCount = 0;
+        habits.forEach((habit, index) => {
+            if (habit.reminder) {
+                reminderCount++;
+                debugLog(`   📍 Reminder ${reminderCount}: "${habit.name}" at ${habit.reminder}`);
+                
+                // Calculate next notification time
+                const [hours, minutes] = habit.reminder.split(':').map(Number);
+                const now = new Date();
+                const next = new Date();
+                next.setHours(hours, minutes, 0, 0);
+                if (next <= now) {
+                    next.setDate(next.getDate() + 1);
+                }
+                const diff = next - now;
+                const hoursUntil = Math.floor(diff / (1000 * 60 * 60));
+                const minsUntil = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                debugLog(`      Next in: ${hoursUntil}h ${minsUntil}m`);
+            }
+        });
+        
+        if (reminderCount === 0) {
+            debugLog('⚠️ Reminders: NONE SET');
+            debugLog('   Click "Set Reminder" on any habit to test');
+        } else {
+            debugLog(`✅ Active Reminders: ${reminderCount}`);
+        }
+    } else {
+        debugLog('⚠️ Habits: NOT LOADED YET');
+    }
+    
+    // Check 5: Current Time
+    const now = new Date();
+    debugLog(`🕐 Current Time: ${now.toLocaleTimeString()}`);
+    
+    debugLog('');
+    debugLog('💡 TIP: If permission is DENIED, go to browser');
+    debugLog('   settings → Site settings → Notifications → Allow');
 }
 
 // ============================================================================
@@ -4248,31 +4382,45 @@ async function setHabitReminder(habitIndex) {
     const habit = habits[habitIndex];
     if (!habit) return;
     
+    debugLog(`🔔 Setting reminder for "${habit.name}"...`);
+    
     // Check tier limits - FREE users get 1 reminder per habit only
     if (!isPremium && !isVIP && habit.reminder) {
         alert('🔒 Free Tier Limit\n\nYou already have a reminder set for this habit.\n\nUpgrade to Premium for:\n✨ Unlimited reminders per habit\n✨ Custom reminder schedules\n✨ Weekend/weekday options');
         showUpgradeModal('Multiple Reminders', 'Set unlimited reminders for each habit with custom schedules.');
+        debugLog('⚠️ FREE tier limit - already has reminder');
         return;
     }
+    
+    debugLog('📡 Requesting notification permission...');
     
     // Request notification permission first
     const hasPermission = await requestNotificationPermission();
     if (!hasPermission) {
         alert('❌ Notification Permission Required\n\nPlease enable notifications in your browser settings to use reminders.');
+        debugLog('❌ Permission DENIED or unavailable');
         return;
     }
+    
+    debugLog('✅ Permission granted!');
     
     // Prompt user for time
     const time = prompt(`⏰ Set Reminder Time\n\nWhat time should we remind you about "${habit.name}"?\n\nEnter time in 24-hour format (e.g., 08:00 for 8:00 AM, 20:00 for 8:00 PM):`, '08:00');
     
-    if (!time) return; // User cancelled
+    if (!time) {
+        debugLog('⚠️ User cancelled');
+        return; // User cancelled
+    }
     
     // Validate time format
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
     if (!timeRegex.test(time)) {
         alert('❌ Invalid Time Format\n\nPlease use HH:MM format (e.g., 08:00, 14:30, 20:00)');
+        debugLog(`❌ Invalid time format: ${time}`);
         return;
     }
+    
+    debugLog(`⏰ Time set to: ${time}`);
     
     // Save reminder to habit
     habit.reminder = time;
@@ -4286,7 +4434,11 @@ async function setHabitReminder(habitIndex) {
     // Re-render to show reminder
     renderHabits();
     
+    // Refresh debug info
+    setTimeout(() => refreshDebugInfo(), 500);
+    
     alert(`✅ Reminder Set!\n\nYou'll be reminded about "${habit.name}" every day at ${time}.\n\nMake sure to keep notifications enabled!`);
+    debugLog(`✅ Reminder saved and scheduled!`);
 }
 
 // Delete reminder for a habit (with confirmation)
@@ -4318,8 +4470,11 @@ function deleteHabitReminder(habitIndex) {
 function restoreAllReminders() {
     if (!habits || habits.length === 0) {
         console.log('⚠️ No habits loaded yet, cannot restore reminders');
+        debugLog('⚠️ No habits loaded yet');
         return;
     }
+    
+    debugLog('🔄 Restoring reminders...');
     
     let restoredCount = 0;
     habits.forEach((habit, index) => {
@@ -4332,8 +4487,10 @@ function restoreAllReminders() {
     
     if (restoredCount > 0) {
         console.log(`✅ Restored ${restoredCount} reminder(s)`);
+        debugLog(`✅ Restored ${restoredCount} reminder(s)`);
     } else {
         console.log('ℹ️ No reminders to restore');
+        debugLog('ℹ️ No reminders set yet');
     }
 }
 
