@@ -4570,6 +4570,7 @@ function initializeReminders() {
 window.addEventListener('load', initializeReminders);
 
     </script>
+    <script>
     // Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -4584,5 +4585,6 @@ if ('serviceWorker' in navigator) {
 } else {
   console.log('⚠️ Service Workers not supported in this browser');
 }
+</script>
 </body>
 </html>
