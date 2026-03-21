@@ -770,6 +770,7 @@
             <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #667eea !important;">✨ Premium Includes:</h3>
             <ul style="list-style: none; padding: 0; text-align: left; margin: 0; color: #666 !important;">
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Full calendar history view</li>
+                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Unlimited reminders per habit</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Advanced stats (4 metrics vs 2)</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Export all your data</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Unlimited habits & AI predictions</li>
@@ -977,10 +978,15 @@
 </div>
     <ul id="habitsList"></ul>
     
-    <button id="calendarButton" onclick="toggleCalendar()" style="width:100%; margin-top:20px; padding:15px; font-size:18px; background:#333;">📅 View Calendar History</button>
+    <button id="calendarButton" onclick="toggleCalendar()" style="width:100%; margin-top:20px; padding:15px; font-size:18px; background:#667eea; color: white;">📅 View Calendar (Current Month)</button>
     
     <div id="calendarSection" style="display:none; margin-top:20px;">
         <h2>Habit History Calendar</h2>
+        <p style="font-size: 13px; color: #666; text-align: center; margin: 5px 0;">
+            <span id="calendarTierNote">
+                🆓 Free: Current month only | 💎 Premium: Full history
+            </span>
+        </p>
         <select id="habitSelect" onchange="renderCalendar()"></select>
         <div style="display:flex; justify-content:space-between;">
             <button onclick="prevMonth()">&lt; Prev</button>
@@ -1053,6 +1059,8 @@
                 <li>✅ 2 quick stats (Today + Best Streak)</li>
                 <li>✅ 5 AI predictions per day</li>
                 <li>✅ Cloud sync</li>
+                <li>✅ Current month calendar view</li>
+                <li>✅ 1 reminder per habit (basic)</li>
             </ul>
             <p style="font-size: 12px; color: #666;">Perfect for trying out MicroHabit AI</p>
         </div>
@@ -1065,6 +1073,8 @@
                 <li>✅ <strong>Unlimited habits</strong></li>
                 <li>✅ <strong>Unlimited AI predictions</strong></li>
                 <li>✅ <strong>📅 Full calendar history view</strong></li>
+                <li>✅ <strong>⏰ Unlimited reminders per habit</strong></li>
+                <li>✅ <strong>🔔 Custom reminder schedules</strong></li>
                 <li>✅ <strong>📊 Advanced stats (4 metrics vs 2)</strong></li>
                 <li>✅ <strong>📥 Export all your data</strong></li>
                 <li>✅ Exclusive gold theme</li>
@@ -1086,7 +1096,9 @@
             <p style="font-size: 32px; font-weight: bold; color: gold;">$99/month</p>
             <p style="font-size: 14px; color: #ccc; margin-top: -10px;">or $999/year (Save $189!)</p>
             
-            <p style="color: #fff; font-weight: bold; margin: 15px 0;">Everything in Premium PLUS:</p>
+            <div style="background: rgba(255, 215, 0, 0.1); border: 2px solid gold; border-radius: 8px; padding: 12px; margin: 15px 0;">
+                <p style="color: gold; font-weight: bold; margin: 0; font-size: 16px;">💎 Includes ALL Premium Features PLUS:</p>
+            </div>
             
             <ul style="text-align:left; font-size: 15px; color: #ffd700;">
                 <li>🤖 <strong>Advanced AI Coach</strong> - Custom coaching personality</li>
@@ -1291,6 +1303,37 @@
         <p style="color: #666; font-size: 12px; margin-top: 10px;">
             💡 Tip: If you don't see a notification, check your browser's notification permissions in the address bar.
         </p>
+    </div>
+    
+    <div id="reminderTipsSection" style="margin-top: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; color: white;">
+        <h3 style="color: white; margin-top: 0;">📌 Tips for Reliable Reminders</h3>
+        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
+            <div style="font-size: 14px; line-height: 1.8;">
+                <div style="margin-bottom: 12px;">
+                    <strong>✅ DO:</strong>
+                </div>
+                <div style="margin-left: 15px; margin-bottom: 15px;">
+                    • Keep MicroHabit AI in your recent apps<br>
+                    • Leave app running in background<br>
+                    • Grant notification permissions
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <strong>❌ DON'T:</strong>
+                </div>
+                <div style="margin-left: 15px;">
+                    • Swipe away app from recent apps<br>
+                    • Force close the app<br>
+                    • Use battery saver mode (may kill app)
+                </div>
+            </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 13px; border-left: 4px solid rgba(255,255,255,0.5);">
+            <strong>💡 Why?</strong><br>
+            Reminders need the app to stay in background to work. This is how browser-based apps function on mobile devices.
+        </div>
+        <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 13px;">
+            <strong>🚀 Coming Soon:</strong> Push notifications that work even when app is closed! Stay tuned for Premium features.
+        </div>
     </div>
     
     <div id="debugSection" style="margin-top: 30px; background: var(--card); padding: 15px; border-radius: 10px; border: 2px solid #667eea;">
@@ -2826,18 +2869,17 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
  }
 
         function toggleCalendar() {
-            // Premium Feature Check
-            if (!isPremium && !isVIP) {
-                showUpgradeModal(
-                    'Calendar History', 
-                    'View your complete habit history in a beautiful calendar format. Track patterns and see your progress over time.'
-                );
-                return;
-            }
-            
             const calSection = document.getElementById('calendarSection');
             calSection.style.display = calSection.style.display === 'none' ? 'block' : 'none';
-            if (calSection.style.display === 'block') renderCalendar();
+            if (calSection.style.display === 'block') {
+                // FREE users can only view current month
+                if (!isPremium && !isVIP) {
+                    const today = new Date();
+                    currentMonth = today.getMonth();
+                    currentYear = today.getFullYear();
+                }
+                renderCalendar();
+            }
         }
 
         function populateHabitSelect() {
@@ -2899,6 +2941,12 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
     calTable.innerHTML = html;
 }
         function prevMonth() {
+    // FREE users can only view current month
+    if (!isPremium && !isVIP) {
+        alert('🔒 Calendar History - Premium Feature\n\nFREE users can view the current month.\n\nUpgrade to Premium to view full calendar history!');
+        return;
+    }
+    
     currentMonth--;
     if (currentMonth < 0) { 
         currentMonth = 11; 
@@ -2908,6 +2956,12 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
 }
 
 function nextMonth() {
+    // FREE users can only view current month
+    if (!isPremium && !isVIP) {
+        alert('🔒 Calendar History - Premium Feature\n\nFREE users can view the current month.\n\nUpgrade to Premium to view full calendar history!');
+        return;
+    }
+    
     currentMonth++;
     if (currentMonth > 11) { 
         currentMonth = 0; 
