@@ -882,6 +882,16 @@
       💾 Save My Data - Sign Up Free
     </button>
   </div>
+  
+  <!-- Offline Status Banner -->
+  <div id="offlineBanner" style="display: none; background: linear-gradient(135deg, #dc2626, #991b1b); color: white; padding: 12px 20px; margin: 0 0 20px 0; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <div style="font-weight: bold; font-size: 14px;">
+      📡 No Internet Connection
+    </div>
+    <div style="font-size: 12px; opacity: 0.95; margin-top: 5px;">
+      You're offline. Some features won't work until you reconnect.
+    </div>
+  </div>
 
   <!-- Navigation Menu -->
   <div id="navMenu">
@@ -1271,6 +1281,17 @@
             ⚙️ Change Notification Style
         </button>
     </div>
+    
+    <div id="testNotificationSection" style="margin-top: 30px;">
+        <h3>🧪 Test Notifications</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">Test if notifications are working correctly on your device.</p>
+        <button onclick="testNotification()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+            🔔 Send Test Notification
+        </button>
+        <p style="color: #666; font-size: 12px; margin-top: 10px;">
+            💡 Tip: If you don't see a notification, check your browser's notification permissions in the address bar.
+        </p>
+    </div>
   </div>
 
   <!-- Data Tab -->
@@ -1650,6 +1671,12 @@ function sendVIPEmail(userEmail, userName) {
         alert('⚠️ Please login first to subscribe to Premium!');
         return;
     }
+    
+    // Check if online
+    if (!navigator.onLine) {
+        alert('📡 No Internet Connection\n\nYou need an internet connection to subscribe to Premium.\n\nPlease connect to Wi-Fi or mobile data and try again.');
+        return;
+    }
 
     const email = currentUser.email;
 
@@ -1693,6 +1720,12 @@ db.collection("users").doc(currentUser.uid).set({
   function subscribeVIP() {
     if (!currentUser) {
         alert('⚠️ Please login first to subscribe to VIP!');
+        return;
+    }
+    
+    // Check if online
+    if (!navigator.onLine) {
+        alert('📡 No Internet Connection\n\nYou need an internet connection to subscribe to VIP.\n\nPlease connect to Wi-Fi or mobile data and try again.');
         return;
     }
 
@@ -2757,13 +2790,28 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
 
     } catch (err) {
         console.error('AI Error:', err);
-        document.getElementById('nudge').innerHTML = `
-            <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;">
-                <strong>Error:</strong><br>
-                ${err.message}<br><br>
-                <small>Check console for details</small>
-            </div>
-        `;
+        
+        // Check if offline
+        if (!navigator.onLine) {
+            document.getElementById('nudge').innerHTML = `
+                <div style="background: #fff3cd; color: #856404; padding: 20px; border-radius: 12px; border-left: 4px solid #ffc107;">
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">📡 No Internet Connection</div>
+                    <div style="font-size: 14px; line-height: 1.6;">
+                        AI predictions require an internet connection.<br>
+                        Please connect to Wi-Fi or mobile data and try again.
+                    </div>
+                </div>
+            `;
+        } else {
+            // Other error
+            document.getElementById('nudge').innerHTML = `
+                <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;">
+                    <strong>⚠️ Could Not Generate Prediction</strong><br><br>
+                    ${err.message || 'An error occurred while connecting to the AI service.'}<br><br>
+                    <small>Please try again in a moment. If the problem persists, check your internet connection.</small>
+                </div>
+            `;
+        }
     }
  }
 
@@ -4013,6 +4061,22 @@ function convertGuestToUser() {
 // SERVICE WORKER REGISTRATION & NOTIFICATION SYSTEM
 // ============================================================================
 
+// Detect online/offline status
+window.addEventListener('online', () => {
+    document.getElementById('offlineBanner').style.display = 'none';
+    console.log('✅ Back online!');
+});
+
+window.addEventListener('offline', () => {
+    document.getElementById('offlineBanner').style.display = 'block';
+    console.log('📡 Offline detected');
+});
+
+// Check initial online status
+if (!navigator.onLine) {
+    document.getElementById('offlineBanner').style.display = 'block';
+}
+
 // Register Service Worker for background notifications and PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -4030,6 +4094,7 @@ if ('serviceWorker' in navigator) {
 async function requestNotificationPermission() {
     if (!('Notification' in window)) {
         console.log('❌ This browser does not support notifications');
+        alert('❌ Notifications Not Supported\n\nYour browser doesn\'t support notifications. Try using Chrome, Firefox, or Edge.');
         return false;
     }
     
@@ -4042,18 +4107,50 @@ async function requestNotificationPermission() {
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
             console.log('✅ Notification permission granted!');
+            // Show test notification
+            new Notification('🎉 Notifications Enabled!', {
+                body: 'You\'ll now receive habit reminders at your chosen times.',
+                icon: '/logo.png'
+            });
             return true;
         }
     }
     
     console.log('❌ Notification permission denied');
+    alert('❌ Notifications Blocked\n\nYou\'ve blocked notifications. To enable:\n\n1. Click the lock icon in address bar\n2. Allow notifications\n3. Reload the page');
     return false;
+}
+
+// Test notification function (for debugging)
+function testNotification() {
+    if (Notification.permission !== 'granted') {
+        alert('❌ Please grant notification permission first!\n\nClick "Set Reminder" on any habit to enable notifications.');
+        return;
+    }
+    
+    const notification = new Notification('🔔 Test Notification', {
+        body: 'If you see this, notifications are working! 🎉',
+        icon: '/logo.png',
+        badge: '/logo.png',
+        requireInteraction: false
+    });
+    
+    notification.onclick = () => {
+        console.log('Test notification clicked!');
+        notification.close();
+    };
+    
+    console.log('🔔 Test notification sent!');
+    alert('✅ Test notification sent!\n\nDid you see it? If yes, reminders will work!');
 }
 
 // Schedule a notification for a habit
 function scheduleHabitNotification(habitIndex, time) {
     const habit = habits[habitIndex];
-    if (!habit) return;
+    if (!habit) {
+        console.error(`❌ Habit ${habitIndex} not found!`);
+        return;
+    }
     
     // Parse time (format: "HH:MM")
     const [hours, minutes] = time.split(':').map(Number);
@@ -4072,6 +4169,7 @@ function scheduleHabitNotification(habitIndex, time) {
     
     // Store the timeout ID so we can cancel it later
     const timeoutId = setTimeout(() => {
+        console.log(`⏰ Time to show notification for "${habit.name}"!`);
         showHabitNotification(habitIndex);
         // Reschedule for next day
         scheduleHabitNotification(habitIndex, time);
@@ -4083,19 +4181,29 @@ function scheduleHabitNotification(habitIndex, time) {
     }
     habit.notificationTimeouts.push(timeoutId);
     
-    console.log(`⏰ Scheduled notification for "${habit.name}" at ${time} (in ${Math.round(timeUntilNotification/1000/60)} minutes)`);
+    const minutesUntil = Math.round(timeUntilNotification/1000/60);
+    const hoursUntil = Math.floor(minutesUntil / 60);
+    const minsRemaining = minutesUntil % 60;
+    
+    console.log(`⏰ Scheduled notification for "${habit.name}" at ${time}`);
+    console.log(`   Next notification in: ${hoursUntil}h ${minsRemaining}m`);
 }
 
 // Show notification for a habit
 async function showHabitNotification(habitIndex) {
     const habit = habits[habitIndex];
-    if (!habit || !habit.reminder) return;
+    if (!habit || !habit.reminder) {
+        console.error(`❌ Cannot show notification - habit ${habitIndex} not found or no reminder set`);
+        return;
+    }
     
     // Check if permission granted
     if (Notification.permission !== 'granted') {
         console.log('❌ Cannot show notification - permission not granted');
         return;
     }
+    
+    console.log(`🔔 Showing notification for "${habit.name}"`);
     
     // Create notification
     const notification = new Notification(`🔔 MicroHabit Reminder`, {
@@ -4114,7 +4222,7 @@ async function showHabitNotification(habitIndex) {
         showTab('habits');
     };
     
-    console.log(`🔔 Notification shown for "${habit.name}"`);
+    console.log(`✅ Notification shown for "${habit.name}"`);
 }
 
 // Cancel all notifications for a habit
@@ -4208,24 +4316,46 @@ function deleteHabitReminder(habitIndex) {
 
 // Restore all reminders on app load (reschedule notifications)
 function restoreAllReminders() {
+    if (!habits || habits.length === 0) {
+        console.log('⚠️ No habits loaded yet, cannot restore reminders');
+        return;
+    }
+    
+    let restoredCount = 0;
     habits.forEach((habit, index) => {
         if (habit.reminder) {
             scheduleHabitNotification(index, habit.reminder);
-            console.log(`🔄 Restored reminder for "${habit.name}" at ${habit.reminder}`);
+            restoredCount++;
+            console.log(`🔄 Restored reminder #${restoredCount}: "${habit.name}" at ${habit.reminder}`);
         }
     });
+    
+    if (restoredCount > 0) {
+        console.log(`✅ Restored ${restoredCount} reminder(s)`);
+    } else {
+        console.log('ℹ️ No reminders to restore');
+    }
 }
 
-// Call this when app loads to restore reminders
-window.addEventListener('load', () => {
-    // Small delay to ensure habits are loaded
+// Call this when habits are loaded (with delay to ensure habits array is ready)
+function initializeReminders() {
     setTimeout(() => {
         if (habits && habits.length > 0) {
             restoreAllReminders();
-            console.log('✅ All reminders restored');
+        } else {
+            console.log('⚠️ Habits not loaded yet, will try again...');
+            // Try again after 2 more seconds
+            setTimeout(() => {
+                if (habits && habits.length > 0) {
+                    restoreAllReminders();
+                }
+            }, 2000);
         }
     }, 1000);
-});
+}
+
+// Call when app loads
+window.addEventListener('load', initializeReminders);
 
     </script>
 </body>
