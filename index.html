@@ -2497,6 +2497,24 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
                         </div>
                         <progress value="${weeklyDone}" max="${goal}"></progress>
                     </div>
+                    ${habit.reminder ? `
+                        <div style="background: rgba(102, 126, 234, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #667eea;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <span style="font-size: 13px; color: #667eea;">
+                                    🔔 Daily reminder at ${habit.reminder}
+                                </span>
+                                <button onclick="deleteHabitReminder(${index})" style="background: #dc2626; color: white; padding: 5px 10px; font-size: 11px; border-radius: 5px; border: none; cursor: pointer;">
+                                    🗑️ Delete
+                                </button>
+                            </div>
+                        </div>
+                    ` : `
+                        <div style="margin: 10px 0;">
+                            <button onclick="setHabitReminder(${index})" style="background: #667eea; color: white; padding: 8px 12px; font-size: 12px; border-radius: 5px; border: none; cursor: pointer; width: 100%;">
+                                ⏰ Set Reminder
+                            </button>
+                        </div>
+                    `}
                     <div class="habit-controls">
                         <input type="checkbox" class="checkbox" ${doneToday ? 'checked' : ''}>
                         ${isVIP ? '<button onclick="addHabitNote(' + index + ')" style="background:#4a90e2; font-size:12px; padding:5px;">📝 Add Note</button>' : ''}
@@ -3990,6 +4008,224 @@ function convertGuestToUser() {
 
         // Call this from your settings button:
         // <button onclick="changeNotificationStyle()">Change Notification Style</button>
+
+// ============================================================================
+// SERVICE WORKER REGISTRATION & NOTIFICATION SYSTEM
+// ============================================================================
+
+// Register Service Worker for background notifications and PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+                console.log('✅ Service Worker registered successfully:', registration.scope);
+            })
+            .catch(error => {
+                console.error('❌ Service Worker registration failed:', error);
+            });
+    });
+}
+
+// Request notification permission
+async function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+        console.log('❌ This browser does not support notifications');
+        return false;
+    }
+    
+    if (Notification.permission === 'granted') {
+        console.log('✅ Notification permission already granted');
+        return true;
+    }
+    
+    if (Notification.permission !== 'denied') {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            console.log('✅ Notification permission granted!');
+            return true;
+        }
+    }
+    
+    console.log('❌ Notification permission denied');
+    return false;
+}
+
+// Schedule a notification for a habit
+function scheduleHabitNotification(habitIndex, time) {
+    const habit = habits[habitIndex];
+    if (!habit) return;
+    
+    // Parse time (format: "HH:MM")
+    const [hours, minutes] = time.split(':').map(Number);
+    
+    // Calculate milliseconds until notification time
+    const now = new Date();
+    const notificationTime = new Date();
+    notificationTime.setHours(hours, minutes, 0, 0);
+    
+    // If time has passed today, schedule for tomorrow
+    if (notificationTime <= now) {
+        notificationTime.setDate(notificationTime.getDate() + 1);
+    }
+    
+    const timeUntilNotification = notificationTime - now;
+    
+    // Store the timeout ID so we can cancel it later
+    const timeoutId = setTimeout(() => {
+        showHabitNotification(habitIndex);
+        // Reschedule for next day
+        scheduleHabitNotification(habitIndex, time);
+    }, timeUntilNotification);
+    
+    // Store timeout ID in habit for cancellation
+    if (!habit.notificationTimeouts) {
+        habit.notificationTimeouts = [];
+    }
+    habit.notificationTimeouts.push(timeoutId);
+    
+    console.log(`⏰ Scheduled notification for "${habit.name}" at ${time} (in ${Math.round(timeUntilNotification/1000/60)} minutes)`);
+}
+
+// Show notification for a habit
+async function showHabitNotification(habitIndex) {
+    const habit = habits[habitIndex];
+    if (!habit || !habit.reminder) return;
+    
+    // Check if permission granted
+    if (Notification.permission !== 'granted') {
+        console.log('❌ Cannot show notification - permission not granted');
+        return;
+    }
+    
+    // Create notification
+    const notification = new Notification(`🔔 MicroHabit Reminder`, {
+        body: `Time to complete: ${habit.emoji} ${habit.name}`,
+        icon: '/logo.png',
+        badge: '/logo.png',
+        tag: `habit-${habitIndex}`,
+        requireInteraction: false,
+        silent: false
+    });
+    
+    notification.onclick = () => {
+        window.focus();
+        notification.close();
+        // Navigate to habits tab
+        showTab('habits');
+    };
+    
+    console.log(`🔔 Notification shown for "${habit.name}"`);
+}
+
+// Cancel all notifications for a habit
+function cancelHabitNotifications(habitIndex) {
+    const habit = habits[habitIndex];
+    if (!habit || !habit.notificationTimeouts) return;
+    
+    // Clear all scheduled timeouts
+    habit.notificationTimeouts.forEach(timeoutId => {
+        clearTimeout(timeoutId);
+    });
+    
+    habit.notificationTimeouts = [];
+    console.log(`🗑️ Cancelled all notifications for "${habit.name}"`);
+}
+
+// ============================================================================
+// REMINDER MANAGEMENT FUNCTIONS
+// ============================================================================
+
+// Set reminder for a habit
+async function setHabitReminder(habitIndex) {
+    const habit = habits[habitIndex];
+    if (!habit) return;
+    
+    // Check tier limits - FREE users get 1 reminder per habit only
+    if (!isPremium && !isVIP && habit.reminder) {
+        alert('🔒 Free Tier Limit\n\nYou already have a reminder set for this habit.\n\nUpgrade to Premium for:\n✨ Unlimited reminders per habit\n✨ Custom reminder schedules\n✨ Weekend/weekday options');
+        showUpgradeModal('Multiple Reminders', 'Set unlimited reminders for each habit with custom schedules.');
+        return;
+    }
+    
+    // Request notification permission first
+    const hasPermission = await requestNotificationPermission();
+    if (!hasPermission) {
+        alert('❌ Notification Permission Required\n\nPlease enable notifications in your browser settings to use reminders.');
+        return;
+    }
+    
+    // Prompt user for time
+    const time = prompt(`⏰ Set Reminder Time\n\nWhat time should we remind you about "${habit.name}"?\n\nEnter time in 24-hour format (e.g., 08:00 for 8:00 AM, 20:00 for 8:00 PM):`, '08:00');
+    
+    if (!time) return; // User cancelled
+    
+    // Validate time format
+    const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!timeRegex.test(time)) {
+        alert('❌ Invalid Time Format\n\nPlease use HH:MM format (e.g., 08:00, 14:30, 20:00)');
+        return;
+    }
+    
+    // Save reminder to habit
+    habit.reminder = time;
+    
+    // Schedule the notification
+    scheduleHabitNotification(habitIndex, time);
+    
+    // Save to Firebase/localStorage
+    saveHabits();
+    
+    // Re-render to show reminder
+    renderHabits();
+    
+    alert(`✅ Reminder Set!\n\nYou'll be reminded about "${habit.name}" every day at ${time}.\n\nMake sure to keep notifications enabled!`);
+}
+
+// Delete reminder for a habit (with confirmation)
+function deleteHabitReminder(habitIndex) {
+    const habit = habits[habitIndex];
+    if (!habit || !habit.reminder) return;
+    
+    // Confirmation dialog
+    const confirmed = confirm(`⚠️ Delete Reminder?\n\nAre you sure you want to delete the reminder for "${habit.name}"?\n\nYou won't receive notifications anymore.`);
+    
+    if (!confirmed) return;
+    
+    // Cancel scheduled notifications
+    cancelHabitNotifications(habitIndex);
+    
+    // Remove reminder from habit
+    delete habit.reminder;
+    
+    // Save changes
+    saveHabits();
+    
+    // Re-render to update UI
+    renderHabits();
+    
+    alert(`✅ Reminder Deleted\n\nReminder for "${habit.name}" has been removed.`);
+}
+
+// Restore all reminders on app load (reschedule notifications)
+function restoreAllReminders() {
+    habits.forEach((habit, index) => {
+        if (habit.reminder) {
+            scheduleHabitNotification(index, habit.reminder);
+            console.log(`🔄 Restored reminder for "${habit.name}" at ${habit.reminder}`);
+        }
+    });
+}
+
+// Call this when app loads to restore reminders
+window.addEventListener('load', () => {
+    // Small delay to ensure habits are loaded
+    setTimeout(() => {
+        if (habits && habits.length > 0) {
+            restoreAllReminders();
+            console.log('✅ All reminders restored');
+        }
+    }, 1000);
+});
 
     </script>
 </body>
