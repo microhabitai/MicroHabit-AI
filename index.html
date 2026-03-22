@@ -978,6 +978,17 @@
 </div>
     <ul id="habitsList"></ul>
     
+    <!-- Time Blocks Section -->
+    <div id="timeBlocksSection" style="margin-top: 30px;">
+        <button onclick="toggleTimeBlocks()" style="width:100%; margin-top:20px; padding:15px; font-size:18px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+            ⏰ View Daily Schedule
+        </button>
+        
+        <div id="timeBlocksContent" style="display:none; margin-top:20px;">
+            <!-- Content rendered by JavaScript -->
+        </div>
+    </div>
+    
     <button id="calendarButton" onclick="toggleCalendar()" style="width:100%; margin-top:20px; padding:15px; font-size:18px; background:#667eea; color: white;">📅 View Calendar (Current Month)</button>
     
     <div id="calendarSection" style="display:none; margin-top:20px;">
@@ -1336,8 +1347,9 @@
         </div>
     </div>
     
-    <div id="debugSection" style="margin-top: 30px; background: var(--card); padding: 15px; border-radius: 10px; border: 2px solid #667eea;">
-        <h3>🔍 Reminder Debug Info</h3>
+    <!-- Debug Section (Founder Only) -->
+    <div id="debugSection" style="display: none; margin-top: 30px; background: var(--card); padding: 15px; border-radius: 10px; border: 2px solid #667eea;">
+        <h3>🔍 Reminder Debug Info (Founder Only)</h3>
         <div id="debugOutput" style="font-family: monospace; font-size: 12px; background: #000; color: #0f0; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto;">
             <div>Waiting for debug info...</div>
         </div>
@@ -1942,6 +1954,292 @@ function checkPremiumExpiration() {
         console.error('Error checking subscription expiration:', err);
     });
 }
+
+// ==========================================
+// FOUNDER EMAIL CHECK (for Debug Panel)
+// ==========================================
+const FOUNDER_EMAIL = 'fancytreaz@gmail.com';
+
+function isFounder() {
+    return currentUser && currentUser.email === FOUNDER_EMAIL;
+}
+
+function checkAndShowDebugPanel() {
+    const debugSection = document.getElementById('debugSection');
+    if (debugSection) {
+        if (isFounder()) {
+            debugSection.style.display = 'block';
+            console.log('🔓 Debug panel enabled for founder');
+        } else {
+            debugSection.style.display = 'none';
+        }
+    }
+}
+
+// ==========================================
+// TIME BLOCKS FEATURE
+// ==========================================
+
+function toggleTimeBlocks() {
+    const content = document.getElementById('timeBlocksContent');
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        renderTimeBlocks();
+    } else {
+        content.style.display = 'none';
+    }
+}
+
+function renderTimeBlocks() {
+    const content = document.getElementById('timeBlocksContent');
+    
+    if (habits.length === 0) {
+        content.innerHTML = `
+            <div style="padding: 20px; text-align: center; background: var(--card); border-radius: 10px; margin-top: 10px;">
+                <p style="color: #666; font-size: 16px;">📝 Add some habits first to see your daily schedule!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    if (isPremium || isVIP) {
+        renderPremiumTimeBlocks();
+    } else {
+        renderFreeTimeBlocks();
+    }
+}
+
+function renderFreeTimeBlocks() {
+    const content = document.getElementById('timeBlocksContent');
+    
+    // Categorize habits by time of day
+    const schedule = {
+        morning: [],
+        afternoon: [],
+        evening: []
+    };
+    
+    habits.forEach(habit => {
+        const category = getTimeCategory(habit);
+        schedule[category].push(habit);
+    });
+    
+    let html = `
+        <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-top: 10px;">
+            <h3 style="margin-top: 0; text-align: center; color: var(--text);">📅 Daily Habit Schedule</h3>
+            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 20px;">Basic time suggestions</p>
+    `;
+    
+    // Morning section
+    if (schedule.morning.length > 0) {
+        html += `
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(255, 200, 0, 0.1); border-left: 4px solid #ffc800; border-radius: 8px;">
+                <h4 style="margin: 0 0 10px 0; color: #e67e22;">☀️ Morning Habits (6:00 AM - 9:00 AM)</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    ${schedule.morning.map(h => `
+                        <div style="padding: 10px; background: var(--bg); border-radius: 6px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">${h.emoji || '⭐'}</span>
+                            <span style="flex: 1; color: var(--text);">${h.name}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Afternoon section
+    if (schedule.afternoon.length > 0) {
+        html += `
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(52, 152, 219, 0.1); border-left: 4px solid #3498db; border-radius: 8px;">
+                <h4 style="margin: 0 0 10px 0; color: #3498db;">🌤️ Afternoon Habits (12:00 PM - 5:00 PM)</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    ${schedule.afternoon.map(h => `
+                        <div style="padding: 10px; background: var(--bg); border-radius: 6px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">${h.emoji || '⭐'}</span>
+                            <span style="flex: 1; color: var(--text);">${h.name}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Evening section
+    if (schedule.evening.length > 0) {
+        html += `
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(155, 89, 182, 0.1); border-left: 4px solid #9b59b6; border-radius: 8px;">
+                <h4 style="margin: 0 0 10px 0; color: #9b59b6;">🌙 Evening Habits (6:00 PM - 10:00 PM)</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    ${schedule.evening.map(h => `
+                        <div style="padding: 10px; background: var(--bg); border-radius: 6px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">${h.emoji || '⭐'}</span>
+                            <span style="flex: 1; color: var(--text);">${h.name}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Upgrade prompt
+    html += `
+            <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2)); padding: 20px; border-radius: 10px; border: 2px solid #ffd700; text-align: center; margin-top: 20px;">
+                <div style="font-size: 32px; margin-bottom: 10px;">💎</div>
+                <h4 style="margin: 0 0 10px 0; color: var(--text);">Upgrade to Premium</h4>
+                <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">
+                    Get exact time blocks, duration tracking, visual timeline, and AI-optimized scheduling!
+                </p>
+                <button onclick="showUpgradeModal('Premium Time Blocks', 'Unlock precise scheduling with exact times, duration estimates, visual timeline, and AI-powered schedule optimization. See exactly when to do each habit for maximum productivity!')" style="background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; padding: 12px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                    Upgrade Now - $9/month
+                </button>
+            </div>
+        </div>
+    `;
+    
+    content.innerHTML = html;
+}
+
+function renderPremiumTimeBlocks() {
+    const content = document.getElementById('timeBlocksContent');
+    
+    // Get habits with suggested times
+    const scheduledHabits = habits.map(habit => {
+        const suggestedTime = getSuggestedTime(habit);
+        const duration = getEstimatedDuration(habit);
+        return {
+            ...habit,
+            time: suggestedTime,
+            duration: duration,
+            timeValue: parseInt(suggestedTime.split(':')[0]) * 60 + parseInt(suggestedTime.split(':')[1])
+        };
+    }).sort((a, b) => a.timeValue - b.timeValue);
+    
+    let html = `
+        <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); padding: 25px; border-radius: 12px; margin-top: 10px; border: 2px solid #667eea;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3 style="margin: 0 0 5px 0; color: var(--text);">📅 Your Optimized Daily Schedule</h3>
+                <p style="margin: 0; color: #667eea; font-size: 14px; font-weight: bold;">💎 Premium Feature</p>
+            </div>
+            
+            <div style="background: var(--card); padding: 20px; border-radius: 10px;">
+    `;
+    
+    scheduledHabits.forEach(habit => {
+        const progressWidth = Math.min(habit.duration * 3, 300);
+        html += `
+            <div style="margin-bottom: 15px; padding: 15px; background: var(--bg); border-radius: 8px; border-left: 4px solid #667eea;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 28px;">${habit.emoji || '⭐'}</span>
+                        <div>
+                            <div style="font-weight: bold; color: var(--text); font-size: 16px;">${habit.name}</div>
+                            <div style="color: #667eea; font-size: 14px; font-weight: bold;">${formatTime12Hour(habit.time)}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: #666; font-size: 12px;">Duration</div>
+                        <div style="color: var(--text); font-weight: bold;">${habit.duration} min</div>
+                    </div>
+                </div>
+                <div style="background: rgba(102, 126, 234, 0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: ${progressWidth}px; border-radius: 4px;"></div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; text-align: center;">
+                <p style="margin: 0; color: #667eea; font-size: 13px;">
+                    ✨ Times are AI-suggested based on habit type. Future updates will allow custom scheduling!
+                </p>
+            </div>
+        </div>
+    `;
+    
+    content.innerHTML = html;
+}
+
+function getTimeCategory(habit) {
+    const name = habit.name.toLowerCase();
+    
+    // Morning habits (6 AM - 9 AM)
+    if (name.includes('morning') || name.includes('wake') || name.includes('breakfast') || 
+        name.includes('run') || name.includes('jog') || name.includes('exercise') ||
+        name.includes('gym') || name.includes('workout') || name.includes('coffee')) {
+        return 'morning';
+    }
+    
+    // Evening habits (6 PM - 10 PM)
+    if (name.includes('evening') || name.includes('dinner') || name.includes('sleep') ||
+        name.includes('bed') || name.includes('night') || name.includes('relax') ||
+        name.includes('unwind') || name.includes('journal')) {
+        return 'evening';
+    }
+    
+    // Default to afternoon (12 PM - 5 PM)
+    return 'afternoon';
+}
+
+function getSuggestedTime(habit) {
+    const name = habit.name.toLowerCase();
+    
+    // Morning habits (6:00 - 9:00)
+    if (name.includes('wake') || name.includes('morning')) return '06:00';
+    if (name.includes('run') || name.includes('jog')) return '06:30';
+    if (name.includes('exercise') || name.includes('gym') || name.includes('workout')) return '07:00';
+    if (name.includes('breakfast') || name.includes('coffee')) return '08:00';
+    if (name.includes('meditation') || name.includes('meditate')) return '07:30';
+    
+    // Afternoon habits (12:00 - 17:00)
+    if (name.includes('lunch')) return '12:00';
+    if (name.includes('water') || name.includes('drink')) return '14:00';
+    if (name.includes('walk')) return '15:00';
+    
+    // Evening habits (18:00 - 22:00)
+    if (name.includes('dinner')) return '18:00';
+    if (name.includes('read')) return '20:00';
+    if (name.includes('journal')) return '21:00';
+    if (name.includes('sleep') || name.includes('bed')) return '22:00';
+    if (name.includes('relax') || name.includes('unwind')) return '20:30';
+    
+    // Default to morning
+    return '08:00';
+}
+
+function getEstimatedDuration(habit) {
+    const name = habit.name.toLowerCase();
+    
+    // Short habits (5-10 min)
+    if (name.includes('water') || name.includes('drink')) return 5;
+    if (name.includes('meditation') && name.includes('5')) return 5;
+    if (name.includes('stretch')) return 10;
+    
+    // Medium habits (15-30 min)
+    if (name.includes('read') && name.includes('10 pages')) return 15;
+    if (name.includes('walk')) return 20;
+    if (name.includes('journal')) return 15;
+    if (name.includes('breakfast') || name.includes('lunch') || name.includes('dinner')) return 20;
+    
+    // Longer habits (30-60 min)
+    if (name.includes('exercise') || name.includes('workout') || name.includes('gym')) return 45;
+    if (name.includes('run') || name.includes('jog')) return 30;
+    if (name.includes('study') || name.includes('learn')) return 60;
+    
+    // Default
+    return 20;
+}
+
+function formatTime12Hour(time24) {
+    const [hours, minutes] = time24.split(':');
+    const h = parseInt(hours);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    return `${h12}:${minutes} ${ampm}`;
+}
+
 // Rate limiting for free users (5 predictions/day)
 function canMakePrediction() {
     const today = new Date().toDateString();
@@ -3303,6 +3601,9 @@ if (user.email === 'fancytreaz@gmail.com') {
         // Load referral code and check premium expiration
         loadReferralCode();
         checkPremiumExpiration();
+        
+        // Show debug panel if founder
+        checkAndShowDebugPanel();
     } else {
         // Check if guest mode
         const isGuest = localStorage.getItem('isGuest') === 'true';
