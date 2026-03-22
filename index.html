@@ -769,11 +769,12 @@
         <div class="premium-benefits" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important; border: 2px solid #667eea !important; padding: 20px; border-radius: 12px; margin: 20px 0;">
             <h3 style="margin: 0 0 15px 0; font-size: 18px; color: #667eea !important;">✨ Premium Includes:</h3>
             <ul style="list-style: none; padding: 0; text-align: left; margin: 0; color: #666 !important;">
+                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Unlimited habits & AI predictions</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Full calendar history view</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Unlimited reminders per habit</li>
+                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ <strong>Custom time scheduling & durations</strong></li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Advanced stats (4 metrics vs 2)</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Export all your data</li>
-                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Unlimited habits & AI predictions</li>
             </ul>
         </div>
         
@@ -1072,6 +1073,7 @@
                 <li>✅ Cloud sync</li>
                 <li>✅ Current month calendar view</li>
                 <li>✅ 1 reminder per habit (basic)</li>
+                <li>✅ Basic time suggestions (grouped by period)</li>
             </ul>
             <p style="font-size: 12px; color: #666;">Perfect for trying out MicroHabit AI</p>
         </div>
@@ -1086,6 +1088,7 @@
                 <li>✅ <strong>📅 Full calendar history view</strong></li>
                 <li>✅ <strong>⏰ Unlimited reminders per habit</strong></li>
                 <li>✅ <strong>🔔 Custom reminder schedules</strong></li>
+                <li>✅ <strong>⏱️ Custom time scheduling & durations</strong></li>
                 <li>✅ <strong>📊 Advanced stats (4 metrics vs 2)</strong></li>
                 <li>✅ <strong>📥 Export all your data</strong></li>
                 <li>✅ Exclusive gold theme</li>
@@ -2102,15 +2105,21 @@ function renderFreeTimeBlocks() {
 function renderPremiumTimeBlocks() {
     const content = document.getElementById('timeBlocksContent');
     
-    // Get habits with suggested times
-    const scheduledHabits = habits.map(habit => {
-        const suggestedTime = getSuggestedTime(habit);
-        const duration = getEstimatedDuration(habit);
+    // Get habits with suggested times (use custom if set)
+    const scheduledHabits = habits.map((habit, index) => {
+        const displayTime = habit.customScheduledTime || getSuggestedTime(habit);
+        const duration = habit.customDuration || getEstimatedDuration(habit);
+        const isCustomTime = !!habit.customScheduledTime;
+        const isCustomDuration = !!habit.customDuration;
+        
         return {
             ...habit,
-            time: suggestedTime,
+            originalIndex: index,
+            time: displayTime,
             duration: duration,
-            timeValue: parseInt(suggestedTime.split(':')[0]) * 60 + parseInt(suggestedTime.split(':')[1])
+            isCustomTime: isCustomTime,
+            isCustomDuration: isCustomDuration,
+            timeValue: parseInt(displayTime.split(':')[0]) * 60 + parseInt(displayTime.split(':')[1])
         };
     }).sort((a, b) => a.timeValue - b.timeValue);
     
@@ -2118,7 +2127,7 @@ function renderPremiumTimeBlocks() {
         <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); padding: 25px; border-radius: 12px; margin-top: 10px; border: 2px solid #667eea;">
             <div style="text-align: center; margin-bottom: 20px;">
                 <h3 style="margin: 0 0 5px 0; color: var(--text);">📅 Your Optimized Daily Schedule</h3>
-                <p style="margin: 0; color: #667eea; font-size: 14px; font-weight: bold;">💎 Premium Feature</p>
+                <p style="margin: 0; color: #667eea; font-size: 14px; font-weight: bold;">💎 Premium Feature - Fully Customizable</p>
             </div>
             
             <div style="background: var(--card); padding: 20px; border-radius: 10px;">
@@ -2126,23 +2135,36 @@ function renderPremiumTimeBlocks() {
     
     scheduledHabits.forEach(habit => {
         const progressWidth = Math.min(habit.duration * 3, 300);
+        const borderColor = habit.isCustomTime ? '#2ecc71' : '#667eea';
+        const timeLabel = habit.isCustomTime ? 'Custom' : 'AI-suggested';
+        const durationLabel = habit.isCustomDuration ? 'Custom' : 'Estimated';
+        
         html += `
-            <div style="margin-bottom: 15px; padding: 15px; background: var(--bg); border-radius: 8px; border-left: 4px solid #667eea;">
+            <div style="margin-bottom: 15px; padding: 15px; background: var(--bg); border-radius: 8px; border-left: 4px solid ${borderColor};">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
                         <span style="font-size: 28px;">${habit.emoji || '⭐'}</span>
-                        <div>
+                        <div style="flex: 1;">
                             <div style="font-weight: bold; color: var(--text); font-size: 16px;">${habit.name}</div>
-                            <div style="color: #667eea; font-size: 14px; font-weight: bold;">${formatTime12Hour(habit.time)}</div>
+                            <div style="color: ${borderColor}; font-size: 14px; font-weight: bold; cursor: pointer; user-select: none; display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 5px; background: rgba(102, 126, 234, 0.1);" 
+                                 onclick="editHabitTime(${habit.originalIndex})"
+                                 title="Click to edit time">
+                                ${formatTime12Hour(habit.time)} <span style="font-size: 11px; opacity: 0.8;">✏️ ${timeLabel}</span>
+                            </div>
                         </div>
                     </div>
                     <div style="text-align: right;">
                         <div style="color: #666; font-size: 12px;">Duration</div>
-                        <div style="color: var(--text); font-weight: bold;">${habit.duration} min</div>
+                        <div style="color: var(--text); font-weight: bold; cursor: pointer;" 
+                             onclick="editHabitDuration(${habit.originalIndex})"
+                             title="Click to edit duration">
+                            ${habit.duration} min <span style="font-size: 11px; color: #667eea;">✏️</span>
+                        </div>
+                        <div style="font-size: 10px; color: #999;">${durationLabel}</div>
                     </div>
                 </div>
                 <div style="background: rgba(102, 126, 234, 0.1); height: 8px; border-radius: 4px; overflow: hidden;">
-                    <div style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: ${progressWidth}px; border-radius: 4px;"></div>
+                    <div style="background: linear-gradient(90deg, ${borderColor}, ${habit.isCustomTime ? '#27ae60' : '#764ba2'}); height: 100%; width: ${progressWidth}px; border-radius: 4px; transition: width 0.3s ease;"></div>
                 </div>
             </div>
         `;
@@ -2151,9 +2173,12 @@ function renderPremiumTimeBlocks() {
     html += `
             </div>
             
-            <div style="margin-top: 20px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; text-align: center;">
-                <p style="margin: 0; color: #667eea; font-size: 13px;">
-                    ✨ Times are AI-suggested based on habit type. Future updates will allow custom scheduling!
+            <div style="margin-top: 20px; padding: 15px; background: rgba(46, 204, 113, 0.15); border-radius: 8px; text-align: center; border: 1px dashed #2ecc71;">
+                <p style="margin: 0; color: #27ae60; font-size: 14px; font-weight: bold;">
+                    ✨ Click any time or duration to customize your schedule!
+                </p>
+                <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">
+                    🟢 Green border = Custom time • 🔵 Blue border = AI-suggested
                 </p>
             </div>
         </div>
@@ -2238,6 +2263,103 @@ function formatTime12Hour(time24) {
     const ampm = h >= 12 ? 'PM' : 'AM';
     const h12 = h % 12 || 12;
     return `${h12}:${minutes} ${ampm}`;
+}
+
+// ==========================================
+// CUSTOM SCHEDULING (PREMIUM FEATURE)
+// ==========================================
+
+function editHabitTime(habitIndex) {
+    if (!isPremium && !isVIP) {
+        showUpgradeModal('Custom Time Scheduling', 'Set exact times for each habit and customize your daily schedule. Premium feature!');
+        return;
+    }
+    
+    const habit = habits[habitIndex];
+    const currentTime = habit.customScheduledTime || getSuggestedTime(habit);
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.id = 'timeModal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+    modal.onclick = (e) => { if (e.target === modal) closeTimeModal(); };
+    
+    modal.innerHTML = `
+        <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+            <h3 style="margin-top: 0; color: #333;">⏰ Set Custom Time</h3>
+            <p style="color: #666; font-size: 18px; margin: 15px 0;">
+                <span style="font-size: 32px;">${habit.emoji || '⭐'}</span><br>
+                ${habit.name}
+            </p>
+            <input type="time" id="customTimeInput" value="${currentTime}" 
+                   style="font-size: 20px; padding: 15px; border: 2px solid #667eea; border-radius: 10px; width: 220px; margin: 20px 0; background: #f8f9fa;">
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 25px;">
+                <button onclick="saveCustomTime(${habitIndex})" 
+                        style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 14px 28px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                    ✅ Save Time
+                </button>
+                <button onclick="closeTimeModal()" 
+                        style="background: #e0e0e0; color: #333; padding: 14px 28px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                    Cancel
+                </button>
+            </div>
+            <button onclick="resetHabitTime(${habitIndex}); closeTimeModal();" 
+                    style="background: transparent; color: #667eea; padding: 10px; border: none; cursor: pointer; font-size: 14px; margin-top: 20px; text-decoration: underline; font-weight: 500;">
+                🔄 Reset to AI Suggested
+            </button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function saveCustomTime(habitIndex) {
+    const timeInput = document.getElementById('customTimeInput');
+    const newTime = timeInput.value;
+    
+    if (newTime) {
+        habits[habitIndex].customScheduledTime = newTime;
+        saveHabits();
+        closeTimeModal();
+        renderTimeBlocks();
+        alert(`✅ Time updated to ${formatTime12Hour(newTime)}!`);
+    }
+}
+
+function resetHabitTime(habitIndex) {
+    const habit = habits[habitIndex];
+    delete habit.customScheduledTime;
+    saveHabits();
+    renderTimeBlocks();
+    alert('✅ Reset to AI-suggested time');
+}
+
+function closeTimeModal() {
+    const modal = document.getElementById('timeModal');
+    if (modal) modal.remove();
+}
+
+function editHabitDuration(habitIndex) {
+    if (!isPremium && !isVIP) {
+        showUpgradeModal('Custom Duration', 'Set custom durations for your habits. Premium feature!');
+        return;
+    }
+    
+    const habit = habits[habitIndex];
+    const currentDuration = habit.customDuration || getEstimatedDuration(habit);
+    
+    const newDuration = prompt(
+        `Set duration for: ${habit.emoji || '⭐'} ${habit.name}\n\n` +
+        `Current: ${currentDuration} minutes\n` +
+        `Enter new duration (in minutes):`,
+        currentDuration
+    );
+    
+    if (newDuration && !isNaN(newDuration) && newDuration > 0) {
+        habit.customDuration = parseInt(newDuration);
+        saveHabits();
+        renderTimeBlocks();
+        alert(`✅ Duration updated to ${newDuration} minutes`);
+    }
 }
 
 // Rate limiting for free users (5 predictions/day)
