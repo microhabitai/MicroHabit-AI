@@ -132,7 +132,7 @@
             color: #666 !important;
         }
         body.premium {
-            --primary: #ffd700; /* Gold */
+            --primary: #00e5ff; /* Cyan - matches theme */
         }
         body { 
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
@@ -293,17 +293,22 @@
             width: 70%; 
             padding: 12px; 
             font-size: 14px; 
-            border: 1px solid var(--card-border);
-            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
             color: var(--text);
             border-radius: 12px;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, select:focus {
             outline: none;
             border-color: var(--accent-cyan);
-            box-shadow: 0 0 0 2px rgba(0,229,255,0.1);
+            background: rgba(255,255,255,0.08);
+            box-shadow: 
+                0 0 0 2px rgba(0,229,255,0.15),
+                0 0 20px rgba(0,229,255,0.2),
+                0 2px 12px rgba(0,0,0,0.3);
         }
         button { 
             padding: 10px 15px; 
@@ -1230,8 +1235,18 @@
             align-items: center;
             gap: 5px;
         }
-        .streak-current { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; }
-        .streak-best { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #333; }
+        .streak-current { 
+            background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(238,90,36,0.2)); 
+            color: #ff6b6b; 
+            border: 1px solid rgba(255,107,107,0.4);
+            box-shadow: 0 0 15px rgba(255,107,107,0.3);
+        }
+        .streak-best { 
+            background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(102,126,234,0.15)); 
+            color: var(--accent-cyan); 
+            border: 1px solid rgba(0,229,255,0.4);
+            box-shadow: 0 0 15px rgba(0,229,255,0.25);
+        }
         .fire-display { font-size: 18px; }
         @keyframes streak-celebration {
             0%, 100% { transform: scale(1); }
@@ -1898,7 +1913,7 @@
 
     <!-- Brand Logo (replaces old title) -->
     <div class="brand" style="display:none;" id="appBrand">
-        <img src="logo.png" alt="MicroHabit AI Logo" class="brand-logo">
+        <img src="logo.png" alt="MicroHabit AI Logo" class="brand-logo" onerror="this.style.display='none'" style="max-height: 32px; width: auto;">
         <span class="brand-text">Micro<span class="highlight">Habit AI</span></span>
     </div>
     
@@ -1976,7 +1991,11 @@
 
   <!-- Habits Tab -->
   <div id="habitsTab" class="tab-content active">
-    <h2 style="text-align:center;">My Habits</h2>
+    <div style="text-align: center; margin-bottom: 24px;">
+        <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">My Habits</h2>
+        <p style="margin: 0; font-size: 13px; color: var(--text-2); letter-spacing: 0.05em;">Track and improve your daily habits</p>
+        <div style="width: 60px; height: 2px; margin: 12px auto 0; background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent); box-shadow: 0 0 10px rgba(0,229,255,0.4);"></div>
+    </div>
     
     <!-- Quick Stats Dashboard -->
     <div id="quickStats" class="stats-dashboard">
