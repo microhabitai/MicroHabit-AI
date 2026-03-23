@@ -6174,6 +6174,7 @@ if (!navigator.onLine) {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         debugLog('📡 Attempting to register Service Worker...');
+        
         // Use relative path that works with GitHub Pages repo name
         const swPath = window.location.pathname.includes('MicroHabit-AI') 
             ? '/MicroHabit-AI/service-worker.js' 
@@ -6184,6 +6185,20 @@ if ('serviceWorker' in navigator) {
                 console.log('✅ Service Worker registered successfully:', registration.scope);
                 debugLog('✅ Service Worker registered successfully!');
                 debugLog(`   Scope: ${registration.scope}`);
+                
+                // Check for updates every time
+                registration.update();
+                
+                // Listen for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('🔄 New version available! Refresh to update.');
+                            debugLog('🔄 New version available!');
+                        }
+                    });
+                });
             })
             .catch(error => {
                 console.error('❌ Service Worker registration failed:', error);
