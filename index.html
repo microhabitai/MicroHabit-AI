@@ -1825,7 +1825,7 @@
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Full calendar history view</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Unlimited reminders per habit</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ <strong>Custom time scheduling & durations</strong></li>
-                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Advanced stats (4 metrics vs 2)</li>
+                <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Advanced stats (3 metrics vs 2)</li>
                 <li style="padding: 8px 0; font-size: 15px; color: #666 !important;">✅ Export all your data</li>
             </ul>
         </div>
@@ -2011,11 +2011,11 @@
         </div>
         
         <!-- Upgrade Prompt for Free Users (shows as 3rd card) -->
-        <div class="stat-card stat-upgrade" id="statsUpgradePrompt" style="display:none; border: 1px solid rgba(0,229,255,0.35); cursor: pointer;" onclick="showUpgradeModal('Advanced Stats', 'Get weekly performance tracking and more insights.')">
+        <div class="stat-card stat-upgrade" id="statsUpgradePrompt" style="display:none; border: 1px solid rgba(0,229,255,0.35); cursor: pointer;" onclick="showStatsUpgradeModal()">
             <div class="stat-label">Unlock</div>
             <div class="stat-icon">✨</div>
             <div class="stat-value" style="font-size: 14px; color: var(--accent-cyan);">Premium</div>
-            <div class="stat-sub">+More Stats</div>
+            <div class="stat-sub">+1 More Stat</div>
         </div>
     </div>
     
@@ -2254,7 +2254,7 @@
                 <li>✅ <strong>⏰ Unlimited reminders per habit</strong></li>
                 <li>✅ <strong>🔔 Custom reminder schedules</strong></li>
                 <li>✅ <strong>⏱️ Custom time scheduling & durations</strong></li>
-                <li>✅ <strong>📊 Advanced stats (4 metrics vs 2)</strong></li>
+                <li>✅ <strong>📊 Advanced stats (3 metrics vs 2)</strong></li>
                 <li>✅ <strong>📥 Export all your data</strong></li>
                 <li>✅ Exclusive gold theme</li>
                 <li>✅ Custom colors & themes</li>
@@ -3572,6 +3572,24 @@ function showUpgradeModal(featureName, description) {
     document.getElementById('lockedFeatureName').textContent = featureName;
     document.getElementById('featureDescription').textContent = description;
     document.getElementById('upgradeModal').style.display = 'flex';
+}
+
+function showStatsUpgradeModal() {
+    showFuturisticModal({
+        title: '📊 Advanced Stats',
+        body: '<strong>Unlock Premium to get:</strong><br><br>✨ Weekly performance tracking<br>📈 Completion rate analytics<br>🎯 Progress trends<br>💎 Full insights dashboard<br><br>Track your habits like a pro!',
+        buttons: [
+            {
+                text: 'Maybe Later',
+                style: 'modal-btn-secondary'
+            },
+            {
+                text: 'Upgrade to Premium',
+                style: 'modal-btn-primary',
+                onClick: () => showTab('premium')
+            }
+        ]
+    });
 }
 
 function closeUpgradeModal() {
