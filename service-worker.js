@@ -1,7 +1,7 @@
 // MicroHabit AI Service Worker
 // Handles: Background notifications, offline caching, PWA functionality
 
-const CACHE_NAME = 'microhabit-v2';
+const CACHE_NAME = 'microhabit-v3'; // Day 19 - Glowing buttons update
 const urlsToCache = [
   '/',
   '/index.html',
