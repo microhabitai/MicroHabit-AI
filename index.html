@@ -822,6 +822,189 @@
             box-shadow: 0 6px 16px rgba(255,76,106,0.4);
         }
         
+        /* Habit Calendar Modal */
+        .calendar-modal {
+            max-width: 600px !important;
+            width: 95% !important;
+            padding: 24px !important;
+        }
+        
+        .cal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .cal-title {
+            font-family: var(--font);
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+        }
+        
+        .cal-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cal-nav-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: rgba(0,255,160,0.06);
+            border: 1px solid rgba(0,255,160,0.2);
+            color: var(--accent-green);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cal-nav-btn:hover {
+            background: rgba(0,255,160,0.15);
+            box-shadow: 0 0 10px rgba(0,255,160,0.2);
+        }
+        
+        .cal-month {
+            font-family: var(--font);
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            min-width: 140px;
+            text-align: center;
+        }
+        
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        
+        .cal-dow {
+            text-align: center;
+            font-family: var(--font);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.28);
+            padding: 6px 0;
+        }
+        
+        .cal-day {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font);
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.28);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+        
+        .cal-day:hover {
+            transform: scale(1.05);
+            border-color: rgba(255,255,255,0.15);
+        }
+        
+        .cal-day.other-month {
+            opacity: 0.3;
+        }
+        
+        .cal-day.done {
+            background: rgba(0,255,157,0.08);
+            border-color: rgba(0,255,157,0.5);
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(0,255,157,0.2), inset 0 0 12px rgba(0,255,157,0.05);
+            animation: glowGreen 2.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glowGreen {
+            from { 
+                box-shadow: 0 0 10px rgba(0,255,157,0.2), inset 0 0 8px rgba(0,255,157,0.04); 
+            }
+            to { 
+                box-shadow: 0 0 22px rgba(0,255,157,0.4), inset 0 0 16px rgba(0,255,157,0.1); 
+            }
+        }
+        
+        .cal-day.missed {
+            background: rgba(255,45,85,0.07);
+            border-color: rgba(255,45,85,0.45);
+            color: rgba(255,255,255,0.6);
+            box-shadow: 0 0 10px rgba(255,45,85,0.15), inset 0 0 10px rgba(255,45,85,0.04);
+        }
+        
+        .cal-day.today {
+            border-color: rgba(0,229,255,0.6);
+            box-shadow: 0 0 16px rgba(0,229,255,0.25);
+        }
+        
+        .cal-day.done .check-mark {
+            font-size: 20px;
+            line-height: 1;
+            color: var(--accent-green);
+            filter: drop-shadow(0 0 6px var(--accent-green));
+            margin-bottom: 2px;
+        }
+        
+        .day-num {
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+        }
+        
+        .cal-day.done .day-num {
+            color: var(--accent-green);
+        }
+        
+        .cal-stats {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-around;
+            gap: 16px;
+        }
+        
+        .cal-stat {
+            text-align: center;
+        }
+        
+        .cal-stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: var(--font);
+        }
+        
+        .cal-stat-label {
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        
         .habit-header { display: flex; align-items: center; }
         .habit-emoji { font-size: 32px; margin-right: 10px; }
         .habit-name { font-weight: bold; font-size: 18px; }
@@ -1673,23 +1856,32 @@
         </div>
     </div>
     
-    <button id="calendarButton" onclick="toggleCalendar()" style="width:100%; margin-top:20px; padding:15px; font-size:18px; background:#667eea; color: white;">📅 View Calendar (Current Month)</button>
+    <button id="calendarButton" onclick="toggleCalendar()" style="width:100%; margin-top:20px; padding:15px; font-size:16px; font-weight: 700; background: linear-gradient(135deg, var(--accent-cyan), #7c3aed); color: white; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,229,255,0.3); letter-spacing: 0.02em;">📅 View Calendar History</button>
     
     <div id="calendarSection" style="display:none; margin-top:20px;">
-        <h2>Habit History Calendar</h2>
-        <p style="font-size: 13px; color: #666; text-align: center; margin: 5px 0;">
-            <span id="calendarTierNote">
-                🆓 Free: Current month only | 💎 Premium: Full history
-            </span>
-        </p>
-        <select id="habitSelect" onchange="renderCalendar()"></select>
-        <div style="display:flex; justify-content:space-between;">
-            <button onclick="prevMonth()">&lt; Prev</button>
-            <h3 id="monthYear"></h3>
-            <button onclick="nextMonth()">Next &gt;</button>
+        <div class="glass-card" style="background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--card-border); border-radius: 18px; padding: 24px;">
+            
+            <!-- Habit Selector -->
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Select Habit</label>
+                <select id="habitSelect" onchange="renderCalendar()" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(0,229,255,0.3); border-radius: 10px; padding: 12px; font-size: 14px; color: #ffffff; font-family: var(--font); font-weight: 600;">
+                    <option value="">Choose a habit...</option>
+                </select>
+            </div>
+
+            <!-- Tier Note -->
+            <p style="font-size: 11px; color: rgba(255,255,255,0.5); text-align: center; margin: 0 0 16px 0; letter-spacing: 0.05em;">
+                <span id="calendarTierNote">
+                    🆓 Free: Current month only | 💎 Premium: Full history
+                </span>
+            </p>
+            
+            <!-- Calendar Container -->
+            <div id="calendarContainer"></div>
+            
+            <!-- Close Button -->
+            <button onclick="toggleCalendar()" class="modal-btn modal-btn-secondary" style="width:100%; margin-top:20px;">Close Calendar</button>
         </div>
-        <table id="calendar"></table>
-        <button onclick="toggleCalendar()" style="width:100%; margin-top:20px;">Close Calendar</button>
     </div>
   </div>
 
@@ -3804,6 +3996,9 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
                         <button class="habit-action-btn goal" data-action="edit-goal" data-index="${index}">
                             🎯 Goal
                         </button>
+                        <button class="habit-action-btn calendar" data-action="calendar" data-index="${index}">
+                            📅 History
+                        </button>
                         ${isVIP ? 
                             `<button class="habit-action-btn note" data-action="add-note" data-index="${index}">
                                 📝 Note
@@ -3857,6 +4052,9 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
                                 break;
                             case 'edit-goal':
                                 editGoal(index);
+                                break;
+                            case 'calendar':
+                                showHabitCalendar(index);
                                 break;
                             case 'add-note':
                                 addHabitNote(index);
@@ -3995,6 +4193,154 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
                 }
             );
         }
+
+        // Show habit calendar history
+        function showHabitCalendar(index) {
+            const habit = habits[index];
+            if (!habit) return;
+            
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            generateCalendarView(habit, currentMonth, currentYear);
+        }
+        
+        function generateCalendarView(habit, month, year) {
+            const monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 
+                              'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+            
+            // Get previous month's last days
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            const prevMonthDays = startingDayOfWeek;
+            
+            // Build calendar HTML
+            let calendarHTML = `
+                <div class="cal-header">
+                    <div class="cal-title">${habit.emoji || '📅'} ${habit.name}</div>
+                    <div class="cal-nav">
+                        <button class="cal-nav-btn" onclick="navigateCalendar(${habit}, ${month}, ${year}, -1)">‹</button>
+                        <span class="cal-month">${monthNames[month]} ${year}</span>
+                        <button class="cal-nav-btn" onclick="navigateCalendar(${habit}, ${month}, ${year}, 1)">›</button>
+                    </div>
+                </div>
+                
+                <div class="cal-grid">
+                    <div class="cal-dow">Sun</div>
+                    <div class="cal-dow">Mon</div>
+                    <div class="cal-dow">Tue</div>
+                    <div class="cal-dow">Wed</div>
+                    <div class="cal-dow">Thu</div>
+                    <div class="cal-dow">Fri</div>
+                    <div class="cal-dow">Sat</div>
+            `;
+            
+            // Add previous month days
+            for (let i = prevMonthDays - 1; i >= 0; i--) {
+                const day = prevMonthLastDay - i;
+                calendarHTML += `<div class="cal-day other-month"><span class="day-num">${day}</span></div>`;
+            }
+            
+            // Add current month days
+            const today = new Date();
+            const isCurrentMonth = (month === today.getMonth() && year === today.getFullYear());
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isDone = habit.dates && habit.dates.includes(dateStr);
+                const isToday = isCurrentMonth && day === today.getDate();
+                
+                // Check if day is in the past
+                const dayDate = new Date(year, month, day);
+                const isPast = dayDate < today && !isToday;
+                const isMissed = isPast && !isDone;
+                
+                let classes = 'cal-day';
+                if (isDone) classes += ' done';
+                if (isMissed) classes += ' missed';
+                if (isToday) classes += ' today';
+                
+                calendarHTML += `
+                    <div class="${classes}">
+                        ${isDone ? '<div class="check-mark">✓</div>' : ''}
+                        <span class="day-num">${day}</span>
+                    </div>
+                `;
+            }
+            
+            // Add next month days to complete the grid
+            const totalCells = prevMonthDays + daysInMonth;
+            const remainingCells = (7 - (totalCells % 7)) % 7;
+            for (let day = 1; day <= remainingCells; day++) {
+                calendarHTML += `<div class="cal-day other-month"><span class="day-num">${day}</span></div>`;
+            }
+            
+            calendarHTML += '</div>'; // Close cal-grid
+            
+            // Add stats
+            const datesThisMonth = habit.dates ? habit.dates.filter(d => {
+                const [y, m] = d.split('-');
+                return parseInt(y) === year && parseInt(m) === month + 1;
+            }).length : 0;
+            
+            const completionRate = daysInMonth > 0 ? Math.round((datesThisMonth / daysInMonth) * 100) : 0;
+            const currentStreak = calculateStreak(habit.dates || []);
+            
+            calendarHTML += `
+                <div class="cal-stats">
+                    <div class="cal-stat">
+                        <div class="cal-stat-value">${datesThisMonth}</div>
+                        <div class="cal-stat-label">Completed</div>
+                    </div>
+                    <div class="cal-stat">
+                        <div class="cal-stat-value">${completionRate}%</div>
+                        <div class="cal-stat-label">Rate</div>
+                    </div>
+                    <div class="cal-stat">
+                        <div class="cal-stat-value">${currentStreak}</div>
+                        <div class="cal-stat-label">Streak</div>
+                    </div>
+                </div>
+            `;
+            
+            // Show modal with calendar
+            showFuturisticModal({
+                title: '',
+                body: calendarHTML,
+                buttons: [{
+                    text: 'Close',
+                    style: 'modal-btn-primary'
+                }]
+            });
+            
+            // Add calendar-modal class for wider modal
+            setTimeout(() => {
+                const modalContent = document.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.classList.add('calendar-modal');
+                }
+            }, 10);
+        }
+        
+        window.navigateCalendar = function(habitIndex, currentMonth, currentYear, direction) {
+            let newMonth = currentMonth + direction;
+            let newYear = currentYear;
+            
+            if (newMonth < 0) {
+                newMonth = 11;
+                newYear--;
+            } else if (newMonth > 11) {
+                newMonth = 0;
+                newYear++;
+            }
+            
+            generateCalendarView(habits[habitIndex], newMonth, newYear);
+        };
 
         // VIP Feature: Add habit note
         function addHabitNote(index) {
@@ -4173,81 +4519,176 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
         }
 
         function renderCalendar() {
-    const select = document.getElementById('habitSelect');
-    const habitIndex = select.value;
-    if (habitIndex === '') {
-        document.getElementById('calendar').innerHTML = '<tr><td colspan="7">Select a habit to view its calendar</td></tr>';
-        return;
-    }
-    const habit = habits[habitIndex];
-    const dates = new Set(habit.dates);
-
-    const monthYear = document.getElementById('monthYear');
-    const calTable = document.getElementById('calendar');
-    
-    // FIX: Use proper date object for the selected month/year
-    const firstDay = new Date(currentYear, currentMonth, 1);
-    monthYear.textContent = firstDay.toLocaleString('default', { month: 'long', year: 'numeric' });
-
-    let html = '<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr><tr>';
-
-    const startDay = firstDay.getDay();
-    for (let i = 0; i < startDay; i++) html += '<td></td>';
-
-    // FIX: Get today's date properly in local time
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-    // Loop through days of the month
-    const date = new Date(currentYear, currentMonth, 1);
-    while (date.getMonth() === currentMonth) {
-        const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        const isComplete = dates.has(dateStr);
-        const isToday = dateStr === todayStr;
-        const dayClass = isComplete ? 'day-complete' : (isToday ? 'day-today' : '');
-
-        html += `<td class="${dayClass}">${date.getDate()}</td>`;
-
-        if (date.getDay() === 6) html += '</tr><tr>';
-        date.setDate(date.getDate() + 1);
-    }
-
-    // Fill remaining cells
-    if (date.getDay() !== 0) {
-        for (let i = date.getDay(); i < 7; i++) html += '<td></td>';
-    }
-    html += '</tr>';
-    calTable.innerHTML = html;
-}
+            const select = document.getElementById('habitSelect');
+            const habitIndex = select.value;
+            const container = document.getElementById('calendarContainer');
+            
+            if (habitIndex === '') {
+                container.innerHTML = '<p style="text-align:center; color: rgba(255,255,255,0.5); padding: 40px 0;">Select a habit to view its calendar</p>';
+                return;
+            }
+            
+            const habit = habits[habitIndex];
+            const monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 
+                              'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+            
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+            
+            // Get previous month's last days
+            const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+            const prevMonthDays = startingDayOfWeek;
+            
+            // Build calendar HTML
+            let calendarHTML = `
+                <div class="cal-header">
+                    <div class="cal-title">${habit.emoji || '📅'} ${habit.name}</div>
+                    <div class="cal-nav">
+                        <button class="cal-nav-btn" onclick="prevMonth()">‹</button>
+                        <span class="cal-month">${monthNames[currentMonth]} ${currentYear}</span>
+                        <button class="cal-nav-btn" onclick="nextMonth()">›</button>
+                    </div>
+                </div>
+                
+                <div class="cal-grid">
+                    <div class="cal-dow">Sun</div>
+                    <div class="cal-dow">Mon</div>
+                    <div class="cal-dow">Tue</div>
+                    <div class="cal-dow">Wed</div>
+                    <div class="cal-dow">Thu</div>
+                    <div class="cal-dow">Fri</div>
+                    <div class="cal-dow">Sat</div>
+            `;
+            
+            // Add previous month days
+            for (let i = prevMonthDays - 1; i >= 0; i--) {
+                const day = prevMonthLastDay - i;
+                calendarHTML += `<div class="cal-day other-month"><span class="day-num">${day}</span></div>`;
+            }
+            
+            // Add current month days
+            const today = new Date();
+            const isCurrentMonth = (currentMonth === today.getMonth() && currentYear === today.getFullYear());
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isDone = habit.dates && habit.dates.includes(dateStr);
+                const isToday = isCurrentMonth && day === today.getDate();
+                
+                // Check if day is in the past
+                const dayDate = new Date(currentYear, currentMonth, day);
+                const isPast = dayDate < today && !isToday;
+                const isMissed = isPast && !isDone;
+                
+                let classes = 'cal-day';
+                if (isDone) classes += ' done';
+                if (isMissed) classes += ' missed';
+                if (isToday) classes += ' today';
+                
+                calendarHTML += `
+                    <div class="${classes}">
+                        ${isDone ? '<div class="check-mark">✓</div>' : ''}
+                        <span class="day-num">${day}</span>
+                    </div>
+                `;
+            }
+            
+            // Add next month days to complete the grid
+            const totalCells = prevMonthDays + daysInMonth;
+            const remainingCells = (7 - (totalCells % 7)) % 7;
+            for (let day = 1; day <= remainingCells; day++) {
+                calendarHTML += `<div class="cal-day other-month"><span class="day-num">${day}</span></div>`;
+            }
+            
+            calendarHTML += '</div>'; // Close cal-grid
+            
+            // Add stats
+            const datesThisMonth = habit.dates ? habit.dates.filter(d => {
+                const [y, m] = d.split('-');
+                return parseInt(y) === currentYear && parseInt(m) === currentMonth + 1;
+            }).length : 0;
+            
+            const completionRate = daysInMonth > 0 ? Math.round((datesThisMonth / daysInMonth) * 100) : 0;
+            const currentStreak = calculateStreak(habit.dates || []);
+            
+            calendarHTML += `
+                <div class="cal-stats">
+                    <div class="cal-stat">
+                        <div class="cal-stat-value">${datesThisMonth}</div>
+                        <div class="cal-stat-label">Completed</div>
+                    </div>
+                    <div class="cal-stat">
+                        <div class="cal-stat-value">${completionRate}%</div>
+                        <div class="cal-stat-label">Rate</div>
+                    </div>
+                    <div class="cal-stat">
+                        <div class="cal-stat-value">${currentStreak}</div>
+                        <div class="cal-stat-label">Streak</div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = calendarHTML;
+        }
         function prevMonth() {
-    // FREE users can only view current month
-    if (!isPremium && !isVIP) {
-        alert('🔒 Calendar History - Premium Feature\n\nFREE users can view the current month.\n\nUpgrade to Premium to view full calendar history!');
-        return;
-    }
-    
-    currentMonth--;
-    if (currentMonth < 0) { 
-        currentMonth = 11; 
-        currentYear--; 
-    }
-    renderCalendar();
-}
+            // FREE users can only view current month
+            if (!isPremium && !isVIP) {
+                showFuturisticModal({
+                    title: '🔒 Premium Feature',
+                    body: 'FREE users can view the current month.<br><br><strong>Upgrade to Premium for:</strong><br>✨ Full calendar history<br>✨ Navigate all months<br>✨ Track long-term progress',
+                    buttons: [
+                        {
+                            text: 'Maybe Later',
+                            style: 'modal-btn-secondary'
+                        },
+                        {
+                            text: 'Upgrade to Premium',
+                            style: 'modal-btn-primary',
+                            onClick: () => showTab('premium')
+                        }
+                    ]
+                });
+                return;
+            }
+            
+            currentMonth--;
+            if (currentMonth < 0) { 
+                currentMonth = 11; 
+                currentYear--; 
+            }
+            renderCalendar();
+        }
 
-function nextMonth() {
-    // FREE users can only view current month
-    if (!isPremium && !isVIP) {
-        alert('🔒 Calendar History - Premium Feature\n\nFREE users can view the current month.\n\nUpgrade to Premium to view full calendar history!');
-        return;
-    }
-    
-    currentMonth++;
-    if (currentMonth > 11) { 
-        currentMonth = 0; 
-        currentYear++; 
-    }
-    renderCalendar();
-}
+        function nextMonth() {
+            // FREE users can only view current month
+            if (!isPremium && !isVIP) {
+                showFuturisticModal({
+                    title: '🔒 Premium Feature',
+                    body: 'FREE users can view the current month.<br><br><strong>Upgrade to Premium for:</strong><br>✨ Full calendar history<br>✨ Navigate all months<br>✨ Track long-term progress',
+                    buttons: [
+                        {
+                            text: 'Maybe Later',
+                            style: 'modal-btn-secondary'
+                        },
+                        {
+                            text: 'Upgrade to Premium',
+                            style: 'modal-btn-primary',
+                            onClick: () => showTab('premium')
+                        }
+                    ]
+                });
+                return;
+            }
+            
+            currentMonth++;
+            if (currentMonth > 11) { 
+                currentMonth = 0; 
+                currentYear++; 
+            }
+            renderCalendar();
+        }
 
         function exportData() {
             // Premium Feature Check
