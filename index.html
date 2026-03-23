@@ -822,6 +822,216 @@
             box-shadow: 0 6px 16px rgba(255,76,106,0.4);
         }
         
+        /* Futuristic Calendar Button */
+        .calendar-btn-wrap {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            border-radius: 20px;
+            filter:
+                drop-shadow(0 0 18px rgba(0, 210, 255, 0.55))
+                drop-shadow(0 0 40px rgba(0, 210, 255, 0.25))
+                drop-shadow(0 0 18px rgba(0, 255, 160, 0.45))
+                drop-shadow(0 0 60px rgba(0, 255, 160, 0.18));
+            animation: glowBreath 2.8s ease-in-out infinite alternate;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        @keyframes glowBreath {
+            from { 
+                filter:
+                    drop-shadow(0 0 14px rgba(0,210,255,0.5))
+                    drop-shadow(0 0 30px rgba(0,210,255,0.2))
+                    drop-shadow(0 0 14px rgba(0,255,160,0.4))
+                    drop-shadow(0 0 50px rgba(0,255,160,0.15)); 
+            }
+            to { 
+                filter:
+                    drop-shadow(0 0 24px rgba(0,210,255,0.8))
+                    drop-shadow(0 0 55px rgba(0,210,255,0.35))
+                    drop-shadow(0 0 24px rgba(0,255,160,0.7))
+                    drop-shadow(0 0 80px rgba(0,255,160,0.3)); 
+            }
+        }
+        
+        .calendar-btn-border {
+            padding: 2.5px;
+            border-radius: 20px;
+            background: linear-gradient(105deg, #00cfff 0%, #00e8ff 30%, #00ffb8 70%, #00ff9d 100%);
+        }
+        
+        .calendar-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 36px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #0d1f45 0%, #091630 50%, #0b1d3a 100%);
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .calendar-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,220,255,0.07) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .calendar-btn-wrap:hover .calendar-btn {
+            transform: scale(1.03);
+        }
+        
+        .calendar-btn-wrap:active .calendar-btn {
+            transform: scale(0.97);
+        }
+        
+        .calendar-btn-icon {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+        }
+        
+        .calendar-btn-text {
+            font-family: var(--font);
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #ffffff;
+            letter-spacing: 0.06em;
+            text-align: left;
+            text-shadow:
+                0 0 12px rgba(0, 220, 255, 0.7),
+                0 0 28px rgba(0, 220, 255, 0.3);
+        }
+        
+        @media (max-width: 600px) {
+            .calendar-btn-text {
+                font-size: 18px;
+            }
+            .calendar-btn {
+                gap: 12px;
+                padding: 16px 24px;
+            }
+            .calendar-btn-icon {
+                width: 44px;
+                height: 44px;
+            }
+        }
+        
+        /* Futuristic Schedule Button */
+        .schedule-btn-wrap {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            border-radius: 20px;
+            filter:
+                drop-shadow(0 0 18px rgba(102, 126, 234, 0.55))
+                drop-shadow(0 0 40px rgba(102, 126, 234, 0.25))
+                drop-shadow(0 0 18px rgba(118, 75, 162, 0.45))
+                drop-shadow(0 0 60px rgba(118, 75, 162, 0.18));
+            animation: glowBreathPurple 2.8s ease-in-out infinite alternate;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        @keyframes glowBreathPurple {
+            from { 
+                filter:
+                    drop-shadow(0 0 14px rgba(102, 126, 234, 0.5))
+                    drop-shadow(0 0 30px rgba(102, 126, 234, 0.2))
+                    drop-shadow(0 0 14px rgba(118, 75, 162, 0.4))
+                    drop-shadow(0 0 50px rgba(118, 75, 162, 0.15)); 
+            }
+            to { 
+                filter:
+                    drop-shadow(0 0 24px rgba(102, 126, 234, 0.8))
+                    drop-shadow(0 0 55px rgba(102, 126, 234, 0.35))
+                    drop-shadow(0 0 24px rgba(118, 75, 162, 0.7))
+                    drop-shadow(0 0 80px rgba(118, 75, 162, 0.3)); 
+            }
+        }
+        
+        .schedule-btn-border {
+            padding: 2.5px;
+            border-radius: 20px;
+            background: linear-gradient(105deg, #667eea 0%, #7c8bf5 30%, #9b59b6 70%, #764ba2 100%);
+        }
+        
+        .schedule-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 36px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #1e1545 0%, #16102e 50%, #1a1240 100%);
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .schedule-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.07) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .schedule-btn-wrap:hover .schedule-btn {
+            transform: scale(1.03);
+        }
+        
+        .schedule-btn-wrap:active .schedule-btn {
+            transform: scale(0.97);
+        }
+        
+        .schedule-btn-icon {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+        }
+        
+        .schedule-btn-text {
+            font-family: var(--font);
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #ffffff;
+            letter-spacing: 0.06em;
+            text-align: left;
+            text-shadow:
+                0 0 12px rgba(102, 126, 234, 0.7),
+                0 0 28px rgba(102, 126, 234, 0.3);
+        }
+        
+        @media (max-width: 600px) {
+            .schedule-btn-text {
+                font-size: 18px;
+            }
+            .schedule-btn {
+                gap: 12px;
+                padding: 16px 24px;
+            }
+            .schedule-btn-icon {
+                width: 44px;
+                height: 44px;
+            }
+        }
+        
         /* Habit Calendar Modal */
         .calendar-modal {
             max-width: 600px !important;
@@ -1847,16 +2057,96 @@
     
     <!-- Time Blocks Section -->
     <div id="timeBlocksSection" style="margin-top: 30px;">
-        <button onclick="toggleTimeBlocks()" style="width:100%; margin-top:20px; padding:15px; font-size:18px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
-            ⏰ View Daily Schedule
-        </button>
+        <div class="schedule-btn-wrap">
+            <div class="schedule-btn-border">
+                <button class="schedule-btn" onclick="toggleTimeBlocks()">
+                    <!-- Clock + Schedule SVG icon -->
+                    <svg class="schedule-btn-icon" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Main clock circle -->
+                        <circle cx="28" cy="28" r="22"
+                                stroke="#667eea" stroke-width="2.5"
+                                fill="rgba(102,126,234,0.05)"/>
+                        <circle cx="28" cy="28" r="22"
+                                fill="rgba(102,126,234,0.08)"/>
+                        
+                        <!-- Hour markers -->
+                        <circle cx="28" cy="10" r="2" fill="#667eea"/>
+                        <circle cx="28" cy="46" r="2" fill="#667eea"/>
+                        <circle cx="46" cy="28" r="2" fill="#667eea"/>
+                        <circle cx="10" cy="28" r="2" fill="#667eea"/>
+                        
+                        <!-- Clock hands -->
+                        <line x1="28" y1="28" x2="28" y2="16"
+                              stroke="#667eea" stroke-width="2.5" stroke-linecap="round"/>
+                        <line x1="28" y1="28" x2="37" y2="28"
+                              stroke="#9b59b6" stroke-width="2.5" stroke-linecap="round"/>
+                        
+                        <!-- Center dot -->
+                        <circle cx="28" cy="28" r="2.5" fill="#764ba2"/>
+                        
+                        <!-- Schedule lines (bottom right) -->
+                        <line x1="40" y1="40" x2="50" y2="40"
+                              stroke="#9b59b6" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="40" y1="45" x2="48" y2="45"
+                              stroke="#9b59b6" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="40" y1="50" x2="52" y2="50"
+                              stroke="#9b59b6" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    
+                    <div class="schedule-btn-text">VIEW DAILY<br>SCHEDULE</div>
+                </button>
+            </div>
+        </div>
         
         <div id="timeBlocksContent" style="display:none; margin-top:20px;">
             <!-- Content rendered by JavaScript -->
         </div>
     </div>
     
-    <button id="calendarButton" onclick="toggleCalendar()" style="width:100%; margin-top:20px; padding:15px; font-size:16px; font-weight: 700; background: linear-gradient(135deg, var(--accent-cyan), #7c3aed); color: white; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,229,255,0.3); letter-spacing: 0.02em;">📅 View Calendar History</button>
+    <div class="calendar-btn-wrap">
+        <div class="calendar-btn-border">
+            <button class="calendar-btn" id="calendarButton" onclick="toggleCalendar()">
+                <!-- Calendar + Clock SVG icon -->
+                <svg class="calendar-btn-icon" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Calendar body -->
+                    <rect x="3" y="11" width="38" height="34" rx="5"
+                          stroke="#00d8ff" stroke-width="2.2"
+                          fill="rgba(0,216,255,0.05)"/>
+                    <!-- Top strip -->
+                    <rect x="3" y="11" width="38" height="11" rx="5"
+                          fill="rgba(0,216,255,0.10)" stroke="#00d8ff" stroke-width="2.2"/>
+                    <!-- Pin left -->
+                    <line x1="13" y1="6" x2="13" y2="16"
+                          stroke="#00d8ff" stroke-width="2.4" stroke-linecap="round"/>
+                    <!-- Pin right -->
+                    <line x1="29" y1="6" x2="29" y2="16"
+                          stroke="#00d8ff" stroke-width="2.4" stroke-linecap="round"/>
+                    <!-- Grid dots row 1 -->
+                    <rect x="9"  y="26" width="4" height="4" rx="1" fill="#00d8ff"/>
+                    <rect x="18" y="26" width="4" height="4" rx="1" fill="#00d8ff"/>
+                    <rect x="27" y="26" width="4" height="4" rx="1" fill="#00d8ff"/>
+                    <!-- Grid dots row 2 -->
+                    <rect x="9"  y="34" width="4" height="4" rx="1" fill="#00d8ff"/>
+                    <rect x="18" y="34" width="4" height="4" rx="1" fill="#00d8ff"/>
+                    
+                    <!-- Clock circle (bottom-right overlap) -->
+                    <circle cx="41" cy="41" r="13"
+                            fill="#091630" stroke="#00ffb0" stroke-width="2.2"/>
+                    <circle cx="41" cy="41" r="13"
+                            fill="rgba(0,255,176,0.07)"/>
+                    <!-- Clock hands -->
+                    <line x1="41" y1="35" x2="41" y2="41"
+                          stroke="#00ffb0" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="41" y1="41" x2="46" y2="44"
+                          stroke="#00ffb0" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Clock center dot -->
+                    <circle cx="41" cy="41" r="1.8" fill="#00ffb0"/>
+                </svg>
+                
+                <div class="calendar-btn-text">VIEW CALENDAR<br>HISTORY</div>
+            </button>
+        </div>
+    </div>
     
     <div id="calendarSection" style="display:none; margin-top:20px;">
         <div class="glass-card" style="background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--card-border); border-radius: 18px; padding: 24px;">
