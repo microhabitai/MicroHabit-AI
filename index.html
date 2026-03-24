@@ -1748,6 +1748,414 @@
                 opacity: 1;
             }
         }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* AI COACH TAB STYLES */
+        /* ═══════════════════════════════════════════════════ */
+        
+        /* AI Top Bar */
+        .ai-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 99px;
+            position: relative;
+        }
+        
+        .ai-topbar-title {
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+        
+        .ai-badge {
+            position: absolute;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border: 1px solid rgba(180,140,255,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #e0d0ff;
+            font-family: var(--font);
+            box-shadow: 0 0 14px rgba(124,58,237,0.5);
+        }
+        
+        /* AI Greeting */
+        .ai-greeting {
+            font-family: var(--font);
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .ai-greeting .wave {
+            font-size: 28px;
+        }
+        
+        /* Neural network graphic */
+        .neural {
+            position: absolute;
+            right: -4px;
+            top: -10px;
+            width: 120px;
+            height: 90px;
+            opacity: 0.35;
+            background:
+                radial-gradient(circle at 30% 40%, rgba(0,200,255,0.6) 2px, transparent 2px),
+                radial-gradient(circle at 70% 20%, rgba(0,200,255,0.5) 2px, transparent 2px),
+                radial-gradient(circle at 80% 70%, rgba(0,200,255,0.4) 2px, transparent 2px),
+                radial-gradient(circle at 20% 80%, rgba(0,200,255,0.4) 2px, transparent 2px),
+                radial-gradient(circle at 55% 55%, rgba(0,200,255,0.5) 2px, transparent 2px);
+            pointer-events: none;
+        }
+        
+        /* AI Insight Card */
+        .insight-card {
+            border: 2px solid var(--accent-cyan);
+            border-radius: var(--r);
+            background: rgba(0,40,80,0.5);
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+            box-shadow:
+                0 0 20px rgba(0,212,255,0.2),
+                inset 0 0 30px rgba(0,180,255,0.05);
+            animation: insightGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes insightGlow {
+            from {
+                box-shadow: 
+                    0 0 16px rgba(0,212,255,0.18),
+                    inset 0 0 24px rgba(0,180,255,0.04);
+            }
+            to {
+                box-shadow: 
+                    0 0 32px rgba(0,212,255,0.4),
+                    inset 0 0 36px rgba(0,180,255,0.1);
+            }
+        }
+        
+        .insight-label {
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .insight-label .arrow {
+            font-size: 16px;
+        }
+        
+        /* Arc Gauge */
+        .gauge-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        
+        .arc {
+            position: relative;
+            width: 90px;
+            height: 58px;
+            flex-shrink: 0;
+            overflow: visible;
+        }
+        
+        .arc svg {
+            overflow: visible;
+        }
+        
+        .arc-track {
+            fill: none;
+            stroke: rgba(255,255,255,0.08);
+            stroke-width: 7;
+            stroke-linecap: round;
+        }
+        
+        .arc-fill {
+            fill: none;
+            stroke: url(#arcGrad);
+            stroke-width: 7;
+            stroke-linecap: round;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 29; /* Default 87% */
+            filter: drop-shadow(0 0 6px rgba(0,212,255,0.8));
+            transition: stroke-dashoffset 1s ease;
+        }
+        
+        .insight-pct {
+            font-family: var(--font);
+            font-size: 38px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(0,212,255,0.6);
+        }
+        
+        .insight-pct span {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.05em;
+        }
+        
+        .insight-habit {
+            font-family: var(--font);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        
+        .insight-body {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        
+        .brain-icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            background: rgba(0,100,180,0.3);
+            border-radius: 50%;
+            border: 1.5px solid rgba(0,180,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .insight-text {
+            font-size: 13px;
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+        
+        /* Get AI Prediction Button */
+        .predict-wrap {
+            padding: 3px;
+            border-radius: 99px;
+            background: linear-gradient(90deg, #00aaff, #7c3aed, #a855f7);
+            margin-bottom: 16px;
+            box-shadow: 
+                0 0 28px rgba(100,60,220,0.5),
+                0 0 50px rgba(0,150,255,0.2);
+            animation: btnGlow 2.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes btnGlow {
+            from {
+                box-shadow: 
+                    0 0 20px rgba(100,60,220,0.4),
+                    0 0 40px rgba(0,150,255,0.15);
+            }
+            to {
+                box-shadow: 
+                    0 0 36px rgba(130,70,255,0.7),
+                    0 0 70px rgba(0,150,255,0.35);
+            }
+        }
+        
+        .predict-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 96px;
+            background: linear-gradient(90deg, #0072ff, #5b21b6, #7c3aed);
+            border: none;
+            cursor: pointer;
+            font-family: var(--font);
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 12px rgba(200,180,255,0.5);
+            transition: transform 0.15s ease;
+        }
+        
+        .predict-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .predict-btn:active {
+            transform: scale(0.97);
+        }
+        
+        /* Bottom Cards Row */
+        .ai-bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        /* Weekly Roast Card */
+        .roast-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(220,60,60,0.35);
+            border-radius: var(--r);
+            padding: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .roast-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(220,40,60,0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        
+        .ai-card-label {
+            font-family: var(--font);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-2);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .roast-title {
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .roast-body {
+            font-size: 12px;
+            color: var(--text-2);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .mini-btn {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(238,90,36,0.2));
+            border: 1px solid rgba(255,107,107,0.4);
+            color: #ff6b6b;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mini-btn:hover {
+            background: linear-gradient(135deg, rgba(255,107,107,0.3), rgba(238,90,36,0.3));
+            transform: scale(1.02);
+        }
+        
+        /* Notifications Card */
+        .notif-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: var(--r);
+            padding: 14px;
+        }
+        
+        .notif-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .notif-name {
+            font-size: 13px;
+            color: var(--text);
+        }
+        
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 42px;
+            height: 24px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            border-radius: 99px;
+            background: rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .toggle input:checked + .toggle-track {
+            background: linear-gradient(90deg, #00aaff, #7c3aed);
+        }
+        
+        .toggle-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            transition: left 0.2s;
+            pointer-events: none;
+        }
+        
+        .toggle input:checked ~ .toggle-thumb {
+            left: 21px;
+        }
+        
+        .adjust-link {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .adjust-link:hover {
+            color: var(--accent-cyan);
+        }
     </style>
 </head>
 <body>
@@ -2210,35 +2618,126 @@
 
   <!-- AI Coach Tab -->
   <div id="aiTab" class="tab-content">
-    <h2 style="text-align:center;">🤖 AI Predictive Coach</h2>
     
-    <div id="apiSection">
-        <!-- AI Predictions Built-in! -->
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
-            <h3 style="margin-top: 0;">🤖 AI Predictions - Built In!</h3>
-            <p style="margin: 10px 0;">No setup required - AI coaching works instantly! ✨</p>
-            <p style="font-size: 14px; opacity: 0.9;">Free: 5 predictions/day | Premium: Unlimited</p>
+    <!-- Top Bar -->
+    <div class="ai-topbar">
+        <div class="ai-topbar-title">AI Coach</div>
+        <div class="ai-badge">AI</div>
+    </div>
+    
+    <!-- Greeting -->
+    <div class="ai-greeting">
+        Hi, <span id="aiGreetingName">there</span>! <span class="wave">👋</span>
+        <div class="neural"></div>
+    </div>
+    
+    <!-- AI Insight Card -->
+    <div class="insight-card" id="insightCard">
+        <div class="insight-label">
+            Your AI Insight
+            <span class="arrow">↗</span>
         </div>
         
-        <!-- Weekly Roast Feature -->
-        <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
-            <h3 style="margin-top: 0;">💀 WEEKLY ROAST 💀</h3>
-            <p style="margin: 10px 0;">Get hilariously honest feedback on your worst habit!</p>
-            <p style="font-size: 14px; opacity: 0.9;">Savage but supportive. Screenshots encouraged! 😂</p>
-            <button onclick="showWeeklyRoast()" style="width: 100%; background: white; color: #ff6b6b; font-weight: bold; font-size: 16px; padding: 12px; margin-top: 10px; border: none; border-radius: 8px; cursor: pointer;">
-                💀 GET ROASTED NOW 💀
-            </button>
+        <div class="gauge-wrap">
+            <div class="arc">
+                <svg width="90" height="58" viewBox="0 0 90 58">
+                    <defs>
+                        <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#0072ff"/>
+                            <stop offset="100%" stop-color="#00e5ff"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- 180° arc, center 45,55, radius 40 -->
+                    <path class="arc-track" d="M 5 55 A 40 40 0 0 1 85 55"/>
+                    <path class="arc-fill" id="arcFill" d="M 5 55 A 40 40 0 0 1 85 55"/>
+                </svg>
+            </div>
+            <div>
+                <div class="insight-pct">
+                    <span id="insightPercent">75</span>% 
+                    <span>LIKELIHOOD</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="insight-habit" id="insightHabit">Get your first AI prediction!</div>
+        
+        <div class="insight-body">
+            <div class="brain-icon">🧠</div>
+            <div class="insight-text" id="insightText">
+                Click the button below to get your personalized AI coaching. Free users get 5 predictions/day. Premium users get unlimited predictions!
+            </div>
         </div>
     </div>
-
-    <button onclick="getAINudge(true)" style="width:100%; margin-top:20px; padding:15px; font-size:18px;">🔮 Get AI Predictive Nudge Now</button>
-    <div id="nudge">Your personalized AI coaching will appear here.</div>
-
-    <div id="notifySection" style="margin-top:20px;">
+    
+    <!-- Get AI Prediction Button -->
+    <div class="predict-wrap">
+        <button class="predict-btn" onclick="getAINudge(true)">Get AI Prediction</button>
+    </div>
+    
+    <!-- Hidden nudge div for compatibility -->
+    <div id="nudge" style="display:none;">Your personalized AI coaching will appear here.</div>
+    
+    <!-- Bottom Cards Row -->
+    <div class="ai-bottom-row">
+        
+        <!-- Weekly Roast Card -->
+        <div class="roast-card">
+            <div class="ai-card-label">Weekly Roast 🔥</div>
+            <div class="roast-title">Get Roasted!</div>
+            <div class="roast-body">
+                See hilariously honest feedback on your habits. Savage but supportive! 😂
+            </div>
+            <button class="mini-btn" onclick="showWeeklyRoast()">
+                💀 Roast Me
+            </button>
+        </div>
+        
+        <!-- Notifications Card -->
+        <div class="notif-card">
+            <div class="ai-card-label">Notifications 🔔</div>
+            
+            <div class="notif-row">
+                <span class="notif-name">Daily Insights</span>
+                <label class="toggle">
+                    <input type="checkbox" id="dailyInsightsToggle" onchange="toggleDailyInsights(this.checked)"/>
+                    <div class="toggle-track"></div>
+                    <div class="toggle-thumb"></div>
+                </label>
+            </div>
+            
+            <div class="notif-row">
+                <span class="notif-name">Reminders</span>
+                <label class="toggle">
+                    <input type="checkbox" id="remindersToggle" checked onchange="toggleReminders(this.checked)"/>
+                    <div class="toggle-track"></div>
+                    <div class="toggle-thumb"></div>
+                </label>
+            </div>
+            
+            <div class="notif-row" style="margin-bottom:6px">
+                <span class="notif-name">Weekly Summary</span>
+                <label class="toggle">
+                    <input type="checkbox" id="weeklySummaryToggle" onchange="toggleWeeklySummary(this.checked)"/>
+                    <div class="toggle-track"></div>
+                    <div class="toggle-thumb"></div>
+                </label>
+            </div>
+            
+            <div class="adjust-link" onclick="showTab('settings')">
+                Adjust settings ⚙️
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Hidden notification section for compatibility -->
+    <div id="notifySection" style="display:none;">
         <p><strong>Daily Nudges</strong>:</p>
         <button onclick="requestNotificationPermission()" style="background:#28a745;">Enable Morning Predictions</button>
         <p id="notifyStatus">Notifications off – enable for daily AI coaching!</p>
     </div>
+    
   </div>
 
   <!-- Premium Tab -->
@@ -4728,34 +5227,114 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
             );
         }
 
+        // ═══════════════════════════════════════════════════
+        // AI COACH TAB FUNCTIONS
+        // ═══════════════════════════════════════════════════
+        
+        // Update AI Insight Card
+        function updateInsightCard(habitName, title, text, percentage) {
+            const insightHabit = document.getElementById('insightHabit');
+            const insightText = document.getElementById('insightText');
+            const insightPercent = document.getElementById('insightPercent');
+            const arcFill = document.getElementById('arcFill');
+            
+            if (habitName) {
+                insightHabit.textContent = `To Complete: ${habitName}`;
+            } else {
+                insightHabit.textContent = title || 'Get your first AI prediction!';
+            }
+            
+            insightText.textContent = text || 'Click the button below to get personalized coaching.';
+            insightPercent.textContent = percentage || 75;
+            
+            // Update arc gauge (220 total length, percentage determines offset)
+            const offset = 220 - (220 * (percentage / 100));
+            arcFill.style.strokeDashoffset = offset;
+        }
+        
+        // Initialize AI Greeting with User Name
+        function initAIGreeting() {
+            const greetingName = document.getElementById('aiGreetingName');
+            if (userData && userData.displayName) {
+                greetingName.textContent = userData.displayName.split(' ')[0]; // First name only
+            } else {
+                greetingName.textContent = 'there';
+            }
+        }
+        
+        // Toggle Functions for Notification Settings
+        function toggleDailyInsights(enabled) {
+            if (enabled) {
+                requestNotificationPermission();
+            }
+            // Store preference
+            localStorage.setItem('dailyInsightsEnabled', enabled);
+        }
+        
+        function toggleReminders(enabled) {
+            // Store preference
+            localStorage.setItem('remindersEnabled', enabled);
+            if (!enabled) {
+                showFuturisticModal({
+                    title: '🔕 Reminders Disabled',
+                    body: 'You won\'t receive habit reminders. You can re-enable them anytime.',
+                    buttons: [{ text: 'OK', style: 'modal-btn-primary' }]
+                });
+            }
+        }
+        
+        function toggleWeeklySummary(enabled) {
+            // Store preference
+            localStorage.setItem('weeklySummaryEnabled', enabled);
+            if (enabled) {
+                showFuturisticModal({
+                    title: '📊 Weekly Summary Enabled',
+                    body: 'You\'ll receive a weekly summary of your habits every Sunday!',
+                    buttons: [{ text: 'Great!', style: 'modal-btn-primary' }]
+                });
+            }
+        }
+        
+        // Load notification preferences
+        function loadNotificationPreferences() {
+            const dailyInsights = localStorage.getItem('dailyInsightsEnabled');
+            const reminders = localStorage.getItem('remindersEnabled');
+            const weeklySummary = localStorage.getItem('weeklySummaryEnabled');
+            
+            if (dailyInsights === 'true') {
+                document.getElementById('dailyInsightsToggle').checked = true;
+            }
+            if (reminders !== 'false') { // Default true
+                document.getElementById('remindersToggle').checked = true;
+            }
+            if (weeklySummary === 'true') {
+                document.getElementById('weeklySummaryToggle').checked = true;
+            }
+        }
+        
         async function getAINudge(userRequested = false) {
     // Check rate limit for free users
     if (!isPremium && !isVIP && !canMakePrediction()) {
-        document.getElementById('nudge').innerHTML = `
-            <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
-                <strong>⏰ Daily Limit Reached</strong><br>
-                You've used all 10 free predictions today.<br><br>
-                <button onclick="showPremium()" style="background: #ff8c00; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">
-                    Upgrade to Premium for Unlimited AI
-                </button>
-            </div>
-        `;
+        showFuturisticModal({
+            title: '⏰ Daily Limit Reached',
+            body: 'You\'ve used all 5 free predictions today.<br><br>Upgrade to Premium for unlimited AI predictions!',
+            buttons: [
+                { text: 'Maybe Later', style: 'modal-btn-secondary' },
+                { text: 'Upgrade Now', style: 'modal-btn-primary', onClick: () => showTab('premium') }
+            ]
+        });
         return;
     }
 
     const key = getGeminiKey(); // Uses built-in key
     
     if (!habits || habits.length === 0) {
-        document.getElementById('nudge').innerHTML = `
-            <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;">
-                <strong>No habits yet!</strong><br>
-                Add your first habit to get AI predictions.
-            </div>
-        `;
+        updateInsightCard(null, 'No habits yet', 'Add your first habit on the Habits tab to get AI predictions!', 50);
         return;
     }
 
-    document.getElementById('nudge').innerHTML = '🔮 AI is analyzing your habits...';
+    // Show loading state
+    updateInsightCard(null, 'Analyzing...', '🔮 AI is analyzing your habits...', 75);
 
     const habitSummary = habits.map(h => {
         const completedDays = h.dates ? h.dates.length : 0;
@@ -4764,7 +5343,7 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
         return `${h.name}: ${rate}% complete (${completedDays} days logged)`;
     }).join('\n');
 
-    const prompt = `You are an AI habit coach. Based on this user's habits:\n\n${habitSummary}\n\nGive ONE short, actionable prediction (2-3 sentences max) about which habit they might skip today and a motivational tip to stay consistent. Be encouraging and specific.`;
+    const prompt = `You are an AI habit coach. Based on this user's habits:\n\n${habitSummary}\n\nGive ONE short, actionable prediction (2-3 sentences max) about which habit they might skip today and a motivational tip to stay consistent. Be encouraging and specific. Start with the habit name.`;
 
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${key}`, {
@@ -4780,24 +5359,34 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
         // Check if API returned an error
         if (!response.ok) {
             const errorMsg = data.error ? data.error.message : 'Unknown error';
-            document.getElementById('nudge').innerHTML = `
-                <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;">
-                    <strong>API Error:</strong><br>
-                    ${errorMsg}<br><br>
-                    <small>Status: ${response.status}</small>
-                </div>
-            `;
+            updateInsightCard(null, 'API Error', errorMsg, 50);
             return;
         }
         
         const prediction = data.candidates[0].content.parts[0].text;
-
+        
+        // Extract habit name and calculate percentage
+        const habitNameMatch = prediction.match(/^([^:\.]+)/);
+        const habitName = habitNameMatch ? habitNameMatch[1].trim() : 'Your habits';
+        
+        // Calculate average completion rate
+        const totalCompletion = habits.reduce((sum, h) => {
+            const completed = h.dates ? h.dates.length : 0;
+            const days = Math.max(completed, 7);
+            return sum + (completed / days);
+        }, 0);
+        const avgPercentage = Math.round((totalCompletion / habits.length) * 100);
+        
+        // Update insight card with prediction
+        updateInsightCard(habitName, prediction, prediction, avgPercentage);
+        
+        // Also update old nudge div for compatibility
         document.getElementById('nudge').innerHTML = `
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
                 <div style="font-size: 24px; margin-bottom: 10px;">🤖</div>
                 <div style="font-size: 16px; line-height: 1.6;">${prediction}</div>
                 ${!isPremium && !isVIP ? `<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 14px; opacity: 0.9;">
-                    ${getPredictionsRemaining()} predictions remaining today | <span style="cursor: pointer; text-decoration: underline;" onclick="showPremium()">Upgrade for unlimited</span>
+                    ${getPredictionsRemaining()} predictions remaining today | <span style="cursor: pointer; text-decoration: underline;" onclick="showTab('premium')">Upgrade for unlimited</span>
                 </div>` : ''}
             </div>
         `;
@@ -4812,27 +5401,13 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
         
         // Check if offline
         if (!navigator.onLine) {
-            document.getElementById('nudge').innerHTML = `
-                <div style="background: #fff3cd; color: #856404; padding: 20px; border-radius: 12px; border-left: 4px solid #ffc107;">
-                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">📡 No Internet Connection</div>
-                    <div style="font-size: 14px; line-height: 1.6;">
-                        AI predictions require an internet connection.<br>
-                        Please connect to Wi-Fi or mobile data and try again.
-                    </div>
-                </div>
-            `;
+            updateInsightCard(null, 'No Internet', 'AI predictions require an internet connection. Please connect and try again.', 0);
         } else {
-            // Other error
-            document.getElementById('nudge').innerHTML = `
-                <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;">
-                    <strong>⚠️ Could Not Generate Prediction</strong><br><br>
-                    ${err.message || 'An error occurred while connecting to the AI service.'}<br><br>
-                    <small>Please try again in a moment. If the problem persists, check your internet connection.</small>
-                </div>
-            `;
+            updateInsightCard(null, 'Error', 'Could not generate prediction. Please try again.', 50);
         }
     }
  }
+
 
         function toggleCalendar() {
             const calSection = document.getElementById('calendarSection');
@@ -5428,7 +6003,15 @@ if (user.email === 'fancytreaz@gmail.com') {
             document.getElementById(tabName + 'Tab').classList.add('active');
             
             // Set active nav button
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // Initialize AI tab when shown
+            if (tabName === 'ai') {
+                initAIGreeting();
+                loadNotificationPreferences();
+            }
         }
 
         // Support functions
