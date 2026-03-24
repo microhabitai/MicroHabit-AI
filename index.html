@@ -2698,7 +2698,10 @@
             <div class="ai-card-label">Notifications 🔔</div>
             
             <div class="notif-row">
-                <span class="notif-name">Daily Insights</span>
+                <span class="notif-name">
+                    Daily Insights 
+                    <span style="font-size: 9px; color: var(--text-3); margin-left: 4px;">(Soon)</span>
+                </span>
                 <label class="toggle">
                     <input type="checkbox" id="dailyInsightsToggle" onchange="toggleDailyInsights(this.checked)"/>
                     <div class="toggle-track"></div>
@@ -2716,7 +2719,10 @@
             </div>
             
             <div class="notif-row" style="margin-bottom:6px">
-                <span class="notif-name">Weekly Summary</span>
+                <span class="notif-name">
+                    Weekly Summary 
+                    <span style="font-size: 9px; color: var(--text-3); margin-left: 4px;">(Soon)</span>
+                </span>
                 <label class="toggle">
                     <input type="checkbox" id="weeklySummaryToggle" onchange="toggleWeeklySummary(this.checked)"/>
                     <div class="toggle-track"></div>
@@ -4523,19 +4529,46 @@ function renewSubscription() {
         function showWeeklyRoast() {
             const roastData = generateWeeklyRoast();
             if (!roastData) {
-                alert('Add some habits first to get roasted! 😄');
+                showFuturisticModal({
+                    title: '📝 No Habits Yet',
+                    body: 'Add some habits first to get roasted! 😄',
+                    buttons: [
+                        { text: 'Add Habits', style: 'modal-btn-primary', onClick: () => showTab('habits') }
+                    ]
+                });
                 return;
             }
             
-            // Display roast first
-            alert(`💀 WEEKLY ROAST 💀\n\nHabit: ${roastData.habitEmoji} ${roastData.habitName}\nSuccess Rate: ${roastData.successRate}%\n\n${roastData.roast}\n\n━━━━━━━━━━━━━━━━\n\n${roastData.encouragement}`);
-            
-            // Ask if user wants to share
-            const wantsToShare = confirm('📱 Share this roast on social media?');
-            
-            if (wantsToShare) {
-                shareRoast(roastData);
-            }
+            // Display roast in futuristic modal
+            showFuturisticModal({
+                title: '💀 WEEKLY ROAST 💀',
+                body: `
+                    <div style="text-align: left; line-height: 1.6;">
+                        <div style="font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--accent-cyan);">
+                            ${roastData.habitEmoji} ${roastData.habitName}
+                        </div>
+                        <div style="font-size: 14px; margin-bottom: 8px; color: var(--text-2);">
+                            Success Rate: <span style="color: ${roastData.successRate >= 70 ? '#00ff9d' : '#ff6b6b'}; font-weight: 700;">${roastData.successRate}%</span>
+                        </div>
+                        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 12px;">
+                            <div style="font-size: 15px; margin-bottom: 12px; color: var(--text);">
+                                ${roastData.roast}
+                            </div>
+                            <div style="font-size: 13px; color: var(--accent-green); font-style: italic;">
+                                ${roastData.encouragement}
+                            </div>
+                        </div>
+                    </div>
+                `,
+                buttons: [
+                    { text: 'Close', style: 'modal-btn-secondary' },
+                    { 
+                        text: '📱 Share', 
+                        style: 'modal-btn-primary', 
+                        onClick: () => shareRoast(roastData) 
+                    }
+                ]
+            });
             
             // Save last roast
             localStorage.setItem('lastRoast', JSON.stringify(roastData));
@@ -5264,11 +5297,16 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
         
         // Toggle Functions for Notification Settings
         function toggleDailyInsights(enabled) {
-            if (enabled) {
-                requestNotificationPermission();
-            }
-            // Store preference
-            localStorage.setItem('dailyInsightsEnabled', enabled);
+            // Currently not implemented - coming soon
+            showFuturisticModal({
+                title: '🚧 Coming Soon',
+                body: 'Daily AI Insights feature is coming soon! We\'ll send you personalized habit insights every morning.<br><br>For now, use "Get AI Prediction" button for instant insights.',
+                buttons: [
+                    { text: 'Got it!', style: 'modal-btn-primary' }
+                ]
+            });
+            // Uncheck since it doesn't work yet
+            document.getElementById('dailyInsightsToggle').checked = false;
         }
         
         function toggleReminders(enabled) {
@@ -5277,22 +5315,23 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
             if (!enabled) {
                 showFuturisticModal({
                     title: '🔕 Reminders Disabled',
-                    body: 'You won\'t receive habit reminders. You can re-enable them anytime.',
+                    body: 'You won\'t receive habit reminders. You can re-enable them anytime from here or the Habits tab.',
                     buttons: [{ text: 'OK', style: 'modal-btn-primary' }]
                 });
             }
         }
         
         function toggleWeeklySummary(enabled) {
-            // Store preference
-            localStorage.setItem('weeklySummaryEnabled', enabled);
-            if (enabled) {
-                showFuturisticModal({
-                    title: '📊 Weekly Summary Enabled',
-                    body: 'You\'ll receive a weekly summary of your habits every Sunday!',
-                    buttons: [{ text: 'Great!', style: 'modal-btn-primary' }]
-                });
-            }
+            // Currently not implemented - coming soon
+            showFuturisticModal({
+                title: '🚧 Coming Soon',
+                body: 'Weekly Summary feature is coming soon! We\'ll send you a comprehensive weekly report of your habits.<br><br>For now, check your stats on the Habits tab.',
+                buttons: [
+                    { text: 'Got it!', style: 'modal-btn-primary' }
+                ]
+            });
+            // Uncheck since it doesn't work yet
+            document.getElementById('weeklySummaryToggle').checked = false;
         }
         
         // Load notification preferences
@@ -5301,14 +5340,18 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
             const reminders = localStorage.getItem('remindersEnabled');
             const weeklySummary = localStorage.getItem('weeklySummaryEnabled');
             
-            if (dailyInsights === 'true') {
-                document.getElementById('dailyInsightsToggle').checked = true;
+            const dailyToggle = document.getElementById('dailyInsightsToggle');
+            const remindersToggle = document.getElementById('remindersToggle');
+            const weeklyToggle = document.getElementById('weeklySummaryToggle');
+            
+            if (dailyToggle && dailyInsights === 'true') {
+                dailyToggle.checked = true;
             }
-            if (reminders !== 'false') { // Default true
-                document.getElementById('remindersToggle').checked = true;
+            if (remindersToggle && reminders !== 'false') { // Default true
+                remindersToggle.checked = true;
             }
-            if (weeklySummary === 'true') {
-                document.getElementById('weeklySummaryToggle').checked = true;
+            if (weeklyToggle && weeklySummary === 'true') {
+                weeklyToggle.checked = true;
             }
         }
         
@@ -5336,14 +5379,53 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
     // Show loading state
     updateInsightCard(null, 'Analyzing...', '🔮 AI is analyzing your habits...', 75);
 
-    const habitSummary = habits.map(h => {
+    // Get today's date and day of week
+    const today = getToday();
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const todayDate = new Date();
+    const todayDayName = daysOfWeek[todayDate.getDay()];
+    
+    // Filter habits for today and check completion status
+    const relevantHabits = habits.filter(h => {
+        // Check if habit has day-specific name (e.g., "Task (Monday)")
+        const dayPattern = /\((Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\)/i;
+        const match = h.name.match(dayPattern);
+        
+        // If habit has a specific day, only include if it matches today
+        if (match) {
+            return match[1].toLowerCase() === todayDayName.toLowerCase();
+        }
+        
+        // Otherwise include all habits
+        return true;
+    });
+    
+    if (relevantHabits.length === 0) {
+        updateInsightCard(null, 'No habits for today', 'No habits scheduled for ' + todayDayName + '!', 100);
+        return;
+    }
+    
+    // Build habit summary with TODAY's completion status
+    const habitSummary = relevantHabits.map(h => {
         const completedDays = h.dates ? h.dates.length : 0;
         const totalDays = Math.max(completedDays, 7);
         const rate = ((completedDays / totalDays) * 100).toFixed(0);
-        return `${h.name}: ${rate}% complete (${completedDays} days logged)`;
+        const completedToday = h.dates && h.dates.includes(today);
+        return `${h.name}: ${rate}% complete (${completedDays} days logged)${completedToday ? ' - ✅ COMPLETED TODAY' : ' - ❌ NOT DONE TODAY'}`;
     }).join('\n');
 
-    const prompt = `You are an AI habit coach. Based on this user's habits:\n\n${habitSummary}\n\nGive ONE short, actionable prediction (2-3 sentences max) about which habit they might skip today and a motivational tip to stay consistent. Be encouraging and specific. Start with the habit name.`;
+    const prompt = `You are an AI habit coach. Today is ${todayDayName}.
+
+Based on this user's habits:
+
+${habitSummary}
+
+IMPORTANT: 
+- Habits marked "✅ COMPLETED TODAY" have already been done today. DO NOT predict they will skip these.
+- Only focus on habits marked "❌ NOT DONE TODAY" when predicting what they might skip.
+- If all habits are completed today, congratulate them!
+
+Give ONE short prediction (2-3 sentences max) about their habit performance TODAY. If habits are incomplete, predict which one they might skip and give a motivational tip. If all complete, congratulate them! Be encouraging and specific. Start with the habit name or "Great job" if all done.`;
 
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${key}`, {
@@ -5369,16 +5451,12 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
         const habitNameMatch = prediction.match(/^([^:\.]+)/);
         const habitName = habitNameMatch ? habitNameMatch[1].trim() : 'Your habits';
         
-        // Calculate average completion rate
-        const totalCompletion = habits.reduce((sum, h) => {
-            const completed = h.dates ? h.dates.length : 0;
-            const days = Math.max(completed, 7);
-            return sum + (completed / days);
-        }, 0);
-        const avgPercentage = Math.round((totalCompletion / habits.length) * 100);
+        // Calculate REAL-TIME completion percentage for TODAY
+        const completedToday = relevantHabits.filter(h => h.dates && h.dates.includes(today)).length;
+        const todayPercentage = Math.round((completedToday / relevantHabits.length) * 100);
         
         // Update insight card with prediction
-        updateInsightCard(habitName, prediction, prediction, avgPercentage);
+        updateInsightCard(habitName, prediction, prediction, todayPercentage);
         
         // Also update old nudge div for compatibility
         document.getElementById('nudge').innerHTML = `
@@ -5936,6 +6014,9 @@ if (user.email === 'fancytreaz@gmail.com') {
         loadReferralCode();
         checkPremiumExpiration();
         
+        // Load notification preferences for AI tab
+        setTimeout(() => loadNotificationPreferences(), 100);
+        
         // Show debug panel if founder
         checkAndShowDebugPanel();
     } else {
@@ -5960,6 +6041,9 @@ if (user.email === 'fancytreaz@gmail.com') {
             loadGuestHabits();
             isPremium = false;
             isVIP = false;
+            
+            // Load notification preferences for AI tab
+            setTimeout(() => loadNotificationPreferences(), 100);
             
             console.log('👋 Guest mode active');
         } else {
