@@ -2156,6 +2156,296 @@
         .adjust-link:hover {
             color: var(--accent-cyan);
         }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* PREMIUM TAB STYLES */
+        /* ═══════════════════════════════════════════════════ */
+        
+        /* Premium Hero Section */
+        .premium-hero {
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(108,92,255,0.3), rgba(0,240,255,0.1));
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(108,92,255,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .premium-hero h2 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+        }
+        
+        .premium-hero p {
+            color: var(--text-2);
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        /* Pricing Container */
+        .pricing-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        /* Plan Cards */
+        .plan-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(14px);
+            border-radius: 18px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .plan-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .plan-price {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--text);
+        }
+        
+        /* Free Plan */
+        .plan-free {
+            background: rgba(255,255,255,0.03);
+        }
+        
+        /* Premium Plan - Most Popular */
+        .plan-premium {
+            background: linear-gradient(135deg, rgba(108,92,255,0.2), rgba(0,240,255,0.1));
+            border: 2px solid rgba(108,92,255,0.4);
+            box-shadow: 0 0 25px rgba(108,92,255,0.4);
+            transform: scale(1.02);
+            position: relative;
+        }
+        
+        .plan-popular-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #6c5cff, #00f0ff);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 11px;
+            box-shadow: 0 0 15px rgba(108,92,255,0.6);
+        }
+        
+        /* VIP Plan */
+        .plan-vip {
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,140,0,0.1));
+            border: 2px solid rgba(255,215,0,0.5);
+        }
+        
+        .plan-vip-yearly {
+            font-size: 13px;
+            color: var(--text-2);
+            margin: 5px 0 15px 0;
+        }
+        
+        .plan-vip-yearly span {
+            color: #00ff9c;
+            font-weight: bold;
+        }
+        
+        /* Feature Groups */
+        .feature-group {
+            margin-top: 16px;
+        }
+        
+        .feature-group-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        
+        .feature-item {
+            font-size: 14px;
+            margin: 6px 0;
+            color: var(--text);
+            line-height: 1.4;
+        }
+        
+        /* Premium Buttons */
+        .btn-premium-upgrade {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-premium-gradient {
+            background: linear-gradient(135deg, #6c5cff, #00f0ff);
+            color: white;
+            box-shadow: 0 0 20px rgba(108,92,255,0.5);
+        }
+        
+        .btn-premium-gradient:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(108,92,255,0.7);
+        }
+        
+        .btn-premium-gradient:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-vip-gold {
+            background: linear-gradient(135deg, gold, orange);
+            color: black;
+            box-shadow: 0 0 20px rgba(255,215,0,0.4);
+        }
+        
+        .btn-vip-gold:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255,215,0,0.6);
+        }
+        
+        .btn-vip-outline {
+            background: transparent;
+            color: gold;
+            border: 2px solid gold;
+            margin-top: 10px;
+        }
+        
+        .btn-vip-outline:hover {
+            background: rgba(255,215,0,0.1);
+        }
+        
+        /* Referral Card */
+        .referral-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(14px);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .referral-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+        
+        .referral-card p {
+            color: var(--text-2);
+            font-size: 14px;
+            margin: 0 0 15px 0;
+        }
+        
+        .referral-code-container {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        .referral-code-label {
+            font-size: 12px;
+            color: var(--text-2);
+            margin-bottom: 8px;
+        }
+        
+        .referral-code-input {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text);
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .referral-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .referral-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .referral-btn:hover {
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.02);
+        }
+        
+        .referral-input-container {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        .referral-input {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .referral-apply-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #9c27b6, #e91e63);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .referral-apply-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .referral-status {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .referral-stats {
+            font-size: 16px;
+            margin: 15px 0;
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -2748,136 +3038,120 @@
 
   <!-- Premium Tab -->
   <div id="premiumTab" class="tab-content">
-    <div id="premiumSection">
-        
-        <!-- Install App Quick Action -->
-        <div id="installPremiumContainer" style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; border-radius: 12px; margin-bottom: 25px; color: white; text-align: center;">
-            <h3 style="margin: 0 0 10px 0; color: white;">📱 Quick Action: Install App</h3>
-            <p style="margin: 0 0 15px 0; font-size: 14px; opacity: 0.9;">Add MicroHabit AI to your home screen for instant access!</p>
-            <button id="installAppBtnPremium" onclick="triggerInstall()" style="background: white; color: #667eea; width: 100%; padding: 12px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                📱 Install Now
-            </button>
-            <div id="alreadyInstalledMsgPremium" style="display: none; background: rgba(255,255,255,0.2); padding: 12px; border-radius: 8px; margin-top: 10px; font-weight: bold;">
-                ✅ App already installed!
-            </div>
-        </div>
-        
-        <h2>✨ Choose Your Plan</h2>
+    
+    <!-- Hero Section -->
+    <div class="premium-hero">
+        <h2>✨ Unlock Your Full Potential</h2>
+        <p>Build consistency. Get smarter insights. Never break your streak again.</p>
+    </div>
+    
+    <!-- Pricing Container -->
+    <div class="pricing-container">
         
         <!-- Free Plan -->
-        <div style="background: var(--card); padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #ddd;">
-            <h3 style="margin-top: 0;">🆓 Free Plan</h3>
-            <p style="font-size: 24px; font-weight: bold; color: #808080;">$0/month</p>
-            <ul style="text-align:left; font-size: 14px; color: #808080;">
-                <li>✅ Up to 3 habits</li>
-                <li>✅ Basic streak tracking</li>
-                <li>✅ 2 quick stats (Today + Best Streak)</li>
-                <li>✅ 5 AI predictions per day</li>
-                <li>✅ Cloud sync</li>
-                <li>✅ Current month calendar view</li>
-                <li>✅ 1 reminder per habit (basic)</li>
-                <li>✅ Basic time suggestions (grouped by period)</li>
-            </ul>
-            <p style="font-size: 12px; color: #666;">Perfect for trying out MicroHabit AI</p>
-        </div>
-
-        <!-- Premium Plan -->
-        <div style="background: linear-gradient(135deg, #ffd700, #ff8c00); padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 3px solid #ff8c00; color: #333;">
-            <h3 style="margin-top: 0; color: #333;">💎 Premium Plan</h3>
-            <p style="font-size: 28px; font-weight: bold; color: #808080;">$9/month</p>
-            <ul style="text-align:left; font-size: 14px; color: #808080;">
-                <li>✅ <strong>Unlimited habits</strong></li>
-                <li>✅ <strong>Unlimited AI predictions</strong></li>
-                <li>✅ <strong>📅 Full calendar history view</strong></li>
-                <li>✅ <strong>⏰ Unlimited reminders per habit</strong></li>
-                <li>✅ <strong>🔔 Custom reminder schedules</strong></li>
-                <li>✅ <strong>⏱️ Custom time scheduling & durations</strong></li>
-                <li>✅ <strong>📊 Advanced stats (3 metrics vs 2)</strong></li>
-                <li>✅ <strong>📥 Export all your data</strong></li>
-                <li>✅ Exclusive gold theme</li>
-                <li>✅ Custom colors & themes</li>
-                <li>✅ Priority support (6 hour response)</li>
-                <li>✅ Referral rewards</li>
-            </ul>
-            <button onclick="subscribePremium()" style="width: 100%; background: #fff; color: #ff8c00; font-weight: bold; font-size: 18px; padding: 15px; margin-top: 10px;">
-                Upgrade to Premium - $9/month
-            </button>
-        </div>
-
-        <!-- VIP Plan -->
-        <div style="background: linear-gradient(135deg, #000000, #434343); padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 4px solid gold; color: #fff; position: relative; overflow: hidden;">
-            <div style="position: absolute; top: 10px; right: 10px; background: gold; color: black; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 12px;">
-                🌟 MOST POPULAR
+        <div class="plan-card plan-free">
+            <h3>🆓 Free Plan</h3>
+            <div class="plan-price">$0/month</div>
+            
+            <div class="feature-group">
+                <div class="feature-item">✔ Up to 3 habits</div>
+                <div class="feature-item">✔ Basic streak tracking</div>
+                <div class="feature-item">✔ 5 AI predictions/day</div>
+                <div class="feature-item">✔ Cloud sync</div>
             </div>
-            <h3 style="margin-top: 0; color: gold; font-size: 24px;">👑 VIP Plan - Elite Habit Mastery</h3>
-            <p style="font-size: 32px; font-weight: bold; color: gold;">$99/month</p>
-            <p style="font-size: 14px; color: #ccc; margin-top: -10px;">or $999/year (Save $189!)</p>
-            
-            <div style="background: rgba(255, 215, 0, 0.1); border: 2px solid gold; border-radius: 8px; padding: 12px; margin: 15px 0;">
-                <p style="color: gold; font-weight: bold; margin: 0; font-size: 16px;">💎 Includes ALL Premium Features PLUS:</p>
-            </div>
-            
-            <ul style="text-align:left; font-size: 15px; color: #ffd700;">
-                <li>🤖 <strong>Advanced AI Coach</strong> - Custom coaching personality</li>
-                <li>📊 <strong>Habit Insights Dashboard</strong> - AI analyzes your patterns</li>
-                <li>🎯 <strong>Predictive Analytics</strong> - 30/60/90 day forecasts</li>
-                <li>📸 <strong>Photo Progress Tracking</strong> - Visual before/after</li>
-                <li>📝 <strong>Habit Journal</strong> - Notes & reflections for each day</li>
-                <li>⏱️ <strong>Time Tracking</strong> - See how long you spend on habits</li>
-                <li>😊 <strong>Mood Tracking</strong> - Correlate habits with mood/energy</li>
-                <li>🏆 <strong>VIP Community Access</strong> - Exclusive Discord/Slack</li>
-                <li>📞 <strong>Monthly 1-on-1 Call</strong> - Personal strategy session</li>
-                <li>⚡ <strong>1-Hour Priority Support</strong> - Fastest response time</li>
-                <li>🎨 <strong>Unlimited Custom Themes</strong> - Design your own</li>
-                <li>🚀 <strong>Early Access</strong> - Try new features first</li>
-                <li>📥 <strong>Advanced Export</strong> - CSV, Excel, API access</li>
-                <li>🎓 <strong>Exclusive Content</strong> - Webinars, guides, templates</li>
-                <li>🔧 <strong>Custom Feature Requests</strong> - Your ideas prioritized</li>
-            </ul>
-            
-            <button onclick="subscribeVIP()" style="width: 100%; background: gold; color: black; font-weight: bold; font-size: 20px; padding: 18px; margin-top: 15px; border: none; border-radius: 8px; cursor: pointer;">
-                👑 Upgrade to VIP - $99/month
-            </button>
-            <button onclick="subscribeVIPYearly()" style="width: 100%; background: transparent; color: gold; font-weight: bold; font-size: 16px; padding: 12px; margin-top: 10px; border: 2px solid gold; border-radius: 8px; cursor: pointer;">
-                💰 Pay Yearly - $999/year (Save $189!)
-            </button>
         </div>
-
-        <p id="premiumStatus" style="text-align: center;"><small>Free mode: Limited to 3 habits</small></p>
-    </div>
-
-    <div id="referralSection" style="background: var(--card); padding: 15px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-        <h2>🎁 Refer Friends - Get Free Premium!</h2>
-        <p><strong>Share your code & earn rewards:</strong></p>
-        <ul style="text-align:left; display:inline-block; font-size:14px;">
-            <li>🎉 You get: <strong>1 month FREE Premium</strong> per referral</li>
-            <li>🎁 They get: <strong>1 week FREE Premium trial</strong></li>
-            <li>💎 Unlimited referrals = Unlimited free months!</li>
-        </ul>
         
-        <div style="background: var(--bg); padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <p style="margin: 5px 0;"><strong>Your Referral Code:</strong></p>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="text" id="referralCode" readonly style="flex: 1; background: white; color: #333; font-weight: bold; font-size: 18px; text-align: center; cursor: pointer;" onclick="copyReferralCode()">
-                <button onclick="copyReferralCode()" style="background: #28a745;">📋 Copy</button>
+        <!-- Premium Plan (Most Popular) -->
+        <div class="plan-card plan-premium">
+            <div class="plan-popular-badge">⭐ MOST POPULAR</div>
+            <h3>⚡ Premium</h3>
+            <div class="plan-price">$9/month</div>
+            
+            <div class="feature-group">
+                <div class="feature-group-title">⚡ CORE</div>
+                <div class="feature-item">✔ Unlimited habits</div>
+                <div class="feature-item">✔ Unlimited AI predictions</div>
             </div>
-            <p style="margin: 10px 0 5px 0; font-size: 14px; color: #666;">Share this code with friends!</p>
+            
+            <div class="feature-group">
+                <div class="feature-group-title">📊 INSIGHTS</div>
+                <div class="feature-item">✔ Advanced stats</div>
+                <div class="feature-item">✔ Full calendar history</div>
+            </div>
+            
+            <div class="feature-group">
+                <div class="feature-group-title">⏰ REMINDERS</div>
+                <div class="feature-item">✔ Unlimited reminders</div>
+                <div class="feature-item">✔ Custom schedules</div>
+            </div>
+            
+            <div class="feature-group">
+                <div class="feature-group-title">🎨 EXTRAS</div>
+                <div class="feature-item">✔ Gold theme</div>
+                <div class="feature-item">✔ Priority support</div>
+                <div class="feature-item">✔ Data export</div>
+            </div>
+            
+            <button class="btn-premium-upgrade btn-premium-gradient" onclick="subscribePremium()">
+                Upgrade to Premium
+            </button>
         </div>
-
-        <div style="background: var(--bg); padding: 15px; border-radius: 8px; margin: 15px 0;">
-            <p style="margin: 5px 0;"><strong>🎁 Have a referral code?</strong></p>
-            <input type="text" id="referralInput" placeholder="Enter friend's code here" style="width: 70%; margin: 5px 0;">
-            <button onclick="applyReferralCode()" style="background: #9c27b6;">Redeem Code</button>
-            <p id="referralStatus" style="margin: 10px 0; font-size: 14px;"></p>
+        
+        <!-- VIP Plan -->
+        <div class="plan-card plan-vip">
+            <h3>💎 VIP Plan</h3>
+            <div class="plan-price">$99/month</div>
+            <div class="plan-vip-yearly">or $999/year <span>🔥 Save $189</span></div>
+            
+            <div class="feature-group">
+                <div class="feature-item">✔ Everything in Premium</div>
+                <div class="feature-item">✔ Advanced AI coaching</div>
+                <div class="feature-item">✔ Priority support (1h)</div>
+                <div class="feature-item">✔ VIP community access</div>
+                <div class="feature-item">✔ Early feature access</div>
+            </div>
+            
+            <button class="btn-premium-upgrade btn-vip-gold" onclick="subscribeVIP()">
+                👑 Go VIP Monthly
+            </button>
+            <button class="btn-premium-upgrade btn-vip-outline" onclick="subscribeVIPYearly()">
+                💰 Go VIP Yearly (Save $189)
+            </button>
         </div>
-
-        <div style="text-align: center; margin-top: 15px;">
-            <p><strong>📊 Your Referral Stats:</strong></p>
-            <p id="referralStats" style="font-size: 16px; margin: 10px 0;">Loading...</p>
-        </div>
-
-        <button onclick="shareReferralCode()" style="width: 100%; background: #ff6b6b; padding: 15px; font-size: 16px; margin-top: 10px;">📱 Share My Code</button>
+        
     </div>
+    
+    <!-- Referral Card -->
+    <div class="referral-card">
+        <h3>🎁 Get Free Premium</h3>
+        <p>Invite friends → earn free months</p>
+        
+        <div class="referral-code-container">
+            <div class="referral-code-label">Your Referral Code:</div>
+            <input type="text" id="referralCode" readonly class="referral-code-input" onclick="copyReferralCode()">
+            <div style="font-size: 12px; color: var(--text-3); margin-top: 8px;">
+                Share: You get 1 month Premium | Friend gets 1 week Premium
+            </div>
+        </div>
+        
+        <div class="referral-buttons">
+            <button class="referral-btn" onclick="copyReferralCode()">📋 Copy Code</button>
+            <button class="referral-btn" onclick="shareReferralCode()">📱 Share</button>
+        </div>
+        
+        <div class="referral-input-container">
+            <div class="referral-code-label">🎁 Have a referral code?</div>
+            <input type="text" id="referralInput" placeholder="Enter friend's code here" class="referral-input">
+            <button class="referral-apply-btn" onclick="applyReferralCode()">Redeem Code</button>
+            <div id="referralStatus" class="referral-status"></div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <div class="referral-code-label">📊 Your Referral Stats:</div>
+            <div id="referralStats" class="referral-stats">Loading...</div>
+        </div>
+    </div>
+    
   </div>
 
   <!-- Support Tab -->
@@ -6019,6 +6293,11 @@ if (user.email === 'fancytreaz@gmail.com') {
         
         // Show debug panel if founder
         checkAndShowDebugPanel();
+        
+        // Render habits after loading from Firebase
+        renderHabits();
+        populateHabitSelect();
+        updateQuickStats();
     } else {
         // Check if guest mode
         const isGuest = localStorage.getItem('isGuest') === 'true';
@@ -6044,6 +6323,11 @@ if (user.email === 'fancytreaz@gmail.com') {
             
             // Load notification preferences for AI tab
             setTimeout(() => loadNotificationPreferences(), 100);
+            
+            // Render habits after loading from localStorage
+            renderHabits();
+            populateHabitSelect();
+            updateQuickStats();
             
             console.log('👋 Guest mode active');
         } else {
