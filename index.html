@@ -2686,6 +2686,200 @@
             font-size: 14px;
             font-weight: 600;
         }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* SETTINGS TAB STYLES */
+        /* ═══════════════════════════════════════════════════ */
+        
+        /* Settings Hero */
+        .settings-hero {
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(118,75,162,0.3), rgba(102,126,234,0.1));
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(118,75,162,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .settings-hero h2 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+        }
+        
+        .settings-hero p {
+            color: var(--text-2);
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        /* Settings Section Cards */
+        .settings-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(14px);
+            border-radius: 18px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 16px;
+        }
+        
+        .settings-card h3 {
+            margin: 0 0 12px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .settings-card p {
+            color: var(--text-2);
+            font-size: 14px;
+            margin: 0 0 16px 0;
+            line-height: 1.5;
+        }
+        
+        /* Theme Toggle Buttons */
+        .theme-toggle-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        
+        .theme-toggle-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-toggle-btn:hover {
+            transform: scale(1.02);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0,229,255,0.3);
+        }
+        
+        .theme-toggle-btn.active {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            border-color: var(--accent-cyan);
+            color: white;
+            box-shadow: 0 0 20px rgba(0,229,255,0.4);
+        }
+        
+        /* Settings Action Buttons */
+        .settings-action-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+        }
+        
+        .settings-btn-primary {
+            background: linear-gradient(135deg, #4a90e2, #2ecc71);
+            color: white;
+            box-shadow: 0 0 20px rgba(74,144,226,0.4);
+        }
+        
+        .settings-btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(74,144,226,0.6);
+        }
+        
+        .settings-btn-purple {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 0 20px rgba(102,126,234,0.4);
+        }
+        
+        .settings-btn-purple:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(102,126,234,0.6);
+        }
+        
+        /* Install Status */
+        .install-status {
+            background: rgba(46,204,113,0.2);
+            border: 2px solid rgba(46,204,113,0.4);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text);
+            margin-top: 12px;
+        }
+        
+        /* Notification Style Display */
+        .notification-current {
+            background: rgba(0,229,255,0.1);
+            border: 1px solid rgba(0,229,255,0.3);
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+        }
+        
+        /* Reminder Tips Card */
+        .reminder-tips-card {
+            background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.1));
+            border: 2px solid rgba(102,126,234,0.4);
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+        
+        .reminder-tips-card h3 {
+            margin: 0 0 16px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .tips-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .tips-section strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        
+        .tips-list {
+            margin-left: 15px;
+            line-height: 1.8;
+            font-size: 14px;
+            color: var(--text-2);
+        }
+        
+        .tip-note {
+            background: rgba(255,255,255,0.15);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid rgba(0,229,255,0.5);
+            font-size: 13px;
+            color: var(--text-2);
+            margin-top: 12px;
+        }
+        
+        .tip-note strong {
+            display: inline;
+            color: var(--accent-cyan);
+        }
     </style>
 </head>
 <body>
@@ -3507,101 +3701,102 @@
 
   <!-- Settings Tab -->
   <div id="settingsTab" class="tab-content">
-    <h2 style="text-align:center;">⚙️ Settings</h2>
     
-    <!-- Install App Section -->
-    <div id="installSection" style="margin-bottom: 30px;">
+    <!-- Hero Section -->
+    <div class="settings-hero">
+        <h2>⚙️ Customize Your Experience</h2>
+        <p>Personalize MicroHabit AI to work perfectly for you</p>
+    </div>
+    
+    <!-- Install App Card -->
+    <div class="settings-card">
         <h3>📱 Install App</h3>
-        <div id="installAppContainer">
-            <p style="color: #666; font-size: 14px; margin-bottom: 10px;">Add MicroHabit AI to your home screen for quick access like a native app!</p>
-            <button id="installAppBtn" onclick="triggerInstall()" style="background: linear-gradient(135deg, #4a90e2, #2ecc71); color: white; width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
-                📱 Install MicroHabit AI
-            </button>
-            <div id="alreadyInstalledMsg" style="display: none; background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold;">
-                ✅ Already installed on your device!
-            </div>
+        <p>Add MicroHabit AI to your home screen for quick access like a native app!</p>
+        
+        <button id="installAppBtn" onclick="triggerInstall()" class="settings-action-btn settings-btn-primary">
+            📱 Install MicroHabit AI
+        </button>
+        
+        <div id="alreadyInstalledMsg" style="display: none;" class="install-status">
+            ✅ Already installed on your device!
         </div>
     </div>
     
-    <div id="themeSection">
+    <!-- Appearance Card -->
+    <div class="settings-card">
         <h3>🎨 Appearance</h3>
-        <p><strong>Mode:</strong></p>
-        <div class="theme-buttons">
-            <button onclick="setTheme('light')">Light ☀️</button>
-            <button onclick="setTheme('dark')">Dark 🌙</button>
-            <button onclick="setTheme('system')">System Auto</button>
-        </div>
-        <p><strong>Accent Color:</strong></p>
-        <div class="color-buttons">
-            <button style="background:#4a90e2" onclick="setColor('#4a90e2')"></button>
-            <button style="background:#2ecc71" onclick="setColor('#2ecc71')"></button>
-            <button style="background:#9b59b6" onclick="setColor('#9b59b6')"></button>
-            <button style="background:#e67e22" onclick="setColor('#e67e22')"></button>
-            <button style="background:#e91e63" onclick="setColor('#e91e63')"></button>
+        <p>Choose your preferred theme mode</p>
+        
+        <div class="theme-toggle-group">
+            <button class="theme-toggle-btn" onclick="setTheme('light')" id="lightThemeBtn">
+                ☀️ Light
+            </button>
+            <button class="theme-toggle-btn" onclick="setTheme('dark')" id="darkThemeBtn">
+                🌙 Dark
+            </button>
+            <button class="theme-toggle-btn active" onclick="setTheme('system')" id="systemThemeBtn">
+                🖥️ Auto
+            </button>
         </div>
     </div>
     
-    <div id="notificationStyleSection" style="margin-top: 30px;">
+    <!-- Notification Style Card -->
+    <div class="settings-card">
         <h3>🔔 Notification Style</h3>
-        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">Choose how you want to be reminded about your habits throughout the day.</p>
-        <p id="currentNotificationStyle" style="font-weight: bold; color: var(--primary); margin-bottom: 10px;">Current: Loading...</p>
-        <button onclick="changeNotificationStyle()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+        <p>Choose how you want to be reminded about your habits throughout the day</p>
+        
+        <div id="currentNotificationStyle" class="notification-current">
+            Current: Loading...
+        </div>
+        
+        <button onclick="changeNotificationStyle()" class="settings-action-btn settings-btn-purple">
             ⚙️ Change Notification Style
         </button>
     </div>
     
-    <div id="testNotificationSection" style="margin-top: 30px;">
-        <h3>🧪 Test Notifications</h3>
-        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">Test if notifications are working correctly on your device.</p>
-        <button onclick="testNotification()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
-            🔔 Send Test Notification
-        </button>
-        <p style="color: #666; font-size: 12px; margin-top: 10px;">
-            💡 Tip: If you don't see a notification, check your browser's notification permissions in the address bar.
-        </p>
-    </div>
-    
-    <div id="reminderTipsSection" style="margin-top: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; color: white;">
-        <h3 style="color: white; margin-top: 0;">📌 Tips for Reliable Reminders</h3>
-        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
-            <div style="font-size: 14px; line-height: 1.8;">
-                <div style="margin-bottom: 12px;">
-                    <strong>✅ DO:</strong>
-                </div>
-                <div style="margin-left: 15px; margin-bottom: 15px;">
-                    • Keep MicroHabit AI in your recent apps<br>
-                    • Leave app running in background<br>
-                    • Grant notification permissions
-                </div>
-                <div style="margin-bottom: 12px;">
-                    <strong>❌ DON'T:</strong>
-                </div>
-                <div style="margin-left: 15px;">
-                    • Swipe away app from recent apps<br>
-                    • Force close the app<br>
-                    • Use battery saver mode (may kill app)
-                </div>
+    <!-- Reminder Tips Card -->
+    <div class="reminder-tips-card">
+        <h3>📌 Tips for Reliable Reminders</h3>
+        
+        <div class="tips-section">
+            <strong>✅ DO:</strong>
+            <div class="tips-list">
+                • Keep MicroHabit AI in your recent apps<br>
+                • Leave app running in background<br>
+                • Grant notification permissions
             </div>
         </div>
-        <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 13px; border-left: 4px solid rgba(255,255,255,0.5);">
+        
+        <div class="tips-section">
+            <strong>❌ DON'T:</strong>
+            <div class="tips-list">
+                • Swipe away app from recent apps<br>
+                • Force close the app<br>
+                • Use battery saver mode (may kill app)
+            </div>
+        </div>
+        
+        <div class="tip-note">
             <strong>💡 Why?</strong><br>
             Reminders need the app to stay in background to work. This is how browser-based apps function on mobile devices.
         </div>
-        <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 13px;">
+        
+        <div class="tip-note">
             <strong>🚀 Coming Soon:</strong> Push notifications that work even when app is closed! Stay tuned for Premium features.
         </div>
     </div>
     
     <!-- Debug Section (Founder Only) -->
-    <div id="debugSection" style="display: none; margin-top: 30px; background: var(--card); padding: 15px; border-radius: 10px; border: 2px solid #667eea;">
+    <div id="debugSection" style="display: none;" class="settings-card">
         <h3>🔍 Reminder Debug Info (Founder Only)</h3>
         <div id="debugOutput" style="font-family: monospace; font-size: 12px; background: #000; color: #0f0; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto;">
             <div>Waiting for debug info...</div>
         </div>
-        <button onclick="refreshDebugInfo()" style="background: #667eea; color: white; width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; cursor: pointer;">
+        <button onclick="refreshDebugInfo()" class="settings-action-btn settings-btn-purple" style="margin-top: 10px;">
             🔄 Refresh Debug Info
         </button>
     </div>
+    
   </div>
 
   <!-- Data Tab -->
@@ -3963,12 +4158,43 @@ function sendVIPEmail(userEmail, userName) {
             } else {
                 document.body.classList.toggle('dark', savedTheme === 'dark');
             }
+            
+            // Update active theme button on Settings tab
+            const lightBtn = document.getElementById('lightThemeBtn');
+            const darkBtn = document.getElementById('darkThemeBtn');
+            const systemBtn = document.getElementById('systemThemeBtn');
+            
+            if (lightBtn && darkBtn && systemBtn) {
+                lightBtn.classList.remove('active');
+                darkBtn.classList.remove('active');
+                systemBtn.classList.remove('active');
+                
+                if (savedTheme === 'light') lightBtn.classList.add('active');
+                else if (savedTheme === 'dark') darkBtn.classList.add('active');
+                else systemBtn.classList.add('active');
+            }
+            
             checkPremium();
         }
 
         function setTheme(mode) {
             localStorage.setItem('theme', mode);
             applyTheme();
+            
+            // Update active theme button
+            const lightBtn = document.getElementById('lightThemeBtn');
+            const darkBtn = document.getElementById('darkThemeBtn');
+            const systemBtn = document.getElementById('systemThemeBtn');
+            
+            if (lightBtn && darkBtn && systemBtn) {
+                lightBtn.classList.remove('active');
+                darkBtn.classList.remove('active');
+                systemBtn.classList.remove('active');
+                
+                if (mode === 'light') lightBtn.classList.add('active');
+                else if (mode === 'dark') darkBtn.classList.add('active');
+                else systemBtn.classList.add('active');
+            }
         }
 
         function setColor(color) {
