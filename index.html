@@ -249,6 +249,45 @@
             background: rgba(255,76,106,0.1);
         }
         
+        /* User Status Badges */
+        .user-badge {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-left: 8px;
+        }
+        
+        .badge-premium {
+            background: linear-gradient(135deg, rgba(0,229,255,0.3), rgba(0,255,156,0.3));
+            border: 1.5px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0,229,255,0.4);
+            animation: badgePulse 3s ease-in-out infinite;
+        }
+        
+        .badge-vip {
+            background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,140,0,0.3));
+            border: 1.5px solid gold;
+            color: gold;
+            box-shadow: 0 0 15px rgba(255,215,0,0.5);
+            animation: badgePulseGold 3s ease-in-out infinite;
+        }
+        
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(0,229,255,0.4); }
+            50% { box-shadow: 0 0 25px rgba(0,229,255,0.7); }
+        }
+        
+        @keyframes badgePulseGold {
+            0%, 100% { box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+            50% { box-shadow: 0 0 25px rgba(255,215,0,0.8); }
+        }
+        
         /* Daily Prediction Alert */
         .daily-alert {
             background: linear-gradient(135deg, rgba(255,76,106,0.18), rgba(180,30,60,0.12));
@@ -1490,14 +1529,12 @@
         }
 
         .modal-content {
-            background: rgba(30,30,40,0.95);
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(102,126,234,0.4);
+            background: white;
             border-radius: 20px;
             padding: 30px;
             max-width: 500px;
             width: 100%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 30px rgba(102,126,234,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
         .modal-header {
@@ -1509,11 +1546,11 @@
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 10px;
-            color: var(--accent-cyan);
+            color: #667eea;
         }
 
         .modal-subtitle {
-            color: var(--text-2);
+            color: #666;
             font-size: 14px;
         }
 
@@ -1523,25 +1560,23 @@
         }
 
         .personality-option {
-            border: 2px solid rgba(255,255,255,0.2);
+            border: 2px solid #e0e0e0;
             border-radius: 12px;
             padding: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
+            background: white;
         }
 
         .personality-option:hover {
-            border-color: var(--accent-cyan);
+            border-color: #667eea;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,229,255,0.3);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
         }
 
         .personality-option.selected {
-            border-color: var(--accent-cyan);
-            background: linear-gradient(135deg, rgba(0,229,255,0.2), rgba(0,255,156,0.2));
-            box-shadow: 0 0 20px rgba(0,229,255,0.4);
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
         }
 
         .personality-header {
@@ -1563,23 +1598,22 @@
             font-weight: bold;
             font-size: 16px;
             margin-bottom: 3px;
-            color: var(--text);
         }
 
         .personality-desc {
             font-size: 12px;
-            color: var(--text-2);
+            color: #666;
         }
 
         .personality-example {
             font-size: 13px;
-            color: var(--text-2);
+            color: #444;
             font-style: italic;
             margin-top: 10px;
             padding: 10px;
-            background: rgba(0,229,255,0.1);
+            background: rgba(0,0,0,0.03);
             border-radius: 8px;
-            border-left: 3px solid var(--accent-cyan);
+            border-left: 3px solid #667eea;
         }
 
         .modal-footer {
@@ -1588,7 +1622,7 @@
         }
 
         .btn-confirm {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             padding: 15px 40px;
@@ -1597,12 +1631,12 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,229,255,0.4);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-confirm:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,229,255,0.6);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
 
         .btn-confirm:disabled {
@@ -3094,6 +3128,8 @@
         <div class="greeting-left">
             <div class="avatar" id="userAvatar">👤</div>
             <div class="greeting-text" id="greetingText">Hi, there</div>
+            <span class="user-badge badge-premium" id="premiumBadge">💎 PREMIUM</span>
+            <span class="user-badge badge-vip" id="vipBadge">👑 VIP</span>
         </div>
         <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
@@ -3526,7 +3562,7 @@
             
             <div class="feature-group">
                 <div class="feature-group-title">🎨 EXTRAS</div>
-                <div class="feature-item">✔ Gold theme</div>
+                <div class="feature-item">✔ Premium badge</div>
                 <div class="feature-item">✔ Priority support</div>
                 <div class="feature-item">✔ Data export</div>
             </div>
@@ -4117,18 +4153,33 @@ function sendVIPEmail(userEmail, userName) {
         }
 
         function checkPremium() {
+            const premiumBadge = document.getElementById('premiumBadge');
+            const vipBadge = document.getElementById('vipBadge');
+            
             if (isVIP) {
                 document.body.classList.add('premium');
                 document.body.classList.add('vip');
                 premiumStatus.innerHTML = '<strong style="color:gold;">👑 VIP MEMBER - Elite Status Active! 🌟</strong><br><small>Enjoy all premium features + exclusive VIP benefits</small>';
+                
+                // Show VIP badge only
+                if (premiumBadge) premiumBadge.style.display = 'none';
+                if (vipBadge) vipBadge.style.display = 'inline-flex';
             } else if (isPremium) {
                 document.body.classList.add('premium');
                 document.body.classList.remove('vip');
-                premiumStatus.innerHTML = '<strong style="color:gold;">✨ Premium Unlocked! 💎 Unlimited everything + exclusive gold theme</strong>';
+                premiumStatus.innerHTML = '<strong style="color:gold;">✨ Premium Unlocked! 💎 Unlimited everything + exclusive badge</strong>';
+                
+                // Show Premium badge only
+                if (premiumBadge) premiumBadge.style.display = 'inline-flex';
+                if (vipBadge) vipBadge.style.display = 'none';
             } else {
                 document.body.classList.remove('premium');
                 document.body.classList.remove('vip');
                 premiumStatus.innerHTML = '<small>Free mode: Limited to 3 habits – Upgrade for unlimited!</small>';
+                
+                // Hide both badges
+                if (premiumBadge) premiumBadge.style.display = 'none';
+                if (vipBadge) vipBadge.style.display = 'none';
             }
             
             // Update calendar button text based on tier
@@ -4300,7 +4351,7 @@ db.collection("users").doc(currentUser.uid).set({
                 renderHabits();
                 checkPremium();
                 
-                alert('👑 Welcome to VIP!\n\n✨ You now have access to:\n- Unlimited habits\n- Advanced AI Coach\n- Priority support\n- Gold theme & custom colors\n- Exclusive VIP features\n\nCheck your email for details!');
+                alert('👑 Welcome to VIP!\n\n✨ You now have access to:\n- Unlimited habits\n- Advanced AI Coach\n- Priority support\n- Exclusive VIP badge\n- Exclusive VIP features\n\nCheck your email for details!');
             }).catch(err => {
                 console.error("Failed to save VIP to Firebase:", err);
                 alert("Warning: VIP activated but cloud sync failed. Contact support.");
@@ -4346,7 +4397,7 @@ db.collection("users").doc(currentUser.uid).set({
                 renderHabits();
                 checkPremium();
                 
-                alert('👑 Welcome to VIP Yearly!\n\n✨ You saved $189 and unlocked:\n- Unlimited habits\n- Advanced AI Coach\n- Priority support\n- Gold theme & custom colors\n- Exclusive VIP features\n\nCheck your email for details!');
+                alert('👑 Welcome to VIP Yearly!\n\n✨ You saved $189 and unlocked:\n- Unlimited habits\n- Advanced AI Coach\n- Priority support\n- Exclusive VIP badge\n- Exclusive VIP features\n\nCheck your email for details!');
             }).catch(err => {
                 console.error("Failed to save VIP to Firebase:", err);
                 alert("Warning: VIP activated but cloud sync failed. Contact support.");
