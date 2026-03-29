@@ -2919,6 +2919,143 @@
             display: inline;
             color: var(--accent-cyan);
         }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* DATA TAB STYLES */
+        /* ═══════════════════════════════════════════════════ */
+        
+        /* Data Tab Header */
+        .data-header {
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--text);
+        }
+        
+        /* Data Glass Card */
+        .data-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(14px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(0,229,255,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .data-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(0,229,255,0.1);
+        }
+        
+        /* Section Title */
+        .data-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+        
+        /* Status Item */
+        .data-status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text-2);
+        }
+        
+        .data-count {
+            font-weight: bold;
+            color: var(--accent-cyan);
+            font-size: 16px;
+        }
+        
+        /* Data Control Buttons */
+        .data-btn {
+            position: relative;
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: none;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        
+        .data-btn span {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .data-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .data-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Button Glow Effect */
+        .data-btn::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            filter: blur(20px);
+            opacity: 0.6;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            animation: dataButtonPulse 2s infinite;
+        }
+        
+        @keyframes dataButtonPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        
+        /* Button Colors */
+        .data-export {
+            background: linear-gradient(135deg, #00ffcc, #00c3ff);
+        }
+        
+        .data-import {
+            background: linear-gradient(135deg, #ff9a00, #ff3c00);
+        }
+        
+        .data-share {
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+        }
+        
+        /* Security Notice */
+        .data-security {
+            font-size: 13px;
+            opacity: 0.7;
+            text-align: center;
+            line-height: 1.6;
+            color: var(--text-2);
+        }
+        
+        @media (max-width: 600px) {
+            .data-header {
+                font-size: 24px;
+            }
+            
+            .data-btn {
+                font-size: 14px;
+                padding: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -3562,7 +3699,6 @@
             
             <div class="feature-group">
                 <div class="feature-group-title">🎨 EXTRAS</div>
-                <div class="feature-item">✔ Premium badge</div>
                 <div class="feature-item">✔ Priority support</div>
                 <div class="feature-item">✔ Data export</div>
             </div>
@@ -3842,16 +3978,59 @@
 
   <!-- Data Tab -->
   <div id="dataTab" class="tab-content">
-    <h2 style="text-align:center;">📊 Data Management</h2>
+    <div class="data-header">📊 Data Control Center</div>
     
-    <div id="dataSection">
-        <h3>Backup & Restore</h3>
-        <button onclick="exportData()" style="background:#28a745; width:100%; padding:15px; font-size:16px;">📥 Export Backup (JSON)</button>
-        <button onclick="document.getElementById('importFile').click()" style="background:#ff9800; width:100%; margin-top:10px; padding:15px; font-size:16px;">📤 Import Backup (JSON)</button>
-        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+    <!-- DATA STATUS -->
+    <div class="data-card">
+        <div class="data-section-title">🧠 DATA STATUS</div>
         
-        <h3 style="margin-top:30px;">Share Progress</h3>
-        <button onclick="shareStreaks()" style="background:#9c27b6; width:100%; padding:15px; font-size:16px;">📱 Share Streaks Summary</button>
+        <div class="data-status-item">
+            <span>Total Habits</span>
+            <span class="data-count" id="totalHabitsCount">0</span>
+        </div>
+        
+        <div class="data-status-item">
+            <span>Active Streaks</span>
+            <span class="data-count" id="activeStreaksCount">0</span>
+        </div>
+        
+        <div class="data-status-item">
+            <span>Completion Rate</span>
+            <span class="data-count" id="completionRate">0%</span>
+        </div>
+    </div>
+    
+    <!-- DATA CONTROL -->
+    <div class="data-card">
+        <div class="data-section-title">🧩 YOUR DATA, YOUR CONTROL</div>
+        
+        <button class="data-btn data-export" onclick="exportData()">
+            <span>⬇️ Export Data</span>
+        </button>
+        <button class="data-btn data-import" onclick="document.getElementById('importFile').click()">
+            <span>⬆️ Import Data</span>
+        </button>
+        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+    </div>
+    
+    <!-- SHARE -->
+    <div class="data-card">
+        <div class="data-section-title">🔥 SHOW YOUR CONSISTENCY</div>
+        
+        <button class="data-btn data-share" onclick="shareStreaks()">
+            <span>📊 Share Progress</span>
+        </button>
+    </div>
+    
+    <!-- SECURITY -->
+    <div class="data-card">
+        <div class="data-section-title">🔐 SECURITY</div>
+        
+        <div class="data-security">
+            Your data is stored locally on your device.<br>
+            No external servers store your habits.<br>
+            You have full control of your data.
+        </div>
     </div>
   </div>
     
@@ -4167,7 +4346,7 @@ function sendVIPEmail(userEmail, userName) {
             } else if (isPremium) {
                 document.body.classList.add('premium');
                 document.body.classList.remove('vip');
-                premiumStatus.innerHTML = '<strong style="color:gold;">✨ Premium Unlocked! 💎 Unlimited everything + exclusive badge</strong>';
+                premiumStatus.innerHTML = '<strong style="color:gold;">✨ Premium Unlocked! 💎 Unlimited everything</strong>';
                 
                 // Show Premium badge only
                 if (premiumBadge) premiumBadge.style.display = 'inline-flex';
@@ -4351,7 +4530,7 @@ db.collection("users").doc(currentUser.uid).set({
                 renderHabits();
                 checkPremium();
                 
-                alert('👑 Welcome to VIP!\n\n✨ You now have access to:\n- Unlimited habits\n- Advanced AI Coach\n- Priority support\n- Exclusive VIP badge\n- Exclusive VIP features\n\nCheck your email for details!');
+                alert('👑 Welcome to VIP!\n\n✨ You now have access to:\n- Unlimited habits\n- Advanced AI Coach\n- Priority support\n- Exclusive VIP features\n\nCheck your email for details!');
             }).catch(err => {
                 console.error("Failed to save VIP to Firebase:", err);
                 alert("Warning: VIP activated but cloud sync failed. Contact support.");
@@ -4397,7 +4576,7 @@ db.collection("users").doc(currentUser.uid).set({
                 renderHabits();
                 checkPremium();
                 
-                alert('👑 Welcome to VIP Yearly!\n\n✨ You saved $189 and unlocked:\n- Unlimited habits\n- Advanced AI Coach\n- Priority support\n- Exclusive VIP badge\n- Exclusive VIP features\n\nCheck your email for details!');
+                alert('👑 Welcome to VIP Yearly!\n\n✨ You saved $189 and unlocked:\n- Unlimited habits\n- Advanced AI Coach\n- Priority support\n- Exclusive VIP features\n\nCheck your email for details!');
             }).catch(err => {
                 console.error("Failed to save VIP to Firebase:", err);
                 alert("Warning: VIP activated but cloud sync failed. Contact support.");
@@ -7693,6 +7872,32 @@ function convertGuestToUser() {
             // Update current notification style when showing settings
             if (tabName === 'settings') {
                 updateCurrentNotificationStyle();
+            }
+            
+            // Update data stats when showing data tab
+            if (tabName === 'data') {
+                updateDataStats();
+            }
+        }
+        
+        // Update Data tab statistics
+        function updateDataStats() {
+            // Total habits
+            const totalHabits = habits.length;
+            document.getElementById('totalHabitsCount').textContent = totalHabits;
+            
+            // Active streaks (habits with streak > 0)
+            const activeStreaks = habits.filter(h => (h.streak || 0) > 0).length;
+            document.getElementById('activeStreaksCount').textContent = activeStreaks;
+            
+            // Completion rate
+            if (habits.length > 0) {
+                const today = getToday();
+                const completedToday = habits.filter(h => h.dates && h.dates.includes(today)).length;
+                const rate = Math.round((completedToday / habits.length) * 100);
+                document.getElementById('completionRate').textContent = rate + '%';
+            } else {
+                document.getElementById('completionRate').textContent = '0%';
             }
         }
 
