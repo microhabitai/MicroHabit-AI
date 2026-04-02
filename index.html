@@ -4609,10 +4609,31 @@ function sendVIPEmail(userEmail, userName) {
             localStorage.setItem('onboardingShown', 'true');
             document.getElementById('onboarding').style.display = 'none';
             
-            // Show first banner after onboarding
-            setTimeout(() => {
-                checkAndShowBanner();
-            }, 2000);
+            // Check if user is already logged in
+            const currentUser = auth.currentUser;
+            
+            if (currentUser) {
+                // User is logged in - skip authSection and go straight to app
+                console.log('✅ User already logged in, skipping auth screen');
+                document.getElementById('authSection').style.display = 'none';
+                
+                // Show main app immediately
+                document.getElementById('appBrand').style.display = 'flex';
+                document.getElementById('appGreeting').style.display = 'flex';
+                
+                // Show first banner after onboarding
+                setTimeout(() => {
+                    checkAndShowBanner();
+                }, 2000);
+            } else {
+                // User not logged in - show authSection as normal
+                console.log('👤 No user logged in, showing auth screen');
+                
+                // Show first banner after onboarding
+                setTimeout(() => {
+                    checkAndShowBanner();
+                }, 2000);
+            }
         }
 
         function checkPremium() {
