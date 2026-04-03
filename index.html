@@ -3414,7 +3414,7 @@
     </div>
 </div>
 
-<div id="authSection">
+<div id="authSection" style="display:none;">
   <div style="text-align:center; padding: 20px 10px; background: linear-gradient(135deg, #4a90e2, #2ecc71); border-radius: 12px; margin-bottom: 20px; color: white;">
     <h2 style="margin:0 0 10px 0; font-size: 22px;">🤖 AI That Predicts When You'll Skip</h2>
     <p style="margin: 5px 0; font-size: 15px;">Not another reminder app. Real AI coaching.</p>
@@ -4609,31 +4609,14 @@ function sendVIPEmail(userEmail, userName) {
             localStorage.setItem('onboardingShown', 'true');
             document.getElementById('onboarding').style.display = 'none';
             
-            // Check if user is already logged in
-            const currentUser = auth.currentUser;
+            // Show first banner after onboarding
+            setTimeout(() => {
+                checkAndShowBanner();
+            }, 2000);
             
-            if (currentUser) {
-                // User is logged in - skip authSection and go straight to app
-                console.log('✅ User already logged in, skipping auth screen');
-                document.getElementById('authSection').style.display = 'none';
-                
-                // Show main app immediately
-                document.getElementById('appBrand').style.display = 'flex';
-                document.getElementById('appGreeting').style.display = 'flex';
-                
-                // Show first banner after onboarding
-                setTimeout(() => {
-                    checkAndShowBanner();
-                }, 2000);
-            } else {
-                // User not logged in - show authSection as normal
-                console.log('👤 No user logged in, showing auth screen');
-                
-                // Show first banner after onboarding
-                setTimeout(() => {
-                    checkAndShowBanner();
-                }, 2000);
-            }
+            // Note: authSection visibility is handled by onAuthStateChanged listener
+            // - If user logged in: authSection stays hidden, main app shows
+            // - If no user: authSection becomes visible
         }
 
         function checkPremium() {
