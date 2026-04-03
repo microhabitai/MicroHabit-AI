@@ -1,7 +1,7 @@
 // MicroHabit AI Service Worker
 // Handles: Background notifications, offline caching, PWA functionality
 
-const CACHE_NAME = 'microhabit-v3'; // Day 19 - Glowing buttons update
+const CACHE_NAME = 'microhabit-v4'; // bumped version so users get the update
 const urlsToCache = [
   '/',
   '/index.html',
@@ -58,8 +58,8 @@ self.addEventListener('fetch', event => {
         return response;
       })
       .catch(() => {
-        // Network failed, try cache
-        return caches.match(event.request)
+        // Network failed, try cache (ignore query params)
+        return caches.match(event.request, { ignoreSearch: true })
           .then(cachedResponse => {
             if (cachedResponse) {
               return cachedResponse;
