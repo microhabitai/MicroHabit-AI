@@ -7278,6 +7278,9 @@ function proceedWithSignup(email, password, confirmPassword) {
             // Load habits from cloud
             habits = cloudData.habits || [];
             
+            // 🔥 Cache habits for offline use
+            localStorage.setItem('cachedHabits', JSON.stringify(habits));
+            
             // Load premium status
             isPremium = cloudData.isPremium || false;
             isVIP = cloudData.isVIP || false;
@@ -7371,6 +7374,85 @@ if (user.email === 'fancytreaz@gmail.com') {
     // Check onboarding AFTER we know auth state
     checkOnboarding();
 });
+
+// 🔥 OFFLINE FALLBACK - If Firebase can't connect, check localStorage
+// This handles the case where user is offline and onAuthStateChanged doesn't fire
+let authStateChecked = false;
+auth.onAuthStateChanged(() => { authStateChecked = true; });
+
+setTimeout(() => {
+    if (!authStateChecked) {
+        console.log('⚠️ Firebase not responding - checking offline mode');
+        
+        // Check if guest mode was active
+        const isGuest = localStorage.getItem('isGuest') === 'true';
+        
+        if (isGuest) {
+            // Show app in guest mode offline
+            const guestUser = JSON.parse(localStorage.getItem('guestUser'));
+            currentUser = guestUser;
+            
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('guestBanner').style.display = 'block';
+            
+            document.getElementById('appBrand').style.display = 'flex';
+            document.getElementById('appGreeting').style.display = 'flex';
+            document.getElementById('greetingText').textContent = 'Guest Mode (Offline)';
+            document.getElementById('userAvatar').textContent = '🔓';
+            
+            loadGuestHabits();
+            isPremium = false;
+            isVIP = false;
+            
+            setTimeout(() => loadNotificationPreferences(), 100);
+            renderHabits();
+            populateHabitSelect();
+            updateQuickStats();
+            
+            console.log('✅ Offline guest mode activated from cache');
+        } else {
+            // Try to check if Firebase has a cached user
+            try {
+                const cachedUser = auth.currentUser;
+                if (cachedUser) {
+                    // User was logged in, show app with cached data
+                    console.log('✅ Found cached user - showing app offline');
+                    currentUser = cachedUser;
+                    
+                    document.getElementById('authSection').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    document.getElementById('guestBanner').style.display = 'none';
+                    
+                    document.getElementById('appBrand').style.display = 'flex';
+                    document.getElementById('appGreeting').style.display = 'flex';
+                    document.getElementById('greetingText').textContent = 'Offline Mode';
+                    
+                    // Try to load from localStorage as fallback
+                    const cachedHabits = localStorage.getItem('cachedHabits');
+                    if (cachedHabits) {
+                        habits = JSON.parse(cachedHabits);
+                    }
+                    
+                    renderHabits();
+                    populateHabitSelect();
+                    updateQuickStats();
+                } else {
+                    // No cached user, show auth
+                    document.getElementById('authSection').style.display = 'block';
+                    document.getElementById('mainApp').style.display = 'none';
+                    console.log('⚠️ Offline - please connect to sign in');
+                }
+            } catch (e) {
+                // Error checking auth, show auth section
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('mainApp').style.display = 'none';
+                console.log('⚠️ Offline and no cached data');
+            }
+        }
+    }
+}, 3000); // Wait 3 seconds for Firebase to respond
+
 
 
         // Initialize on page load
