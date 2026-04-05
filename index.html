@@ -3549,12 +3549,12 @@
       <span style="background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:20px; font-size:13px;">🆓 Free version available</span>
     </div>
   </div>
-  <h2 id="authTitle" style="text-align:center;">Get Started Free</h2>
+  <h2 id="authTitle" style="text-align:center;">Get Started</h2>
   <p style="text-align:center;">Your habits. Your data. Synced everywhere.</p>
   <input type="email" id="emailInput" placeholder="Your email">
   <input type="password" id="passwordInput" placeholder="Password (6+ chars)">
   <input type="password" id="confirmPasswordInput" placeholder="Confirm password" style="display:none;">
-  <button onclick="signUp()" id="signupBtn" style="width:100%; padding:15px; font-size:16px; background: #2ecc71;">🚀 Start Tracking</button>
+  <button onclick="signUp()" id="signupBtn" style="width:100%; padding:15px; font-size:16px; background: #2ecc71;">🚀 Sign up</button>
   <button onclick="login()" id="loginBtn" style="width:100%; padding:15px; font-size:16px; background: #4a90e2; margin-top:8px;">🔑 Login to My Account</button>
   <button onclick="showForgotPassword()" style="background:#666; font-size:14px;">Forgot Password?</button>
   
@@ -9306,34 +9306,29 @@ async function submitFeedback() {
     }
 }
 
-// 🎯 SIMPLE FEEDBACK POPUP LOGIC (RELIABLE!)
+// 🎯 TRUE EXIT-INTENT FEEDBACK (ONLY ON EXIT ATTEMPTS!)
 
-// Simple approach: Show popup after 20 seconds if user hasn't signed up
+// Track time on site (to prevent showing too early)
 let timeOnSite = 0;
 let feedbackTimer = null;
 
-// Start timer when page loads
+// Start simple counter when page loads
 function startFeedbackTimer() {
-    console.log('⏱️ Feedback timer started');
+    console.log('⏱️ Time tracker started (will NOT auto-show popup)');
     
     feedbackTimer = setInterval(() => {
         timeOnSite += 1;
-        
-        // Check every second if we should show feedback
-        if (timeOnSite >= 20) { // Show after 20 seconds
-            console.log(`⏱️ User been on site for ${timeOnSite}s - checking if should show feedback`);
-            checkAndShowFeedback();
-        }
+        // Just count - DON'T auto-show popup
     }, 1000);
 }
 
 // Function to check if we should show feedback
 function checkAndShowFeedback() {
-    console.log('🔍 Checking feedback conditions...');
+    console.log('🔍 Exit attempt detected! Checking feedback conditions...');
     console.log('  feedbackShown:', feedbackShown);
     console.log('  currentUser:', currentUser);
     console.log('  isGuest:', localStorage.getItem('isGuest'));
-    console.log('  timeOnSite:', timeOnSite);
+    console.log('  timeOnSite:', timeOnSite + 's');
     
     // Don't show if already shown
     if (feedbackShown) {
@@ -9353,9 +9348,9 @@ function checkAndShowFeedback() {
         return;
     }
     
-    // Don't show if not enough time
-    if (timeOnSite < 20) {
-        console.log(`❌ Not enough time (${timeOnSite}s < 20s) - skipping`);
+    // Don't show if they just landed (give them time to read)
+    if (timeOnSite < 10) {
+        console.log(`❌ Too early (${timeOnSite}s < 10s) - let them read first`);
         return;
     }
     
@@ -9369,34 +9364,50 @@ function checkAndShowFeedback() {
     }
 }
 
-// Start timer after 3 seconds (let page settle first)
+// Start timer after page loads
 setTimeout(() => {
     startFeedbackTimer();
 }, 3000);
 
-// Also try to show on exit attempts (bonus triggers)
-// Desktop: Mouse leaving top of screen
+// 🔥 EXIT DETECTION TRIGGERS (ONLY SHOW ON THESE!)
+
+// 1. Desktop: Mouse leaving top of viewport (closing tab)
 document.addEventListener('mouseleave', (e) => {
-    if (e.clientY < 10 && timeOnSite >= 10) { // At least 10 seconds
-        console.log('🖱️ Mouse exit detected');
+    if (e.clientY < 10) {
+        console.log('🖱️ Mouse exit detected (top of screen)');
         checkAndShowFeedback();
     }
 });
 
-// Mobile: Back button
+// 2. Mobile/Desktop: Back button press
 window.addEventListener('popstate', () => {
-    if (timeOnSite >= 10) {
-        console.log('⬅️ Back button detected');
+    console.log('⬅️ Back button detected');
+    checkAndShowFeedback();
+});
+
+// 3. Tab switch / minimize (user leaving)
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        console.log('👁️ Tab hidden (switching away)');
         checkAndShowFeedback();
     }
 });
 
-// Tab switch / minimize
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden && timeOnSite >= 10) {
-        console.log('👁️ Visibility change detected');
-        checkAndShowFeedback();
-    }
+// 4. Before unload (closing tab/window) - STRONGEST SIGNAL
+window.addEventListener('beforeunload', (e) => {
+    console.log('🚪 Window closing detected');
+    
+    // Check conditions first
+    if (feedbackShown) return;
+    if (currentUser && currentUser.email && !currentUser.isOffline) return;
+    if (localStorage.getItem('isGuest') === 'true') return;
+    if (timeOnSite < 10) return;
+    
+    // Show popup (this is the LAST chance)
+    showFeedbackPopup();
+    
+    // Note: beforeunload has restrictions, popup might not show
+    // But other triggers will catch most cases
 });
 
 // 🔧 MANUAL TEST TRIGGER (for debugging)
