@@ -3309,6 +3309,130 @@
         .landing-footer button:hover {
             transform: translateY(-2px);
         }
+        
+        /* 🔥 EXIT-INTENT FEEDBACK POPUP */
+        #feedbackOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+        
+        #feedbackPopup {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            right: 0;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.6);
+            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10000;
+        }
+        
+        #feedbackPopup.active {
+            bottom: 0;
+        }
+        
+        .feedback-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .feedback-question {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+        
+        .feedback-option {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .feedback-option:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(0,212,255,0.3);
+        }
+        
+        .feedback-option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .feedback-option label {
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        #feedbackOtherText {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.1);
+            margin-top: 8px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 14px;
+            display: none;
+        }
+        
+        #feedbackOtherText:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        
+        .feedback-submit-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            color: #0f172a;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        
+        .feedback-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,212,255,0.4);
+        }
+        
+        .feedback-skip {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        
+        .feedback-skip:hover {
+            color: #cbd5e1;
+        }
     </style>
 </head>
 <body>
@@ -9063,6 +9187,205 @@ function futuristicTextarea(title, message, placeholder, onSubmit) {
     }, 100);
 }
 
+// 🔥 EXIT-INTENT FEEDBACK POPUP LOGIC
+
+let feedbackShown = false;
+let exitIntentDetected = false;
+
+// Show feedback popup function
+function showFeedbackPopup() {
+    if (feedbackShown) return; // Only show once per session
+    
+    const overlay = document.getElementById('feedbackOverlay');
+    const popup = document.getElementById('feedbackPopup');
+    
+    overlay.style.display = 'block';
+    setTimeout(() => {
+        popup.classList.add('active');
+    }, 100);
+    
+    feedbackShown = true;
+    console.log('📊 Feedback popup shown');
+}
+
+// Close feedback popup function
+function closeFeedbackPopup() {
+    const overlay = document.getElementById('feedbackOverlay');
+    const popup = document.getElementById('feedbackPopup');
+    
+    popup.classList.remove('active');
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 400);
+    
+    console.log('❌ Feedback popup closed');
+}
+
+// Select feedback option
+function selectFeedbackOption(element) {
+    const radio = element.querySelector('input[type="radio"]');
+    if (radio) {
+        radio.checked = true;
+        
+        // Show/hide "Other" text field
+        const otherText = document.getElementById('feedbackOtherText');
+        if (radio.value === 'Other') {
+            otherText.style.display = 'block';
+            setTimeout(() => otherText.focus(), 100);
+        } else {
+            otherText.style.display = 'none';
+        }
+    }
+}
+
+// Submit feedback to Firestore
+async function submitFeedback() {
+    const selected = document.querySelector('input[name="feedback"]:checked');
+    const otherText = document.getElementById('feedbackOtherText').value.trim();
+    
+    if (!selected) {
+        alert('Please select an option');
+        return;
+    }
+    
+    let feedbackMessage = selected.value;
+    if (feedbackMessage === 'Other' && otherText) {
+        feedbackMessage = otherText;
+    } else if (feedbackMessage === 'Other' && !otherText) {
+        alert('Please tell us more');
+        document.getElementById('feedbackOtherText').focus();
+        return;
+    }
+    
+    try {
+        // Save to Firestore
+        await db.collection('feedback').add({
+            message: feedbackMessage,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            source: 'exit-intent'
+        });
+        
+        console.log('✅ Feedback saved:', feedbackMessage);
+        
+        // Show thank you message
+        const popup = document.getElementById('feedbackPopup');
+        popup.innerHTML = `
+            <div style="text-align: center; padding: 20px;">
+                <div style="font-size: 48px; margin-bottom: 15px;">🙏</div>
+                <div style="font-size: 20px; font-weight: bold; margin-bottom: 10px; 
+                     background: linear-gradient(90deg, #00d4ff, #00ff88);
+                     -webkit-background-clip: text;
+                     -webkit-text-fill-color: transparent;">
+                    Thanks for your feedback!
+                </div>
+                <div style="color: #cbd5e1; font-size: 14px; margin-bottom: 20px;">
+                    This helps us improve MicroHabit AI
+                </div>
+                <button onclick="closeFeedbackPopup()" style="
+                    padding: 12px 30px;
+                    border: none;
+                    border-radius: 10px;
+                    background: linear-gradient(90deg, #00d4ff, #00ff88);
+                    color: #0f172a;
+                    font-weight: bold;
+                    cursor: pointer;">
+                    Close
+                </button>
+            </div>
+        `;
+        
+        // Auto-close after 3 seconds
+        setTimeout(() => {
+            closeFeedbackPopup();
+        }, 3000);
+        
+    } catch (error) {
+        console.error('❌ Error saving feedback:', error);
+        alert('Failed to save feedback. Please try again.');
+    }
+}
+
+// 🎯 EXIT INTENT DETECTION
+
+// Detect mouse leaving viewport (desktop)
+document.addEventListener('mouseleave', (e) => {
+    if (e.clientY < 10 && !exitIntentDetected) {
+        // Mouse moved to top of screen (likely closing tab)
+        checkAndShowFeedback();
+    }
+});
+
+// Detect when user has been on auth page for 10+ seconds and tries to leave
+let timeOnAuthPage = 0;
+let authPageTimer = null;
+
+// Track time on auth page
+const authObserver = new MutationObserver(() => {
+    const authSection = document.getElementById('authSection');
+    const isAuthVisible = authSection && authSection.style.display !== 'none';
+    
+    if (isAuthVisible && !authPageTimer) {
+        // User is on auth page, start timer
+        authPageTimer = setInterval(() => {
+            timeOnAuthPage += 1;
+            console.log(`⏱️ Time on auth page: ${timeOnAuthPage}s`);
+        }, 1000);
+    } else if (!isAuthVisible && authPageTimer) {
+        // User left auth page
+        clearInterval(authPageTimer);
+        authPageTimer = null;
+        
+        // If they spent 10+ seconds and didn't sign up, show feedback on next exit attempt
+        if (timeOnAuthPage >= 10 && !currentUser) {
+            exitIntentDetected = true;
+        }
+        timeOnAuthPage = 0;
+    }
+});
+
+authObserver.observe(document.body, { 
+    childList: true, 
+    subtree: true, 
+    attributes: true, 
+    attributeFilter: ['style'] 
+});
+
+// Function to check if we should show feedback
+function checkAndShowFeedback() {
+    // Don't show if:
+    // 1. Already shown
+    // 2. User is signed up
+    // 3. User is in guest mode
+    // 4. User hasn't spent enough time on auth page
+    
+    if (feedbackShown) return;
+    if (currentUser && currentUser.email) return; // Real user
+    if (localStorage.getItem('isGuest') === 'true') return; // Guest user
+    if (timeOnAuthPage < 5) return; // Spent less than 5 seconds
+    
+    showFeedbackPopup();
+}
+
+// Mobile: Detect back button press
+let backButtonPressed = false;
+window.addEventListener('popstate', () => {
+    if (!backButtonPressed) {
+        backButtonPressed = true;
+        checkAndShowFeedback();
+    }
+});
+
+// Also show on visibility change (tab switching, minimizing)
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        // User is switching away
+        checkAndShowFeedback();
+    }
+});
+
+console.log('📊 Exit-intent feedback system initialized');
+
     </script>
 
 <!-- Futuristic Modal Container -->
@@ -9072,6 +9395,48 @@ function futuristicTextarea(title, message, placeholder, onSubmit) {
         <div class="modal-body" id="modalBody">Modal content goes here</div>
         <div id="modalButtons" class="modal-buttons"></div>
     </div>
+</div>
+
+<!-- 🔥 EXIT-INTENT FEEDBACK POPUP -->
+<div id="feedbackOverlay" onclick="closeFeedbackPopup()"></div>
+
+<div id="feedbackPopup">
+  <div class="feedback-title">😕 Before you go…</div>
+  <div class="feedback-question">What stopped you from signing up today?</div>
+
+  <div class="feedback-option" onclick="selectFeedbackOption(this)">
+    <input type="radio" name="feedback" value="Don't understand" id="fb1">
+    <label for="fb1">I don't understand it</label>
+  </div>
+  
+  <div class="feedback-option" onclick="selectFeedbackOption(this)">
+    <input type="radio" name="feedback" value="Not useful" id="fb2">
+    <label for="fb2">Not useful (yet)</label>
+  </div>
+  
+  <div class="feedback-option" onclick="selectFeedbackOption(this)">
+    <input type="radio" name="feedback" value="Just exploring" id="fb3">
+    <label for="fb3">Just exploring</label>
+  </div>
+  
+  <div class="feedback-option" onclick="selectFeedbackOption(this)">
+    <input type="radio" name="feedback" value="Too much effort" id="fb4">
+    <label for="fb4">Too much effort</label>
+  </div>
+  
+  <div class="feedback-option" onclick="selectFeedbackOption(this)">
+    <input type="radio" name="feedback" value="Don't trust" id="fb5">
+    <label for="fb5">I don't trust it yet</label>
+  </div>
+
+  <div class="feedback-option" onclick="selectFeedbackOption(this)">
+    <input type="radio" name="feedback" value="Other" id="fb6">
+    <label for="fb6">Other:</label>
+    <input type="text" id="feedbackOtherText" placeholder="Type here..." onclick="event.stopPropagation()">
+  </div>
+
+  <button class="feedback-submit-btn" onclick="submitFeedback()">Submit Feedback</button>
+  <div class="feedback-skip" onclick="closeFeedbackPopup()">Skip</div>
 </div>
 
 </body>
