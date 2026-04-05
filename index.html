@@ -9306,85 +9306,109 @@ async function submitFeedback() {
     }
 }
 
-// 🎯 EXIT INTENT DETECTION
+// 🎯 SIMPLE FEEDBACK POPUP LOGIC (RELIABLE!)
 
-// Detect mouse leaving viewport (desktop)
-document.addEventListener('mouseleave', (e) => {
-    if (e.clientY < 10 && !exitIntentDetected) {
-        // Mouse moved to top of screen (likely closing tab)
-        checkAndShowFeedback();
-    }
-});
+// Simple approach: Show popup after 20 seconds if user hasn't signed up
+let timeOnSite = 0;
+let feedbackTimer = null;
 
-// Detect when user has been on auth page for 10+ seconds and tries to leave
-let timeOnAuthPage = 0;
-let authPageTimer = null;
-
-// Track time on auth page
-const authObserver = new MutationObserver(() => {
-    const authSection = document.getElementById('authSection');
-    const isAuthVisible = authSection && authSection.style.display !== 'none';
+// Start timer when page loads
+function startFeedbackTimer() {
+    console.log('⏱️ Feedback timer started');
     
-    if (isAuthVisible && !authPageTimer) {
-        // User is on auth page, start timer
-        authPageTimer = setInterval(() => {
-            timeOnAuthPage += 1;
-            console.log(`⏱️ Time on auth page: ${timeOnAuthPage}s`);
-        }, 1000);
-    } else if (!isAuthVisible && authPageTimer) {
-        // User left auth page
-        clearInterval(authPageTimer);
-        authPageTimer = null;
+    feedbackTimer = setInterval(() => {
+        timeOnSite += 1;
         
-        // If they spent 10+ seconds and didn't sign up, show feedback on next exit attempt
-        if (timeOnAuthPage >= 10 && !currentUser) {
-            exitIntentDetected = true;
+        // Check every second if we should show feedback
+        if (timeOnSite >= 20) { // Show after 20 seconds
+            console.log(`⏱️ User been on site for ${timeOnSite}s - checking if should show feedback`);
+            checkAndShowFeedback();
         }
-        timeOnAuthPage = 0;
-    }
-});
-
-authObserver.observe(document.body, { 
-    childList: true, 
-    subtree: true, 
-    attributes: true, 
-    attributeFilter: ['style'] 
-});
+    }, 1000);
+}
 
 // Function to check if we should show feedback
 function checkAndShowFeedback() {
-    // Don't show if:
-    // 1. Already shown
-    // 2. User is signed up
-    // 3. User is in guest mode
-    // 4. User hasn't spent enough time on auth page
+    console.log('🔍 Checking feedback conditions...');
+    console.log('  feedbackShown:', feedbackShown);
+    console.log('  currentUser:', currentUser);
+    console.log('  isGuest:', localStorage.getItem('isGuest'));
+    console.log('  timeOnSite:', timeOnSite);
     
-    if (feedbackShown) return;
-    if (currentUser && currentUser.email) return; // Real user
-    if (localStorage.getItem('isGuest') === 'true') return; // Guest user
-    if (timeOnAuthPage < 5) return; // Spent less than 5 seconds
+    // Don't show if already shown
+    if (feedbackShown) {
+        console.log('❌ Already shown - skipping');
+        return;
+    }
     
+    // Don't show if user signed up
+    if (currentUser && currentUser.email && !currentUser.isOffline) {
+        console.log('❌ User signed up - skipping');
+        return;
+    }
+    
+    // Don't show if in guest mode
+    if (localStorage.getItem('isGuest') === 'true') {
+        console.log('❌ Guest mode - skipping');
+        return;
+    }
+    
+    // Don't show if not enough time
+    if (timeOnSite < 20) {
+        console.log(`❌ Not enough time (${timeOnSite}s < 20s) - skipping`);
+        return;
+    }
+    
+    console.log('✅ All conditions met - showing feedback popup!');
     showFeedbackPopup();
+    
+    // Stop timer after showing
+    if (feedbackTimer) {
+        clearInterval(feedbackTimer);
+        feedbackTimer = null;
+    }
 }
 
-// Mobile: Detect back button press
-let backButtonPressed = false;
+// Start timer after 3 seconds (let page settle first)
+setTimeout(() => {
+    startFeedbackTimer();
+}, 3000);
+
+// Also try to show on exit attempts (bonus triggers)
+// Desktop: Mouse leaving top of screen
+document.addEventListener('mouseleave', (e) => {
+    if (e.clientY < 10 && timeOnSite >= 10) { // At least 10 seconds
+        console.log('🖱️ Mouse exit detected');
+        checkAndShowFeedback();
+    }
+});
+
+// Mobile: Back button
 window.addEventListener('popstate', () => {
-    if (!backButtonPressed) {
-        backButtonPressed = true;
+    if (timeOnSite >= 10) {
+        console.log('⬅️ Back button detected');
         checkAndShowFeedback();
     }
 });
 
-// Also show on visibility change (tab switching, minimizing)
+// Tab switch / minimize
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        // User is switching away
+    if (document.hidden && timeOnSite >= 10) {
+        console.log('👁️ Visibility change detected');
         checkAndShowFeedback();
     }
 });
 
-console.log('📊 Exit-intent feedback system initialized');
+// 🔧 MANUAL TEST TRIGGER (for debugging)
+// Open console and type: testFeedbackPopup()
+window.testFeedbackPopup = function() {
+    console.log('🧪 Manual test trigger activated!');
+    feedbackShown = false; // Reset so it can show
+    showFeedbackPopup();
+};
+
+console.log('📊 Exit-intent feedback system initialized (SIMPLE VERSION)');
+console.log('🧪 To test manually, open console and type: testFeedbackPopup()');
 
     </script>
 
