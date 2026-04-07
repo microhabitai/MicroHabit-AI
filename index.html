@@ -3433,6 +3433,91 @@
         .feedback-skip:hover {
             color: #cbd5e1;
         }
+        
+        /* 🔥 GUEST CONVERSION POPUP */
+        #convOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+        
+        #convPopup {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            right: 0;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.6);
+            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10000;
+        }
+        
+        #convPopup.active {
+            bottom: 0;
+        }
+        
+        .conv-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #ff6b6b;
+        }
+        
+        .conv-message {
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        #predictionText {
+            font-weight: bold;
+            color: #00d4ff;
+            font-size: 15px;
+        }
+        
+        .conv-primary-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #ff6b6b, #ee5a6f);
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        
+        .conv-primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255,107,107,0.4);
+        }
+        
+        .conv-secondary-btn {
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        
+        .conv-secondary-btn:hover {
+            color: #cbd5e1;
+        }
     </style>
 </head>
 <body>
@@ -4522,6 +4607,109 @@ function sendVIPEmail(userEmail, userName) {
       console.log('❌ Email failed:', error);
     });
 }
+
+        // 🔥 GUEST CONVERSION POPUP FUNCTIONS (defined early so they're available everywhere)
+        
+        let conversionShown = false;
+
+        // Show conversion popup (called after AI prediction is shown to guest)
+        function triggerConversionPopup(predictionText) {
+            console.log('🎯 Checking if should show conversion popup...');
+            
+            // Check if guest mode
+            const isGuest = localStorage.getItem('isGuest') === 'true';
+            
+            // Don't show if:
+            // 1. Already shown this session
+            // 2. User is not a guest
+            // 3. User has already signed up
+            
+            if (conversionShown) {
+                console.log('❌ Conversion popup already shown');
+                return;
+            }
+            
+            if (!isGuest) {
+                console.log('❌ Not a guest user');
+                return;
+            }
+            
+            if (currentUser && currentUser.email && !currentUser.isOffline) {
+                console.log('❌ User already signed up');
+                return;
+            }
+            
+            console.log('✅ Showing conversion popup!');
+            
+            // Wait a moment for better UX (let them see the prediction first)
+            setTimeout(() => {
+                document.getElementById('predictionText').textContent = predictionText;
+                
+                const overlay = document.getElementById('convOverlay');
+                const popup = document.getElementById('convPopup');
+                
+                overlay.style.display = 'block';
+                setTimeout(() => {
+                    popup.classList.add('active');
+                }, 100);
+                
+                conversionShown = true;
+                console.log('💎 Conversion popup shown!');
+            }, 1500); // 1.5 second delay
+        }
+
+        // Close conversion popup
+        function closeConvPopup() {
+            const overlay = document.getElementById('convOverlay');
+            const popup = document.getElementById('convPopup');
+            
+            popup.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 400);
+            
+            console.log('❌ Conversion popup closed (guest continues)');
+        }
+
+        // Go to signup (convert guest to user)
+        function goToSignup() {
+            console.log('🚀 Converting guest to signed-up user!');
+            
+            // Close popup first
+            closeConvPopup();
+            
+            // Mark that we're converting from guest
+            sessionStorage.setItem('convertingFromGuest', 'true');
+            
+            // Save guest habits to session storage (so they don't lose data)
+            const guestHabits = localStorage.getItem('guestHabits');
+            if (guestHabits) {
+                sessionStorage.setItem('pendingGuestData', guestHabits);
+            }
+            
+            // Show auth section (your existing signup form)
+            setTimeout(() => {
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('mainApp').style.display = 'none';
+                
+                // Scroll to signup
+                document.getElementById('authSection').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+                
+                console.log('✅ Showing signup form - guest data will be migrated after signup!');
+            }, 500);
+        }
+
+        // 🔧 MANUAL TEST TRIGGER (for testing)
+        window.testConversionPopup = function() {
+            console.log('🧪 Manual test: Showing conversion popup');
+            conversionShown = false; // Reset
+            triggerConversionPopup("⚠️ You're likely to skip Gym today");
+        };
+
+        console.log('💎 Guest conversion popup system initialized');
 
         // Generate unique referral code for user
         function generateReferralCode(email) {
@@ -6079,6 +6267,15 @@ function renewSubscription() {
                 document.getElementById('dailyAlert').style.borderLeft = '3.5px solid var(--accent-green)';
                 document.getElementById('dailyAlert').querySelector('.alert-icon').textContent = '🎉';
                 document.getElementById('alertTitle').style.color = '#00f5a0';
+            }
+            
+            // 🔥 TRIGGER CONVERSION POPUP FOR GUESTS (after they see prediction)
+            const isGuest = localStorage.getItem('isGuest') === 'true';
+            if (isGuest && habitsAtRisk.length > 0) {
+                // Guest saw a prediction - show conversion popup
+                const habitName = habitsAtRisk[0].name;
+                const predictionText = `⚠️ You're likely to skip "${habitName}" today`;
+                triggerConversionPopup(predictionText);
             }
         }
         
@@ -9472,6 +9669,26 @@ console.log('🧪 To test manually, open console and type: testFeedbackPopup()')
 
   <button class="feedback-submit-btn" onclick="submitFeedback()">Submit Feedback</button>
   <div class="feedback-skip" onclick="closeFeedbackPopup()">Skip</div>
+</div>
+
+<!-- 🔥 GUEST CONVERSION POPUP -->
+<div id="convOverlay" onclick="closeConvPopup()"></div>
+
+<div id="convPopup">
+  <div class="conv-title">⚠️ This is how streaks break</div>
+  
+  <div class="conv-message">
+    <span id="predictionText"></span><br><br>
+    Sign up to get daily predictions and stay ahead of your habits.
+  </div>
+  
+  <button class="conv-primary-btn" onclick="goToSignup()">
+    Keep My Streak Alive 🔥
+  </button>
+  
+  <div class="conv-secondary-btn" onclick="closeConvPopup()">
+    Continue as Guest
+  </div>
 </div>
 
 </body>
