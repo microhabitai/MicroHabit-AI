@@ -1446,7 +1446,7 @@
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background: radial-gradient(circle at top, #0f172a, #020617);
-            display: flex;
+            display: none; /* 🔥 HIDDEN BY DEFAULT - shown after login for first-time users */
             align-items: center;
             justify-content: center;
             z-index: 1000;
@@ -4585,18 +4585,12 @@ function sendVIPEmail(userEmail, userName) {
             alert(`🎉 Congrats! You just unlocked 7 days of FREE Premium!\n\nYour friend also got 30 free days as a thank you!`);
         }
 
-        // Onboarding
+        // Onboarding (NOW ONLY USED AFTER LOGIN, NOT ON PAGE LOAD)
         function checkOnboarding() {
-            const onboardingShown = localStorage.getItem('onboardingShown') === 'true';
-            const isGuest = localStorage.getItem('isGuest') === 'true';
-            const isLoggedIn = auth.currentUser !== null;
-            
-            // Show onboarding ONLY for new visitors (not logged in, not guest, never seen before)
-            if (!onboardingShown && !isLoggedIn && !isGuest) {
-                document.getElementById('onboarding').style.display = 'flex';
-            } else {
-                document.getElementById('onboarding').style.display = 'none';
-            }
+            // This function is no longer used for initial display
+            // Onboarding is now shown AFTER successful login/signup for first-time users
+            // Keeping this function for backward compatibility but it does nothing
+            return;
         }
 
         function closeOnboarding() {
@@ -7365,6 +7359,18 @@ if (user.email === 'fancytreaz@gmail.com') {
         renderHabits();
         populateHabitSelect();
         updateQuickStats();
+        
+        // 🔥 NEW FLOW: Show onboarding for first-time users AFTER they log in
+        const hasSeenOnboarding = localStorage.getItem('onboardingShown') === 'true';
+        
+        if (!hasSeenOnboarding) {
+            // First time user - show onboarding
+            console.log('👋 First time user - showing onboarding');
+            setTimeout(() => {
+                const onboardingModal = document.getElementById('onboarding');
+                onboardingModal.style.display = 'flex'; // Show as flex to center content
+            }, 500); // Small delay so they see the app first
+        }
     } else {
         // Check if guest mode
         const isGuest = localStorage.getItem('isGuest') === 'true';
@@ -7416,8 +7422,8 @@ if (user.email === 'fancytreaz@gmail.com') {
     loadApiKey();
     checkNotificationStatus();
     
-    // Check onboarding AFTER we know auth state
-    checkOnboarding();
+    // 🔥 DON'T check onboarding here anymore - we'll show it after successful login/signup
+    // checkOnboarding(); // REMOVED - onboarding now shows AFTER authentication
 });
 
 // 🔥 OFFLINE FALLBACK - If Firebase can't connect, check localStorage
