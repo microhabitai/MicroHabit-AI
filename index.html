@@ -5451,6 +5451,9 @@ function renewSubscription() {
 
     // Save to Firebase if logged in
     if (currentUser) {
+        // ✅ Always update local cache first (persists offline completions)
+        localStorage.setItem('cachedHabits', JSON.stringify(habits));
+
         db.collection("users").doc(currentUser.uid).set({
             habits: habits,
             isPremium: isPremium,
