@@ -7317,8 +7317,29 @@ function proceedWithSignup(email, password, confirmPassword) {
         if (docSnap.exists) {
             const cloudData = docSnap.data();
             
-            // Load habits from cloud
-            habits = cloudData.habits || [];
+            // 🔥 Merge offline completions with cloud data
+            const cloudHabits = cloudData.habits || [];
+            const cachedRaw = localStorage.getItem('cachedHabits');
+            if (cachedRaw) {
+                const localHabits = JSON.parse(cachedRaw);
+                habits = cloudHabits.map(cloudHabit => {
+                    const localHabit = localHabits.find(h => h.name === cloudHabit.name);
+                    if (localHabit && localHabit.completedDates && cloudHabit.completedDates) {
+                        const merged = [...new Set([...cloudHabit.completedDates, ...localHabit.completedDates])];
+                        return { ...cloudHabit, completedDates: merged };
+                    }
+                    return cloudHabit;
+                });
+                // If offline completions were added, sync merged data back to Firebase
+                const hasNewCompletions = JSON.stringify(habits) !== JSON.stringify(cloudHabits);
+                if (hasNewCompletions) {
+                    db.collection("users").doc(user.uid).set({ habits: habits }, { merge: true })
+                    .then(() => console.log('🔄 Offline completions synced to cloud'))
+                    .catch(err => console.error('❌ Sync merge failed', err));
+                }
+            } else {
+                habits = cloudHabits;
+            }
             
             // 🔥 Cache habits for offline use
             localStorage.setItem('cachedHabits', JSON.stringify(habits));
@@ -7326,6 +7347,10 @@ function proceedWithSignup(email, password, confirmPassword) {
             // Load premium status
             isPremium = cloudData.isPremium || false;
             isVIP = cloudData.isVIP || false;
+            
+            // 🔥 Cache premium/VIP status for offline use
+            localStorage.setItem('cachedIsPremium', isPremium ? 'true' : 'false');
+            localStorage.setItem('cachedIsVIP', isVIP ? 'true' : 'false');
             
             // Founder override - Rotji always has VIP access
 if (user.email === 'fancytreaz@gmail.com') {
@@ -7501,8 +7526,8 @@ setTimeout(() => {
                     habits = [];
                 }
                 
-                isPremium = false; // Can't verify premium status offline
-                isVIP = false;
+                isPremium = localStorage.getItem('cachedIsPremium') === 'true';
+                isVIP = localStorage.getItem('cachedIsVIP') === 'true';
                 
                 setTimeout(() => loadNotificationPreferences(), 100);
                 renderHabits();
