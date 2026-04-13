@@ -1,7 +1,10 @@
+// OneSignal - must be first line
+importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
+
 // MicroHabit AI Service Worker
 // Handles: Background notifications, offline caching, PWA functionality
 
-const CACHE_NAME = 'microhabit-v4'; // bumped version so users get the update
+const CACHE_NAME = 'microhabit-v5'; // bumped version so users get the update
 const urlsToCache = [
   '/',
   '/index.html',
