@@ -4349,7 +4349,8 @@ const db = firebase.firestore();
   const hasLoggedInBefore = localStorage.getItem('hasLoggedInBefore') === 'true';
   const isGuest = localStorage.getItem('isGuest') === 'true';
   const onboardingShown = localStorage.getItem('onboardingShown') === 'true';
-  if (!hasLoggedInBefore && !isGuest && !onboardingShown) {
+  const fromLanding = sessionStorage.getItem('fromLanding') === 'true';
+  if (!hasLoggedInBefore && !isGuest && !onboardingShown && !fromLanding) {
     window.location.replace('index.html');
   }
 })();
