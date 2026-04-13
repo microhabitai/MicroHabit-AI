@@ -4344,17 +4344,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// 🔁 Send brand new visitors to landing page
-(function() {
-  const hasLoggedInBefore = localStorage.getItem('hasLoggedInBefore') === 'true';
-  const isGuest = localStorage.getItem('isGuest') === 'true';
-  const onboardingShown = localStorage.getItem('onboardingShown') === 'true';
-  const fromLanding = sessionStorage.getItem('fromLanding') === 'true';
-  if (!hasLoggedInBefore && !isGuest && !onboardingShown && !fromLanding) {
-    window.location.replace('index.html');
-  }
-})();
-
 // Enable offline persistence
 db.enablePersistence()
   .catch((err) => {
