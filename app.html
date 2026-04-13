@@ -7387,10 +7387,10 @@ function proceedWithSignup(email, password, confirmPassword) {
                     const localHabit = localHabits.find(h => h.name === cloudHabit.name);
                     if (localHabit) {
                         const merged = [...new Set([
-                            ...(cloudHabit.completedDates || []),
-                            ...(localHabit.completedDates || [])
+                            ...(cloudHabit.dates || []),
+                            ...(localHabit.dates || [])
                         ])];
-                        return { ...cloudHabit, completedDates: merged };
+                        return { ...cloudHabit, dates: merged };
                     }
                     return cloudHabit;
                 });
