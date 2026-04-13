@@ -5509,15 +5509,20 @@ function renewSubscription() {
         // ✅ Always update local cache first (persists offline completions)
         localStorage.setItem('cachedHabits', JSON.stringify(habits));
 
-        db.collection("users").doc(currentUser.uid).set({
-            habits: habits,
-            isPremium: isPremium,
-            isVIP: isVIP, 
-            geminiKey: localStorage.getItem('geminiKey') || '',
-            lastUpdated: new Date().toISOString()
-        }, { merge: true })
-        .then(() => console.log("✅ Cloud Sync Successful"))
-        .catch(err => console.error("❌ Cloud Sync Failed", err));
+        // ✅ Only write to Firebase if this is a real authenticated user
+        if (!currentUser.isOffline) {
+            db.collection("users").doc(currentUser.uid).set({
+                habits: habits,
+                isPremium: isPremium,
+                isVIP: isVIP, 
+                geminiKey: localStorage.getItem('geminiKey') || '',
+                lastUpdated: new Date().toISOString()
+            }, { merge: true })
+            .then(() => console.log("✅ Cloud Sync Successful"))
+            .catch(err => console.error("❌ Cloud Sync Failed", err));
+        } else {
+            console.log("📦 Offline mode — saved to local cache only");
+        }
     }
     renderHabits();
 }
@@ -7372,11 +7377,12 @@ function proceedWithSignup(email, password, confirmPassword) {
         if (docSnap.exists) {
             const cloudData = docSnap.data();
             
-            // 🔥 Merge offline completions with cloud data
+            // 🔥 Merge offline completions and new habits with cloud data
             const cloudHabits = cloudData.habits || [];
             const cachedRaw = localStorage.getItem('cachedHabits');
             if (cachedRaw) {
                 const localHabits = JSON.parse(cachedRaw);
+                // Merge completedDates for existing habits
                 habits = cloudHabits.map(cloudHabit => {
                     const localHabit = localHabits.find(h => h.name === cloudHabit.name);
                     if (localHabit) {
@@ -7388,6 +7394,14 @@ function proceedWithSignup(email, password, confirmPassword) {
                     }
                     return cloudHabit;
                 });
+                // Add any new habits created offline that aren't in cloud yet
+                const offlineNewHabits = localHabits.filter(localHabit =>
+                    !cloudHabits.find(h => h.name === localHabit.name)
+                );
+                if (offlineNewHabits.length > 0) {
+                    habits = [...habits, ...offlineNewHabits];
+                    console.log(`📦 ${offlineNewHabits.length} offline habit(s) merged`);
+                }
                 // If offline completions were added, sync merged data back to Firebase
                 const hasNewCompletions = JSON.stringify(habits) !== JSON.stringify(cloudHabits);
                 if (hasNewCompletions) {
