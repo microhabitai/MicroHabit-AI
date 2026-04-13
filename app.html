@@ -6246,6 +6246,12 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
                         }
                     }
                     else {
+                        // 🔥 Track offline uncomplete action
+                        if (!navigator.onLine) {
+                            const queue = JSON.parse(localStorage.getItem('offlineActions') || '[]');
+                            queue.push({ type: 'uncomplete', habitName: habit.name, date: today });
+                            localStorage.setItem('offlineActions', JSON.stringify(queue));
+                        }
                         habit.dates = habit.dates.filter(d => d !== today);
                     }
                     saveHabits();
@@ -6405,6 +6411,12 @@ Try MicroHabit AI: https://microhabitai.github.io/MicroHabit-AI/`;
                 '🗑️ Delete Habit',
                 `Are you sure you want to delete "${habits[index].name}"? This cannot be undone.`,
                 () => {
+                    // 🔥 Track offline deletion
+                    if (!navigator.onLine) {
+                        const queue = JSON.parse(localStorage.getItem('offlineActions') || '[]');
+                        queue.push({ type: 'delete', habitName: habits[index].name });
+                        localStorage.setItem('offlineActions', JSON.stringify(queue));
+                    }
                     habits.splice(index, 1);
                     saveHabits();
                     renderHabits();
@@ -7401,6 +7413,23 @@ function proceedWithSignup(email, password, confirmPassword) {
                 if (offlineNewHabits.length > 0) {
                     habits = [...habits, ...offlineNewHabits];
                     console.log(`📦 ${offlineNewHabits.length} offline habit(s) merged`);
+                }
+                // Apply offline actions (uncomplete, delete)
+                const offlineActions = JSON.parse(localStorage.getItem('offlineActions') || '[]');
+                if (offlineActions.length > 0) {
+                    offlineActions.forEach(action => {
+                        if (action.type === 'delete') {
+                            habits = habits.filter(h => h.name !== action.habitName);
+                            console.log(`🗑️ Applied offline delete: ${action.habitName}`);
+                        } else if (action.type === 'uncomplete') {
+                            const h = habits.find(h => h.name === action.habitName);
+                            if (h) {
+                                h.dates = (h.dates || []).filter(d => d !== action.date);
+                                console.log(`↩️ Applied offline uncomplete: ${action.habitName} on ${action.date}`);
+                            }
+                        }
+                    });
+                    localStorage.removeItem('offlineActions');
                 }
                 // If offline completions were added, sync merged data back to Firebase
                 const hasNewCompletions = JSON.stringify(habits) !== JSON.stringify(cloudHabits);
