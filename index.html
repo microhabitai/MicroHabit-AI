@@ -526,9 +526,10 @@ const observer = new IntersectionObserver((entries) => {
 
 sections.forEach(section => observer.observe(section));
 
-// Track button clicks
+// Track button clicks + set flag so app.html knows user came from landing page
 document.querySelectorAll('.btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
+    sessionStorage.setItem('fromLanding', 'true');
     console.log('CTA clicked:', e.target.textContent);
   });
 });
