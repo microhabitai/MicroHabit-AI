@@ -4926,14 +4926,10 @@ db.collection("users").doc(currentUser.uid).set({
 function checkPremiumExpiration() {
     if (!currentUser) return;
     
-    // ⭐ SAFETY NET: Pause expiration checks until Lemonsqueezy integrated ⭐
-    const LEMONSQUEEZY_INTEGRATED = false; // Change to true after Lemonsqueezy integration
-    
-    if (!LEMONSQUEEZY_INTEGRATED) {
-        console.log('⏸️ Subscription expiration checks paused during payment gateway transition');
-        console.log('📋 Reason: Preventing bugs while integrating Lemonsqueezy (March 22-26, 2026)');
-        console.log('✅ This is intentional - users will NOT be downgraded until new system ready');
-        return; // Exit early - no expiration checks
+    // Founder never expires
+    if (currentUser.email === 'fancytreaz@gmail.com') {
+        console.log('👑 Founder account — skipping expiration check');
+        return;
     }
     
     db.collection("users").doc(currentUser.uid).get().then((doc) => {
@@ -4943,8 +4939,8 @@ function checkPremiumExpiration() {
         const now = new Date();
         
         // Check Premium expiration
-        if (data.isPremium && data.premiumExpiresAt) {
-            const expiryDate = new Date(data.premiumExpiresAt);
+        if (data.isPremium && (data.premiumExpiresAt || data.premiumUntil)) {
+            const expiryDate = new Date(data.premiumExpiresAt || data.premiumUntil);
             
             if (now > expiryDate) {
                 // Premium expired!
