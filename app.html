@@ -4445,6 +4445,34 @@ function sendVIPEmail(userEmail, userName) {
     });
 }
 
+// Send restore request email to founder when user claims they already paid
+function sendRestoreRequest(planType) {
+    if (!currentUser) return;
+
+    emailjs.send('service_a776ut9', 'template_w8m63iw', {
+        name: currentUser.email,
+        email: currentUser.email,
+        title: planType,
+        message: `User ${currentUser.email} is requesting restoration of their ${planType} subscription. Request date: ${new Date().toLocaleString()}`
+    })
+    .then(() => {
+        console.log('✅ Restore request sent');
+    })
+    .catch(err => {
+        console.log('❌ Restore request email failed:', err);
+    });
+
+    // Show confirmation to user immediately
+    showFuturisticModal({
+        title: '✅ Request Received',
+        body: `We've received your request.<br><br>Your ${planType} access will be restored within <strong>24 hours</strong>.<br><br>Thank you for your patience! 🙏`,
+        buttons: [{
+            text: 'OK',
+            style: 'modal-btn-primary'
+        }]
+    });
+}
+
         // Generate unique referral code for user
         function generateReferralCode(email) {
             const hash = email.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -4953,10 +4981,24 @@ function checkPremiumExpiration() {
                     expiredAt: new Date().toISOString()
                 }).then(() => {
                     isPremium = false;
-                    alert('⏰ Your Premium subscription has expired!\n\nRenew now to continue enjoying unlimited habits and premium features.');
-                    
-                    // Reload to apply changes
-                    window.location.reload();
+                    showFuturisticModal({
+                        title: '⏰ Premium Expired',
+                        body: `Your Premium subscription has expired.<br><br>Renew to continue enjoying unlimited habits and premium features.`,
+                        buttons: [
+                            {
+                                text: 'I Already Paid',
+                                style: 'modal-btn-secondary',
+                                onClick: () => sendRestoreRequest('Premium')
+                            },
+                            {
+                                text: '💎 Renew Now',
+                                style: 'modal-btn-primary',
+                                onClick: () => subscribePremium()
+                            }
+                        ]
+                    });
+                    renderHabits();
+                    checkPremium();
                 });
             } else {
                 console.log('✅ Premium active until:', expiryDate.toLocaleDateString());
@@ -4980,10 +5022,24 @@ function checkPremiumExpiration() {
                 }).then(() => {
                     isPremium = false;
                     isVIP = false;
-                    alert('⏰ Your VIP subscription has expired!\n\nRenew now to continue enjoying elite features, priority support, and unlimited habits.');
-                    
-                    // Reload to apply changes
-                    window.location.reload();
+                    showFuturisticModal({
+                        title: '⏰ VIP Expired',
+                        body: `Your VIP subscription has expired.<br><br>Renew to continue enjoying elite features, priority support, and unlimited habits.`,
+                        buttons: [
+                            {
+                                text: 'I Already Paid',
+                                style: 'modal-btn-secondary',
+                                onClick: () => sendRestoreRequest('VIP')
+                            },
+                            {
+                                text: '👑 Renew VIP',
+                                style: 'modal-btn-primary',
+                                onClick: () => subscribeVIP()
+                            }
+                        ]
+                    });
+                    renderHabits();
+                    checkPremium();
                 });
             } else {
                 console.log('✅ VIP active until:', expiryDate.toLocaleDateString());
