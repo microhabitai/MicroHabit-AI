@@ -6872,11 +6872,41 @@ Give ONE short prediction (2-3 sentences max) about their habit performance TODA
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
                 <div style="font-size: 24px; margin-bottom: 10px;">🤖</div>
                 <div style="font-size: 16px; line-height: 1.6;">${prediction}</div>
+                <div style="margin-top: 15px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="speakPrediction()" id="speakBtn" style="
+                        background: rgba(255,255,255,0.2);
+                        border: 1px solid rgba(255,255,255,0.4);
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 20px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        transition: all 0.2s ease;
+                    ">🔊 Speak</button>
+                    <button onclick="stopSpeaking()" id="stopBtn" style="
+                        background: rgba(255,255,255,0.1);
+                        border: 1px solid rgba(255,255,255,0.2);
+                        color: rgba(255,255,255,0.7);
+                        padding: 8px 16px;
+                        border-radius: 20px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        display: none;
+                        align-items: center;
+                        gap: 6px;
+                    ">⏹ Stop</button>
+                </div>
                 ${!isPremium && !isVIP ? `<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 14px; opacity: 0.9;">
                     ${getPredictionsRemaining()} predictions remaining today | <span style="cursor: pointer; text-decoration: underline;" onclick="showTab('premium')">Upgrade for unlimited</span>
                 </div>` : ''}
             </div>
         `;
+
+        // Store prediction text for speech
+        window.currentPrediction = prediction;
 
         // Track prediction (only for free users)
         if (!isPremium && !isVIP) {
@@ -6895,6 +6925,56 @@ Give ONE short prediction (2-3 sentences max) about their habit performance TODA
     }
  }
 
+
+        // 🔊 Speak AI prediction using Web Speech API
+        function speakPrediction() {
+            if (!window.currentPrediction) return;
+            if (!window.speechSynthesis) {
+                alert('Sorry, your browser does not support text-to-speech.');
+                return;
+            }
+
+            // Stop any ongoing speech first
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(window.currentPrediction);
+            utterance.rate = 0.95;   // Slightly slower — more coach-like
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            // Pick a good voice if available
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = voices.find(v =>
+                v.name.includes('Google') || v.name.includes('Natural') || v.lang === 'en-US'
+            );
+            if (preferred) utterance.voice = preferred;
+
+            // Update buttons
+            const speakBtn = document.getElementById('speakBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            if (speakBtn) speakBtn.style.display = 'none';
+            if (stopBtn) stopBtn.style.display = 'flex';
+
+            utterance.onend = () => {
+                if (speakBtn) speakBtn.style.display = 'flex';
+                if (stopBtn) stopBtn.style.display = 'none';
+            };
+
+            utterance.onerror = () => {
+                if (speakBtn) speakBtn.style.display = 'flex';
+                if (stopBtn) stopBtn.style.display = 'none';
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeaking() {
+            window.speechSynthesis.cancel();
+            const speakBtn = document.getElementById('speakBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            if (speakBtn) speakBtn.style.display = 'flex';
+            if (stopBtn) stopBtn.style.display = 'none';
+        }
 
         function toggleCalendar() {
             const calSection = document.getElementById('calendarSection');
