@@ -3900,6 +3900,34 @@
                 Click the button below to get your personalized AI coaching. Free users get 5 predictions/day. Premium users get unlimited predictions!
             </div>
         </div>
+
+        <!-- Speaker button — shown after prediction loads -->
+        <div id="speakBtnWrapper" style="display:none; justify-content:center; gap:10px; margin: 10px 0;">
+            <button onclick="speakPrediction()" id="speakBtn" style="
+                background: rgba(0,229,255,0.15);
+                border: 1px solid rgba(0,229,255,0.4);
+                color: #00e5ff;
+                padding: 8px 20px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            ">🔊 Speak Prediction</button>
+            <button onclick="stopSpeaking()" id="stopBtn" style="
+                background: rgba(255,100,100,0.15);
+                border: 1px solid rgba(255,100,100,0.3);
+                color: #ff6464;
+                padding: 8px 20px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 14px;
+                display: none;
+                align-items: center;
+                gap: 6px;
+            ">⏹ Stop</button>
+        </div>
     </div>
     
     <!-- Get AI Prediction Button -->
@@ -6867,6 +6895,11 @@ Give ONE short prediction (2-3 sentences max) about their habit performance TODA
         // Update insight card with prediction
         updateInsightCard(habitName, prediction, prediction, todayPercentage);
         
+        // Store prediction and show speak button
+        window.currentPrediction = prediction;
+        const wrapper = document.getElementById('speakBtnWrapper');
+        if (wrapper) wrapper.style.display = 'flex';
+        
         // Also update old nudge div for compatibility
         document.getElementById('nudge').innerHTML = `
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
@@ -6934,22 +6967,19 @@ Give ONE short prediction (2-3 sentences max) about their habit performance TODA
                 return;
             }
 
-            // Stop any ongoing speech first
             window.speechSynthesis.cancel();
 
             const utterance = new SpeechSynthesisUtterance(window.currentPrediction);
-            utterance.rate = 0.95;   // Slightly slower — more coach-like
+            utterance.rate = 0.95;
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
 
-            // Pick a good voice if available
             const voices = window.speechSynthesis.getVoices();
             const preferred = voices.find(v =>
                 v.name.includes('Google') || v.name.includes('Natural') || v.lang === 'en-US'
             );
             if (preferred) utterance.voice = preferred;
 
-            // Update buttons
             const speakBtn = document.getElementById('speakBtn');
             const stopBtn = document.getElementById('stopBtn');
             if (speakBtn) speakBtn.style.display = 'none';
