@@ -4442,8 +4442,10 @@ db.enablePersistence()
 
         // IMPORTANT: Initialize these as null/empty until user logs in
         let habits = [];
-        let isPremium = false;
-        let isVIP = false;
+        let isPremium = false; window.isPremium = false;
+        let isVIP = false; window.isVIP = false;
+        window.isPremium = false; window.isPremium = false;
+        window.isVIP = false; window.isVIP = false;
         let currentUser = null;
         
         let currentMonth = new Date().getMonth();
@@ -4687,7 +4689,7 @@ function sendRestoreRequest(planType) {
             }, { merge: true });
 
             // Update local state
-            isPremium = true;
+            isPremium = true; window.isPremium = true;
             
             document.getElementById('referralStatus').textContent = '🎉 Success! You got 7 days FREE Premium!';
             document.getElementById('referralStatus').style.color = 'green';
@@ -4863,8 +4865,8 @@ function sendRestoreRequest(planType) {
         callback: function(response) {
             alert('Subscription successful! 🚀 Premium unlocked.');
             
-            isPremium = true;
-            isVIP = false;
+            isPremium = true; window.isPremium = true;
+            isVIP = false; window.isVIP = false;
 
             // Calculate expiration date (30 days from now)
 const expiryDate = new Date();
@@ -4912,8 +4914,8 @@ db.collection("users").doc(currentUser.uid).set({
         callback: function(response) {
             alert('🎉 VIP Subscription successful! Welcome to Elite Status! 👑');
             
-            isPremium = true;
-            isVIP = true;
+            isPremium = true; window.isPremium = true;
+            isVIP = true; window.isVIP = true;
             sendVIPEmail(currentUser.email, currentUser.email.split('@')[0]);
 
             // Calculate expiration date (30 days from now)
@@ -4958,8 +4960,8 @@ db.collection("users").doc(currentUser.uid).set({
         callback: function(response) {
             alert('🎉 VIP Yearly Subscription successful! You saved $189! 👑');
             
-            isPremium = true;
-            isVIP = true;
+            isPremium = true; window.isPremium = true;
+            isVIP = true; window.isVIP = true;
             sendVIPEmail(currentUser.email, currentUser.email.split('@')[0]);
 
             // Calculate expiration date (365 days from now)
@@ -5020,7 +5022,7 @@ function checkPremiumExpiration() {
                     subscriptionExpired: true,
                     expiredAt: new Date().toISOString()
                 }).then(() => {
-                    isPremium = false;
+                    isPremium = false; window.isPremium = false;
                     showFuturisticModal({
                         title: '⏰ Premium Expired',
                         body: `Your Premium subscription has expired.<br><br>Renew to continue enjoying unlimited habits and premium features.`,
@@ -5060,8 +5062,8 @@ function checkPremiumExpiration() {
                     subscriptionExpired: true,
                     expiredAt: new Date().toISOString()
                 }).then(() => {
-                    isPremium = false;
-                    isVIP = false;
+                    isPremium = false; window.isPremium = false;
+                    isVIP = false; window.isVIP = false;
                     showFuturisticModal({
                         title: '⏰ VIP Expired',
                         body: `Your VIP subscription has expired.<br><br>Renew to continue enjoying elite features, priority support, and unlimited habits.`,
@@ -6979,7 +6981,7 @@ Give ONE short prediction (2-3 sentences max) about their habit performance TODA
             const stopBtn = document.getElementById('stopBtn');
             const upgradeHint = document.getElementById('voiceUpgradeHint');
 
-            if (isPremium || isVIP) {
+            if (window.isPremium || window.isVIP) {
                 // Premium/VIP — use ElevenLabs Rachel
                 if (speakBtn) { speakBtn.textContent = '⏳ Loading...'; speakBtn.disabled = true; }
 
@@ -7538,7 +7540,7 @@ function proceedWithSignup(email, password, confirmPassword) {
             
             // Reset variables
             habits = [];
-            isPremium = false;
+            isPremium = false; window.isPremium = false;
             currentUser = null;
 
             // Reload page to show login screen
@@ -7689,8 +7691,8 @@ function proceedWithSignup(email, password, confirmPassword) {
             
             // Founder override - Rotji always has VIP access
 if (user.email === 'fancytreaz@gmail.com') {
-    isPremium = true;
-    isVIP = true;
+    isPremium = true; window.isPremium = true;
+    isVIP = true; window.isVIP = true;
     console.log('👑 Founder VIP access activated');
 }
             
@@ -7703,8 +7705,8 @@ if (user.email === 'fancytreaz@gmail.com') {
         } else {
             // New user - start fresh
             habits = [];
-            isPremium = false;
-            isVIP = false;
+            isPremium = false; window.isPremium = false;
+            isVIP = false; window.isVIP = false;
             console.log('📝 New user - starting fresh');
         }
         
@@ -7754,8 +7756,8 @@ if (user.email === 'fancytreaz@gmail.com') {
             document.getElementById('userAvatar').textContent = '🔓';
             
             loadGuestHabits();
-            isPremium = false;
-            isVIP = false;
+            isPremium = false; window.isPremium = false;
+            isVIP = false; window.isVIP = false;
             
             // Load notification preferences for AI tab
             setTimeout(() => loadNotificationPreferences(), 100);
@@ -7770,8 +7772,8 @@ if (user.email === 'fancytreaz@gmail.com') {
             // No user logged in and not guest
             currentUser = null;
             habits = [];
-            isPremium = false;
-            isVIP = false;
+            isPremium = false; window.isPremium = false;
+            isVIP = false; window.isVIP = false;
             document.getElementById('authSection').style.display = 'block'; hideLoadingScreen();
             document.getElementById('mainApp').style.display = 'none';
             console.log('👋 No user logged in');
@@ -7816,8 +7818,8 @@ setTimeout(() => {
             document.getElementById('userAvatar').textContent = '🔓';
             
             loadGuestHabits();
-            isPremium = false;
-            isVIP = false;
+            isPremium = false; window.isPremium = false;
+            isVIP = false; window.isVIP = false;
             
             setTimeout(() => loadNotificationPreferences(), 100);
             renderHabits();
