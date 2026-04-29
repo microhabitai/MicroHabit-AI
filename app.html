@@ -6981,7 +6981,7 @@ Give ONE short prediction (2-3 sentences max) about their habit performance TODA
             const stopBtn = document.getElementById('stopBtn');
             const upgradeHint = document.getElementById('voiceUpgradeHint');
 
-            if (window.isPremium || window.isVIP) {
+            if (localStorage.getItem("cachedIsPremium") === "true" || localStorage.getItem("cachedIsVIP") === "true") {
                 // Premium/VIP — use ElevenLabs Rachel
                 if (speakBtn) { speakBtn.textContent = '⏳ Loading...'; speakBtn.disabled = true; }
 
