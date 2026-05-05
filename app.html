@@ -7693,6 +7693,8 @@ function proceedWithSignup(email, password, confirmPassword) {
 if (user.email === 'fancytreaz@gmail.com') {
     isPremium = true; window.isPremium = true;
     isVIP = true; window.isVIP = true;
+    localStorage.setItem('cachedIsPremium', 'true');
+    localStorage.setItem('cachedIsVIP', 'true');
     console.log('👑 Founder VIP access activated');
 }
             
