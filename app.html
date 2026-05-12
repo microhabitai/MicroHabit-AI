@@ -3900,34 +3900,6 @@
                 Click the button below to get your personalized AI coaching. Free users get 5 predictions/day. Premium users get unlimited predictions!
             </div>
         </div>
-
-        <!-- Speaker button — shown after prediction loads -->
-        <div id="speakBtnWrapper" style="display:none; justify-content:center; gap:10px; margin: 10px 0;">
-            <button onclick="speakPrediction()" id="speakBtn" style="
-                background: rgba(0,229,255,0.15);
-                border: 1px solid rgba(0,229,255,0.4);
-                color: #00e5ff;
-                padding: 8px 20px;
-                border-radius: 20px;
-                cursor: pointer;
-                font-size: 14px;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-            ">🔊 Speak Prediction</button>
-            <button onclick="stopSpeaking()" id="stopBtn" style="
-                background: rgba(255,100,100,0.15);
-                border: 1px solid rgba(255,100,100,0.3);
-                color: #ff6464;
-                padding: 8px 20px;
-                border-radius: 20px;
-                cursor: pointer;
-                font-size: 14px;
-                display: none;
-                align-items: center;
-                gap: 6px;
-            ">⏹ Stop</button>
-        </div>
     </div>
     
     <!-- Get AI Prediction Button -->
@@ -4028,7 +4000,6 @@
                 <div class="feature-item">✔ Basic streak tracking</div>
                 <div class="feature-item">✔ 5 AI predictions/day</div>
                 <div class="feature-item">✔ Cloud sync</div>
-                <div class="feature-item">🎙️ Rachel AI Coach Voice</div>
             </div>
         </div>
         
@@ -4061,12 +4032,6 @@
                 <div class="feature-item">✔ Priority support</div>
                 <div class="feature-item">✔ Data export</div>
             </div>
-
-            <div class="feature-group">
-                <div class="feature-group-title">🎙️ AI VOICE</div>
-                <div class="feature-item">✔ Rachel — Natural AI Coach Voice</div>
-                <div class="feature-item">✔ Unlimited voice predictions</div>
-            </div>
             
             <button class="btn-premium-upgrade btn-premium-gradient" onclick="subscribePremium()">
                 Upgrade to Premium
@@ -4085,7 +4050,6 @@
                 <div class="feature-item">✔ Priority support (1h)</div>
                 <div class="feature-item">✔ VIP community access</div>
                 <div class="feature-item">✔ Early feature access</div>
-                <div class="feature-item">🎙️ Rachel — Natural AI Coach Voice</div>
             </div>
             
             <button class="btn-premium-upgrade btn-vip-gold" onclick="subscribeVIP()">
@@ -6918,51 +6882,16 @@ Give ONE short prediction (2-3 sentences max) about their habit performance TODA
         // Update insight card with prediction
         updateInsightCard(habitName, prediction, prediction, todayPercentage);
         
-        // Store prediction and show speak button
-        window.currentPrediction = prediction;
-        const wrapper = document.getElementById('speakBtnWrapper');
-        if (wrapper) wrapper.style.display = 'flex';
-        
         // Also update old nudge div for compatibility
         document.getElementById('nudge').innerHTML = `
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
                 <div style="font-size: 24px; margin-bottom: 10px;">🤖</div>
                 <div style="font-size: 16px; line-height: 1.6;">${prediction}</div>
-                <div style="margin-top: 15px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                    <button onclick="speakPrediction()" id="speakBtn" style="
-                        background: rgba(255,255,255,0.2);
-                        border: 1px solid rgba(255,255,255,0.4);
-                        color: white;
-                        padding: 8px 16px;
-                        border-radius: 20px;
-                        cursor: pointer;
-                        font-size: 14px;
-                        display: flex;
-                        align-items: center;
-                        gap: 6px;
-                        transition: all 0.2s ease;
-                    ">🔊 Speak</button>
-                    <button onclick="stopSpeaking()" id="stopBtn" style="
-                        background: rgba(255,255,255,0.1);
-                        border: 1px solid rgba(255,255,255,0.2);
-                        color: rgba(255,255,255,0.7);
-                        padding: 8px 16px;
-                        border-radius: 20px;
-                        cursor: pointer;
-                        font-size: 14px;
-                        display: none;
-                        align-items: center;
-                        gap: 6px;
-                    ">⏹ Stop</button>
-                </div>
                 ${!isPremium && !isVIP ? `<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 14px; opacity: 0.9;">
                     ${getPredictionsRemaining()} predictions remaining today | <span style="cursor: pointer; text-decoration: underline;" onclick="showTab('premium')">Upgrade for unlimited</span>
                 </div>` : ''}
             </div>
         `;
-
-        // Store prediction text for speech
-        window.currentPrediction = prediction;
 
         // Track prediction (only for free users)
         if (!isPremium && !isVIP) {
@@ -6981,70 +6910,6 @@ Give ONE short prediction (2-3 sentences max) about their habit performance TODA
     }
  }
 
-
-        // 🔊 Speak AI prediction using ElevenLabs Rachel
-        async function speakPrediction() {
-            if (!window.currentPrediction) return;
-
-            const speakBtn = document.getElementById('speakBtn');
-            const stopBtn = document.getElementById('stopBtn');
-
-            if (speakBtn) { speakBtn.textContent = '⏳ Loading...'; speakBtn.disabled = true; }
-
-            try {
-                const response = await fetch('https://microhabitai.fancytreaz.workers.dev/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        text: window.currentPrediction
-                    })
-                });
-
-                if (!response.ok) throw new Error('ElevenLabs error');
-
-                const audioBlob = await response.blob();
-                const audioUrl = URL.createObjectURL(audioBlob);
-
-                if (window.currentAudio) {
-                    window.currentAudio.pause();
-                    URL.revokeObjectURL(window.currentAudio.src);
-                }
-
-                window.currentAudio = new Audio(audioUrl);
-                if (speakBtn) { speakBtn.style.display = 'none'; speakBtn.textContent = '🔊 Speak Prediction'; speakBtn.disabled = false; }
-                if (stopBtn) stopBtn.style.display = 'flex';
-
-                window.currentAudio.onended = () => {
-                    if (speakBtn) speakBtn.style.display = 'flex';
-                    if (stopBtn) stopBtn.style.display = 'none';
-                    URL.revokeObjectURL(audioUrl);
-                };
-
-                window.currentAudio.play();
-
-            } catch (err) {
-                console.error('ElevenLabs error:', err);
-                if (speakBtn) { speakBtn.textContent = '🔊 Speak Prediction'; speakBtn.disabled = false; speakBtn.style.display = 'flex'; }
-                if (stopBtn) stopBtn.style.display = 'none';
-            }
-        }
-
-        function stopSpeaking() {
-            // Stop ElevenLabs audio
-            if (window.currentAudio) {
-                window.currentAudio.pause();
-                window.currentAudio.currentTime = 0;
-            }
-            // Stop Web Speech API fallback
-            if (window.speechSynthesis) window.speechSynthesis.cancel();
-
-            const speakBtn = document.getElementById('speakBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            if (speakBtn) speakBtn.style.display = 'flex';
-            if (stopBtn) stopBtn.style.display = 'none';
-        }
 
         function toggleCalendar() {
             const calSection = document.getElementById('calendarSection');
